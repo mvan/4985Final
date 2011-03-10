@@ -1,8 +1,6 @@
 #include <crtdbg.h>
 #include <WinSock2.h>
 #include "network.h"
-#include "externs.h"
-#include "resource.h"
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: WinsockInit
 --
@@ -43,17 +41,15 @@ void WinsockInit() {
 --
 -- PROGRAMMER: Duncan Donaldson
 --
--- INTERFACE: void WinsockCleanup(SOCKET socket)
---				socket - the socket to be closed
+-- INTERFACE: void WinsockCleanup(socket)
 --
 -- RETURNS: void
 --
 -- NOTES:
--- cleans up a winsock session and destroys a socket.
+-- cleans up a winsock session.
 ----------------------------------------------------------------------------------------------------------------------*/
-void WinsockCleanup(SOCKET socket) {
+void WinsockCleanup() {
 
-	closesocket(socket);
 	WSACleanup();
 
 }
@@ -105,7 +101,7 @@ void TCPSocket_Init(SOCKET* sock) {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void TCPSocket_Listen(SOCKET* sock, int PortNo) {
+void TCPSocket_Bind(SOCKET* sock, int PortNo) {
 
 	struct	sockaddr_in serv;
 
@@ -118,10 +114,31 @@ void TCPSocket_Listen(SOCKET* sock, int PortNo) {
 		WSAError(SOCK_ERROR);
 	}
 
-	if(listen(*sock, 5)) {
-		WSAError(SOCK_ERROR);
-	}
-	
+}
+/*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: TCPSocket_Listen
+--
+-- DATE: Feb 19, 2011
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Duncan Donaldson
+--
+-- PROGRAMMER: Duncan Donaldson
+--
+-- INTERFACE: void TCPSocket_Listen(SOCKET* socket, int PortNo)
+--				socket - pointer to the socket to be initialized
+--				PortNo - the port number to bind to.
+--
+-- RETURNS: void
+--
+-- NOTES:
+-- Sets a TCP socket to the listen state.
+----------------------------------------------------------------------------------------------------------------------*/
+void TCPSocket_Listen(SOCKET* sock) {
+    if(listen(*sock, 5)) {
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Connect
@@ -162,7 +179,6 @@ void TCPSocket_Connect(SOCKET* sock, int PortNo, char* serv_addr) {
 	if (connect (*sock, (struct sockaddr *)&serv, sizeof(serv)) == SOCKET_ERROR) {
 		WSAError(SOCK_ERROR);
 	}
-
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Init
@@ -225,234 +241,6 @@ void UDPSocket_Bind(SOCKET* sock, int PortNo) {
 			WSAError(SOCK_ERROR);
 		}
 
-}
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: Add_Sock
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void Add_Sock(SOCKET s)
---				s - socket to be addded to the new SOCK structure.
---
--- RETURNS: void
---
--- NOTES:
--- Allocates a new SOCK structure and adds it to the currently existing list of sockets.
-----------------------------------------------------------------------------------------------------------------------*/
-void Add_Sock(SOCKET s) {
-
-	PSOCK si;
-
-    if ((si = (PSOCK) GlobalAlloc(GPTR, sizeof(SOCK))) == NULL) {
-      WSAError(ALLOC_ERROR);
-    }
-
-    si -> sock = s;
-    si -> NumRcv = 0;
-
-    si -> next = sockets;
-    sockets = si;
-
-}
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: Find_Sock
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: PSOCK Find_Sock(SOCKET s)
---				s - the socket to be found.
---
--- RETURNS: the PSOCK found.
---
--- NOTES:
--- finds a PSOCK structure based on a given socket.
-----------------------------------------------------------------------------------------------------------------------*/
-PSOCK Find_Sock(SOCKET s) {
-
-    PSOCK tmp = sockets;
-
-    while(tmp != NULL) {
-       if (tmp -> sock == s) {
-          return tmp;
-	   }
-       tmp = tmp -> next;
-    }
-    return 0;
-
-}
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: Remove_Sock
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void Remove_Sock(SOCKET s)
---				s - the socket to be reomved.
---
--- RETURNS: the PSOCK found.
---
--- NOTES:
--- removes a PSOCK structure based on a given socket.
-----------------------------------------------------------------------------------------------------------------------*/
-void Remove_Sock(SOCKET s) {
-
-	PSOCK cur = sockets;
-    PSOCK prev = NULL;
-
-    while(cur != NULL) {
-       if (cur -> sock == s) {
-          if (prev) {
-             prev -> next = cur -> next;
-		  } else {
-             sockets = cur -> next;
-		  }
-          closesocket(cur -> sock);
-          GlobalFree(cur);
-          return;
-	   }
-       prev = cur;
-       cur = cur -> next;
-    }
-
-}
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: TCP_Send
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void TCP_Send(SOCKET s, int PacketSize, char* data)
---				s			- socket to write to.
---				PacketSize	- the size of the data to be written.
---				data		- the data to send.
---
--- RETURNS: void.
---
--- NOTES:
--- writes some data to a TCP socket, if data is 0, writes a test packet.
-----------------------------------------------------------------------------------------------------------------------*/
-int TCP_Send(SOCKET s, int PacketSize, char* data) {
-
-	char* sndBuf = NULL;
-	WSABUF buf;
-	DWORD bSent;
-	int err;
-
-	if(data == NULL) {
-		sndBuf = (char*)malloc(PacketSize);
-		if(sndBuf == NULL) {
-			WSAError(ALLOC_ERROR);
-		}
-		memset((char *)sndBuf, 'A', PacketSize);
-		buf.buf = sndBuf;
-	} else {
-		buf.buf = data;
-	}
-
-	buf.len = PacketSize;
-
-	if(WSASend (s, &buf, 1, &bSent, 0, NULL, NULL) == SOCKET_ERROR) {
-		if ((err = WSAGetLastError()) != WSAEWOULDBLOCK) {
-			WSAError(WR_ERROR);
-		}
-		if(sndBuf != NULL) {
-			free(sndBuf);
-		}
-		return 0;
-	} else if(bSent != 0) {
-		stats.TOTALDATA+=bSent;
-		stats.TOTALTCPPACKETS++;
-		PostMessage(hwndDlg, WM_STATS, NULL, NULL);
-	}
-
-	if(sndBuf != NULL) {
-		free(sndBuf);
-	}
-	return 1;
-}
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: UDP_Send
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void UDP_Send(SOCKET s, struct sockaddr* sa, int PacketSize, char* data)
---				s			- socket to write to.
--				sa			- the address to send the data to.
---				PacketSize	- the size of the data to be written.
---				data		- the data to send.
---
--- RETURNS: void.
---
--- NOTES:
--- writes some data to a UDP socket of a specified address, if data is 0, writes a test packet.
-----------------------------------------------------------------------------------------------------------------------*/
-int UDP_Send(SOCKET s, struct sockaddr* sa, int PacketSize, char* data) {
-
-	WSABUF buf;
-	char* sndBuf = NULL;
-	DWORD bSent;
-	int err;
-
-
-	if(data == NULL) {
-		sndBuf = (char*)malloc(PacketSize);
-		if(sndBuf == NULL) {
-			WSAError(ALLOC_ERROR);
-		}
-		memset((char *)sndBuf, 'A', PacketSize);
-		buf.buf = sndBuf;
-	} else {
-		buf.buf = data;
-	}
-
-
-	buf.len = PacketSize;
-	if(WSASendTo (s, &buf, 1, &bSent, 0, sa, sizeof(struct sockaddr), NULL, NULL) == SOCKET_ERROR) {
-		if ((err = WSAGetLastError()) != WSAEWOULDBLOCK) {
-			WSAError(err);
-		}
-		if(sndBuf != NULL) {
-			free(sndBuf);
-		}
-		return 0;
-	} else if(bSent != 0){
-		stats.TOTALDATA+=bSent;
-		stats.TOTALUDPPACKETS++;
-		PostMessage(hwndDlg, WM_STATS, NULL, NULL);
-	}
-
-	if(sndBuf != NULL) {
-		free(sndBuf);
-	}
-	return 1;
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: WSAError
