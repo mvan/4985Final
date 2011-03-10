@@ -4,8 +4,7 @@
 #include "helpers.h"
 #define TCPPORT 7898
 #define UDPPORT 7899
-#define PACKETSIZE 4096
-#define BUFSIZE 40960
+#define BUFSIZE 4096
 #define SOCK_ERROR 1
 #define RD_ERROR 2
 #define WR_ERROR 3
