@@ -1,7 +1,7 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 
-#include <Winsock2.h>
+#include <winsock2.h>
 
 #define SOCK_ERROR 1
 #define RD_ERROR 2

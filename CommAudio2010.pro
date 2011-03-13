@@ -25,6 +25,9 @@ HEADERS  += src/application/mainwindow.h \
 	src/network/errors.h \
 	src/network/server.h \
 	src/network/udpserver.h \
-	src/network/socket.h
+        src/network/socket.h \
+        C:\Qt\2010.05\mingw\include\ws2tcpip.h \
+        C:\Qt\2010.05\mingw\include\winsock2.h \
+
 
 FORMS    += forms/mainwindow.ui \

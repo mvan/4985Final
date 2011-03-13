@@ -1,5 +1,5 @@
-#include <crtdbg.h>
-#include <WinSock2.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include "network.h"
 #include "socket.h"
 #include "errors.cpp"
@@ -22,10 +22,10 @@
 -- NOTES:
 -- initializes a TCP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::TCPSocket_Init() {
+void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
 
-    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
+    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
@@ -51,7 +51,7 @@ void socket::TCPSocket_Init() {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::TCPSocket_Bind() {
+void sock::TCPSocket_Bind() {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
     addr_.sin_family = AF_INET;
@@ -83,7 +83,7 @@ void socket::TCPSocket_Bind() {
 -- NOTES:
 -- Sets a TCP socket to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::TCPSocket_Listen() {
+void sock::TCPSocket_Listen() {
 
     if(listen(sock_, 5)) {
         WSAError(SOCK_ERROR);
@@ -111,7 +111,7 @@ void socket::TCPSocket_Listen() {
 -- NOTES:
 -- attempts to connect a TCP socket to a server.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::TCPSocket_Connect(char* servAddr_) {
+void sock::TCPSocket_Connect(char* servAddr_) {
 
     struct hostent *host;
 
@@ -148,10 +148,10 @@ void socket::TCPSocket_Connect(char* servAddr_) {
 -- NOTES:
 -- initializes a UDP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::UDPSocket_Init() {
+void sock::UDPSocket_Init() {
     int sizebuf = BUFSIZE;
 
-    if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
+    if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
@@ -177,9 +177,8 @@ void socket::UDPSocket_Init() {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-void socket::UDPSocket_Bind_Multicast() {
+void sock::UDPSocket_Bind_Multicast() {
 
-    struct sockaddr_in serv;
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
     BOOL loopback = FALSE;
@@ -211,23 +210,23 @@ void socket::UDPSocket_Bind_Multicast() {
         WSAError(SOCK_ERROR);                    
     }
 }
-void socket::TCPSend(char* buf) {
+void sock::TCPSend(char* buf) {
     
 }
-void socket::UDPSend_Multicast(char* buf) {
+void sock::UDPSend_Multicast(char* buf) {
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
     //WSASendTo, no completion routine, but overlapped struct.
 }
-void socket::TCPRecv(char* buf) {
+void sock::TCPRecv(char* buf) {
 
 }
-void socket::UDPRecv_Multicast(char* buf) {
+void sock::UDPRecv_Multicast(char* buf) {
     //WSARecv with completion routine.
 }
 
-void socket::wait() {
+void sock::wait() {
     WaitForSingleObject(closeEvent_, INFINITE);
 }
 

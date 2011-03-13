@@ -1,10 +1,10 @@
 #include "udpserver.h"
 
-void server::run() {
-    rdSock_ = new socket();
+void udpserver::run() {
+    this->rdSock_ = new sock();
     
-    rdSock_->UDPSocket_Init();
-    rdSock_->UDPSocket_Bind_Multicast();
+    this->rdSock_->UDPSocket_Init();
+    this->rdSock_->UDPSocket_Bind_Multicast();
     //begin reading.
-    rdSock_->wait();
+    this->rdSock_->wait();
 }

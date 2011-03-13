@@ -1,12 +1,13 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
-#include <Winsock2.h>
+#include <winsock2.h>
 #include "network.h"
+#include <ws2tcpip.h>
 #include "errors.h"
 #define BUFSIZE 40960
 
-class socket {
+class sock {
     private:
         SOCKET sock_;
         OVERLAPPED ol_;
@@ -18,10 +19,10 @@ class socket {
         
     public:
     
-        explicit socket():bSend_(0), bRecv_(0){
+        explicit sock():bSend_(0), bRecv_(0){
             closeEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
         }
-        virtual ~socket{
+        virtual ~sock() {
             closesocket(sock_);
         }
         
@@ -32,9 +33,9 @@ class socket {
         void UDPSocket_Init();
         void UDPSocket_Bind_Multicast();
         void TCPSend(char* buf);
-        void UDPSend(char* buf);
+        void UDPSend_Multicast(char* buf);
         void TCPRecv(char* buf);
-        void UDPRecv(char* buf);
+        void UDPRecv_Multicast(char* buf);
         void wait();
         
         //inline functions
@@ -68,6 +69,6 @@ class socket {
                                 LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
         friend void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
                                 LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-}
+};
 
 #endif

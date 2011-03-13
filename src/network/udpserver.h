@@ -6,15 +6,14 @@
 #include "errors.h"
 class udpserver: public server {
     private:
-        socket* rdSock_;
+        sock* rdSock_;
         
     public:
         explicit udpserver():server(){}
         virtual ~udpserver() {
             delete rdSock_;
-            delete wrSock_;
         }
         
         virtual void run();
-}
+};
 #endif
