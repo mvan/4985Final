@@ -21,13 +21,13 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 void WinsockInit() {
 
-  WORD version;
-  WSADATA wsd;
+    WORD version;
+    WSADATA wsd;
 
-  version = MAKEWORD(2,2);
-  if(WSAStartup(version, &wsd) != 0) {
-    WSAError(SOCK_ERROR);
-  }
+    version = MAKEWORD(2,2);
+    if(WSAStartup(version, &wsd) != 0) {
+        WSAError(SOCK_ERROR);
+    }
 
 }
 /*------------------------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ void WinsockInit() {
 ----------------------------------------------------------------------------------------------------------------------*/
 void WinsockCleanup() {
 
-  WSACleanup();
+    WSACleanup();
 
 }
 /*------------------------------------------------------------------------------------------------------------------
@@ -72,14 +72,14 @@ void WinsockCleanup() {
 -- NOTES:
 -- initializes a TCP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void TCPSocket_Init(SOCKET* sock) {
-  int sizebuf = BUFSIZE;
+void socket::TCPSocket_Init() {
+    int sizebuf = BUFSIZE;
 
-  if (((*sock) = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
-    WSAError(SOCK_ERROR);
-  }
-  setsockopt(*sock, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-  setsockopt(*sock, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
+    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Listen
@@ -101,18 +101,16 @@ void TCPSocket_Init(SOCKET* sock) {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void TCPSocket_Bind(SOCKET* sock) {
+void socket::TCPSocket_Bind() {
 
-  struct sockaddr_in serv;
+    ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
+    addr_.sin_family = AF_INET;
+    addr_.sin_port = htons(TCPPORT); 
+    addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  ZeroMemory(&serv, sizeof(struct sockaddr_in)); 
-  serv.sin_family = AF_INET;
-  serv.sin_port = htons(TCPPORT); 
-  serv.sin_addr.s_addr = htonl(INADDR_ANY);
-
-  if (bind(*sock, (struct sockaddr *)&serv, sizeof(serv)) == -1) {
-    WSAError(SOCK_ERROR);
-  }
+    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == -1) {
+        WSAError(SOCK_ERROR);
+    }
 
 }
 /*------------------------------------------------------------------------------------------------------------------
@@ -135,10 +133,12 @@ void TCPSocket_Bind(SOCKET* sock) {
 -- NOTES:
 -- Sets a TCP socket to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void TCPSocket_Listen(SOCKET* sock) {
-  if(listen(*sock, 5)) {
-    WSAError(SOCK_ERROR);
-  }
+void socket::TCPSocket_Listen() {
+
+    if(listen(sock_, 5)) {
+        WSAError(SOCK_ERROR);
+    }
+    
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Connect
@@ -161,24 +161,23 @@ void TCPSocket_Listen(SOCKET* sock) {
 -- NOTES:
 -- attempts to connect a TCP socket to a server.
 ----------------------------------------------------------------------------------------------------------------------*/
-void TCPSocket_Connect(SOCKET* sock, char* serv_addr) {
+void socket::TCPSocket_Connect(char* servAddr_) {
 
-  struct sockaddr_in serv;
-  struct hostent *host;
+    struct hostent *host;
 
-  ZeroMemory(&serv, sizeof(struct sockaddr_in));
-  serv.sin_family = AF_INET;
-  serv.sin_port = htons(TCPPORT);
+    ZeroMemory(&addr_, sizeof(struct sockaddr_in));
+    addr_.sin_family = AF_INET;
+    addr_.sin_port = htons(TCPPORT);
 
-  if ((host = gethostbyname(serv_addr)) == NULL) {
-    WSAError(SOCK_ERROR);
-  }
+    if ((host = gethostbyname(servAddr_)) == NULL) {
+        WSAError(SOCK_ERROR);
+    }
 
-  memmove((char *)&serv.sin_addr, host -> h_addr, host -> h_length);
+    memmove((char *)&addr_.sin_addr, host -> h_addr, host -> h_length);
 
-  if (connect (*sock, (struct sockaddr *)&serv, sizeof(serv)) == SOCKET_ERROR) {
-    WSAError(SOCK_ERROR);
-  }
+    if (connect (sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Init
@@ -199,14 +198,14 @@ void TCPSocket_Connect(SOCKET* sock, char* serv_addr) {
 -- NOTES:
 -- initializes a UDP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void UDPSocket_Init(SOCKET* sock) {
-  int sizebuf = BUFSIZE;
+void socket::UDPSocket_Init() {
+    int sizebuf = BUFSIZE;
 
-  if (((*sock) = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
-    WSAError(SOCK_ERROR);
-  }
-  setsockopt(*sock, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-  setsockopt(*sock, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
+    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Bind
@@ -228,63 +227,63 @@ void UDPSocket_Init(SOCKET* sock) {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-void UDPSocket_Bind_Multicast(SOCKET* sock) {
+void socket::UDPSocket_Bind_Multicast() {
 
     struct sockaddr_in serv;
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
     BOOL loopback = FALSE;
     
-    ZeroMemory(&serv, sizeof(struct sockaddr_in)); 
-    serv.sin_family = AF_INET;
-    serv.sin_port = htons(UDPPORT); 
-    serv.sin_addr.s_addr = htonl(INADDR_ANY);
+    ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
+    addr_.sin_family = AF_INET;
+    addr_.sin_port = htons(UDPPORT); 
+    addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(*sock, (struct sockaddr *)&serv, sizeof(serv)) == SOCKET_ERROR) {
+    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);
     }
     
     mc_addr.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
     mc_addr.imr_interface.s_addr = INADDR_ANY;
     
-    if(setsockopt(hSocket, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
+    if(setsockopt(sock_, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
                             (char *)&mc_addr, sizeof(mc_addr)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);                    
     }
     
-    if(setsockopt(hSocket, IPPROTO_IP, IP_MULTICAST_TTL, 
+    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_TTL, 
                             (char *)&ttl, sizeof(ttl)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);                    
     }
     
-    if(setsockopt(hSocket, IPPROTO_IP, IP_MULTICAST_LOOP, 
+    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_LOOP, 
                             (char *)&loopback, sizeof(BOOL)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);                    
     }
 }
-void TCPSend(SOCKET* sock, char* buf, int msgsize) {
+void socket::TCPSend(char* buf) {
     
 }
-void UDPSend_Multicast(SOCKET* sock, char* buf, int msgsize, struct sockaddr* addr) {
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
-    addr.sin_port = htons(UDPPORT);
+void socket::UDPSend_Multicast(char* buf) {
+    addr_.sin_family = AF_INET;
+    addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
+    addr_.sin_port = htons(UDPPORT);
     //WSASendTo, no completion routine, but overlapped struct.
 }
-void TCPRecv(SOCKET* sock, char* buf, int msgsize) {
+void socket::TCPRecv(char* buf) {
 
 }
-void UDPRecv_Multicast(SOCKET* sock, char* buf, int msgsize) {
+void socket::UDPRecv_Multicast(char* buf) {
     //WSARecv with completion routine.
 }
-void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
+void socket::CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
                         
 }
-void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+void socket::CALLBACK TCPCompRoutine(DWORD error, DWORD transferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-                        
+
+                       
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: WSAError
@@ -306,5 +305,5 @@ void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
 -- handles an error, by displaying a helpful message box and exiting.
 ----------------------------------------------------------------------------------------------------------------------*/
 void WSAError(int error) {
-  exit(error);
+    exit(error);
 }

@@ -20,19 +20,63 @@ void WinsockInit();
 void WinsockCleanup();
 void WSAError(int error);
 
-void TCPSocket_Init(SOCKET* sock);
-void TCPSocket_Bind(SOCKET* sock, int PortNo);
-void TCPSocket_Listen(SOCKET* sock);
-void TCPSocket_Connect(SOCKET* sock, int PortNo, char* serv_addr);
-void UDPSocket_Init(SOCKET* sock);
-void UDPSocket_Bind_Multicast(SOCKET* sock, int PortNo);
-void TCPSend(SOCKET* sock, char* buf, int msgsize);
-void UDPSend(SOCKET* sock, char* buf, int msgsize, struct sockaddr* addr);
-void TCPRecv(SOCKET* sock, char* buf, int msgsize);
-void UDPRecv(SOCKET* sock, char* buf, int msgsize);
-void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+class socket {
+    private:
+        SOCKET sock_;
+        OVERLAPPED ol_;
+        size_t bSend_;
+        size_t bRecv_;
+        char packet_[PACKETSIZE];
+        struct sockaddr_in addr_;
+        
+    public:
+    
+        explicit socket():bSend_(0), bRecv_(0){}
+        virtual ~socket{}
+        
+        void TCPSocket_Init();
+        void TCPSocket_Bind();
+        void TCPSocket_Listen();
+        void TCPSocket_Connect(char* servAddr_);
+        void UDPSocket_Init();
+        void UDPSocket_Bind_Multicast();
+        void TCPSend(char* buf);
+        void UDPSend(char* buf);
+        void TCPRecv(char* buf);
+        void UDPRecv(char* buf);
+        
+        //inline functions
+        void clrPacket() {
+            ZeroMemory(packet_, PACKETSIZE);
+        }
+        SOCKET getSock() {
+            return sock_;
+        }
+        void setSock(SOCKET sock) {
+            sock_ = sock;
+        }
+        size_t getSent() {
+            return bSend_;
+        }
+        size_t getRecv() {
+            return bRecv_;
+        }
+        struct sockaddr_in getAddr() {
+            return addr_;
+        }
+        OVERLAPPED getOverlapped() {
+            return ol_;
+        }
+        void setOverlapped(OVERLAPPED ol) {
+            ol_ = ol;
+        }
+        
+    private:
+        //completion routines.
+        void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
+                                LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+        void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                                LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+}
 
 #endif
