@@ -232,10 +232,21 @@ void sock::wait() {
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-                        
+
+    sock* s = (sock*)lpOverlapped;
+    char* buf = (char*)malloc(PACKETSIZE);
+
+    if(cbTransferred == 0 || error != 0) {
+        WSAError(RD_ERROR);
+    } else {
+        strncpy(buf, s->packet_, PACKETSIZE);
+        //process buffer, check message type, push onto correct buffer, signal buffer event.
+        s->clrPacket();
+    }
+
 }
 void CALLBACK TCPCompRoutine(DWORD error, DWORD transferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-
+    
                        
 }

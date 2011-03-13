@@ -7,14 +7,16 @@
 #include "errors.h"
 #define BUFSIZE 40960
 
-class sock {
+struct sock {
+
+    OVERLAPPED ol_;
+    char packet_[PACKETSIZE];
+    
     private:
         SOCKET sock_;
-        OVERLAPPED ol_;
         HANDLE closeEvent_;
         size_t bSend_;
         size_t bRecv_;
-        char packet_[PACKETSIZE];
         struct sockaddr_in addr_;
         
     public:
