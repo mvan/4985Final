@@ -9,7 +9,7 @@
 
 struct sock {
 
-    OVERLAPPED ol_;
+    WSAOVERLAPPED ol_;
     char packet_[PACKETSIZE];
     
     private:
@@ -34,10 +34,10 @@ struct sock {
         void TCPSocket_Connect(char* servAddr_);
         void UDPSocket_Init();
         void UDPSocket_Bind_Multicast();
-        void TCPSend(char* buf);
-        void UDPSend_Multicast(char* buf);
-        void TCPRecv(char* buf);
-        void UDPRecv_Multicast(char* buf);
+        int TCPSend();
+        int UDPSend_Multicast();
+        int TCPRecv();
+        int UDPRecv_Multicast();
         void wait();
         
         //inline functions
@@ -59,18 +59,21 @@ struct sock {
         struct sockaddr_in getAddr() {
             return addr_;
         }
-        OVERLAPPED getOverlapped() {
+        WSAOVERLAPPED getOverlapped() {
             return ol_;
         }
-        void setOverlapped(OVERLAPPED ol) {
+        void setOverlapped(WSAOVERLAPPED ol) {
             ol_ = ol;
         }
-        
-        //completion routines.
-        friend void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
-                                LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-        friend void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                                LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+        void createEvent() {
+            ol_.hEvent = WSACreateEvent();
+        }
+
 };
 
+//completion routines.
+void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 #endif

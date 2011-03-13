@@ -210,20 +210,32 @@ void sock::UDPSocket_Bind_Multicast() {
         WSAError(SOCK_ERROR);                    
     }
 }
-void sock::TCPSend(char* buf) {
-    
+int sock::TCPSend() {
+    return 0;
 }
-void sock::UDPSend_Multicast(char* buf) {
+int sock::UDPSend_Multicast() {
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
     //WSASendTo, no completion routine, but overlapped struct.
+    return 0;
 }
-void sock::TCPRecv(char* buf) {
+int sock::TCPRecv() {
+    return 0;
+}
+int sock::UDPRecv_Multicast() {
+    DWORD flags = 0, wait;
+    WSABUF buf;
+    buf.buf = packet_;
+    buf.len = PACKETSIZE;
 
-}
-void sock::UDPRecv_Multicast(char* buf) {
-    //WSARecv with completion routine.
+    WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
+
+    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    if(wait == WSA_WAIT_FAILED) {
+        return 0;
+    }
+    return 1;
 }
 
 void sock::wait() {
