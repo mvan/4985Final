@@ -2,6 +2,8 @@
 #define NETWORK_H
 #include <Winsock2.h>
 #include "helpers.h"
+#define MULTICAST_ADDR "234.98.98.98"
+#define MULTICAST_TTL 2
 #define TCPPORT 7898
 #define UDPPORT 7899
 #define PACKETSIZE 4096
@@ -23,5 +25,14 @@ void TCPSocket_Bind(SOCKET* sock, int PortNo);
 void TCPSocket_Listen(SOCKET* sock);
 void TCPSocket_Connect(SOCKET* sock, int PortNo, char* serv_addr);
 void UDPSocket_Init(SOCKET* sock);
-void UDPSocket_Bind(SOCKET* sock, int PortNo);
+void UDPSocket_Bind_Multicast(SOCKET* sock, int PortNo);
+void TCPSend(SOCKET* sock, char* buf, int msgsize);
+void UDPSend(SOCKET* sock, char* buf, int msgsize, struct sockaddr* addr);
+void TCPRecv(SOCKET* sock, char* buf, int msgsize);
+void UDPRecv(SOCKET* sock, char* buf, int msgsize);
+void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+
 #endif

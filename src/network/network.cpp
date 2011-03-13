@@ -228,19 +228,63 @@ void UDPSocket_Init(SOCKET* sock) {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-void UDPSocket_Bind(SOCKET* sock) {
+void UDPSocket_Bind_Multicast(SOCKET* sock) {
 
-  struct sockaddr_in serv;
+    struct sockaddr_in serv;
+    struct ip_mreq mc_addr;
+    int ttl = MULTICAST_TTL;
+    BOOL loopback = FALSE;
+    
+    ZeroMemory(&serv, sizeof(struct sockaddr_in)); 
+    serv.sin_family = AF_INET;
+    serv.sin_port = htons(UDPPORT); 
+    serv.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  ZeroMemory(&serv, sizeof(struct sockaddr_in)); 
-  serv.sin_family = AF_INET;
-  serv.sin_port = htons(UDPPORT); 
-  serv.sin_addr.s_addr = htonl(INADDR_ANY);
+    if (bind(*sock, (struct sockaddr *)&serv, sizeof(serv)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    
+    mc_addr.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
+    mc_addr.imr_interface.s_addr = INADDR_ANY;
+    
+    if(setsockopt(hSocket, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
+                            (char *)&mc_addr, sizeof(mc_addr)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);                    
+    }
+    
+    if(setsockopt(hSocket, IPPROTO_IP, IP_MULTICAST_TTL, 
+                            (char *)&ttl, sizeof(ttl)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);                    
+    }
+    
+    if(setsockopt(hSocket, IPPROTO_IP, IP_MULTICAST_LOOP, 
+                            (char *)&loopback, sizeof(BOOL)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);                    
+    }
+}
+void TCPSend(SOCKET* sock, char* buf, int msgsize) {
+    
+}
+void UDPSend_Multicast(SOCKET* sock, char* buf, int msgsize, struct sockaddr* addr) {
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
+    addr.sin_port = htons(UDPPORT);
+    //WSASendTo, no completion routine, but overlapped struct.
+}
+void TCPRecv(SOCKET* sock, char* buf, int msgsize) {
 
-  if (bind(*sock, (struct sockaddr *)&serv, sizeof(serv)) == SOCKET_ERROR) {
-    WSAError(SOCK_ERROR);
-  }
-
+}
+void UDPRecv_Multicast(SOCKET* sock, char* buf, int msgsize) {
+    //WSARecv with completion routine.
+}
+void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
+                        
+}
+void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
+                        
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: WSAError
