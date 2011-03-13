@@ -214,11 +214,22 @@ int sock::TCPSend() {
     return 0;
 }
 int sock::UDPSend_Multicast() {
+    WSABUF buf;
+    DWORD wait;
+    buf.buf = packet_;
+    buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
-    //WSASendTo, no completion routine, but overlapped struct.
-    return 0;
+    WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
+                        sizeof(addr_), &(this->ol_), UDPSendCompRoutine);
+
+    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    WSAResetEvent(ol_.hEvent);
+    if(wait == WSA_WAIT_FAILED) {
+        return 0;
+    }
+    return 1;
 }
 int sock::TCPRecv() {
     return 0;
@@ -232,14 +243,11 @@ int sock::UDPRecv_Multicast() {
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
         return 0;
     }
     return 1;
-}
-
-void sock::wait() {
-    WaitForSingleObject(closeEvent_, INFINITE);
 }
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
@@ -256,6 +264,14 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
         s->clrPacket();
     }
 
+}
+void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
+    sock* s = (sock*)lpOverlapped;
+    if(cbTransferred == 0 || error != 0) {
+        WSAError(WR_ERROR);
+    }
+    s->clrPacket();
 }
 void CALLBACK TCPCompRoutine(DWORD error, DWORD transferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {

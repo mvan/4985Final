@@ -5,6 +5,7 @@ void udpserver::run() {
     
     this->rdSock_->UDPSocket_Init();
     this->rdSock_->UDPSocket_Bind_Multicast();
+    this->rdSock_->createEvent();
     while(1) {
         if(this->rdSock_->UDPRecv_Multicast() == 0) {
             break;

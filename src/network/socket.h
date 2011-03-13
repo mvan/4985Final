@@ -38,7 +38,6 @@ struct sock {
         int UDPSend_Multicast();
         int TCPRecv();
         int UDPRecv_Multicast();
-        void wait();
         
         //inline functions
         void clrPacket() {
@@ -74,6 +73,10 @@ struct sock {
 //completion routines.
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
+void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 #endif
