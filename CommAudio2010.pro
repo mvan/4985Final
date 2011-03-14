@@ -19,7 +19,9 @@ SOURCES += src/main.cpp\
         src/network/network.cpp \
         src/network/errors.cpp \
         src/network/udpserver.cpp \
-        src/network/socket.cpp
+        src/network/socket.cpp \
+        src/application/aboutwindow.cpp \
+    src/application/manwindow.cpp
 
 HEADERS  += src/application/mainwindow.h \
         src/network/network.h \
@@ -29,6 +31,10 @@ HEADERS  += src/application/mainwindow.h \
         src/network/socket.h \
         C:\Qt\2010.05\mingw\include\ws2tcpip.h \
         C:\Qt\2010.05\mingw\include\winsock2.h \
+        src/application/aboutwindow.h \
+    src/application/manwindow.h
 
 
-FORMS   += forms/mainwindow.ui \
+FORMS   += src/application/mainwindow.ui \
+        src/application/aboutwindow.ui \
+    src/application/manwindow.ui
