@@ -22,7 +22,8 @@ SOURCES += src/main.cpp\
         src/network/socket.cpp \
         src/application/aboutwindow.cpp \
     src/application/manwindow.cpp \
-    src/application/appwindow.cpp
+    src/application/appwindow.cpp \
+    src/network/tcpserver.cpp
 
 HEADERS  += src/application/mainwindow.h \
         src/network/network.h \
@@ -34,7 +35,8 @@ HEADERS  += src/application/mainwindow.h \
         C:\Qt\2010.05\mingw\include\winsock2.h \
         src/application/aboutwindow.h \
     src/application/manwindow.h \
-    src/application/appwindow.h
+    src/application/appwindow.h \
+    src/network/tcpserver.h
 
 
 FORMS   += src/application/mainwindow.ui \
