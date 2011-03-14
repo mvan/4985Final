@@ -129,6 +129,16 @@ void sock::TCPSocket_Connect(char* servAddr_) {
         WSAError(SOCK_ERROR);
     }
 }
+
+sock sock::TCPSocket_Accept() {
+    int addrsize;
+    SOCKET s;
+    if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
+        WSAError(SOCK_ERROR);
+    }
+    return sock(s);
+}
+
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Init
 --
@@ -248,6 +258,18 @@ int sock::UDPRecv_Multicast() {
         return 0;
     }
     return 1;
+}
+
+sock sock::operator=(sock right) {
+    if(this == &right) {
+        return *this;
+    }
+    addr_ = right.getAddr();
+    bRecv_ = right.getRecv();
+    bSend_ = right.getSent();
+    sock_ = right.getSock();
+
+    return *this;
 }
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
