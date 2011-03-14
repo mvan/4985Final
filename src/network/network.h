@@ -8,4 +8,6 @@
 #define PACKETSIZE 4096
 void WinsockInit();
 void WinsockCleanup();
+void mkPacket(char* buf, unsigned char msgtype, unsigned char srcClient,
+              unsigned char destClient, char* data);
 #endif

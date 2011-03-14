@@ -1,4 +1,5 @@
 #include <winsock2.h>
+#include <QString>
 #include "network.h"
 #include "errors.h"
 /*------------------------------------------------------------------------------------------------------------------
@@ -52,4 +53,14 @@ void WinsockCleanup() {
 
     WSACleanup();
 
+}
+
+//SERIOUSLY, THIS IS A SKETCHY FUNCTION, DON'T PASS ANY NULL PARAMETERS OR A BUFFER THAT ISN'T PACKETSIZE
+void mkPacket(char* buf, char msgtype, char srcClient,
+              char destClient, char* data) {
+    ZeroMemory(buf, PACKETSIZE);
+    buf[0] = msgtype;
+    buf[1] = srcClient;
+    buf[2] = destClient;
+    strncpy((buf+3), data, PACKETSIZE-3);
 }
