@@ -191,7 +191,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="stream">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>190</x>
       <y>290</y>
       <width>91</width>
       <height>31</height>
@@ -204,7 +204,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="transfer">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>330</x>
       <y>290</y>
       <width>91</width>
       <height>31</height>
@@ -234,6 +234,19 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="notchesVisible">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addFiles">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>290</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Files</string>
     </property>
    </widget>
   </widget>
