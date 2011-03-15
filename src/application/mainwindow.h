@@ -9,6 +9,7 @@ namespace Ui {
 
 class AboutWindow;
 class ManWindow;
+class AppWindow;
 
 class MainWindow : public QMainWindow
 {
@@ -21,11 +22,13 @@ public:
 public slots:
     void openAbout();
     void openManual();
+    void openApp();
 
 private:
     Ui::MainWindow *ui;
     AboutWindow *aw;
     ManWindow *mw;
+    AppWindow *apw;
 };
 
 #endif // MAINWINDOW_H

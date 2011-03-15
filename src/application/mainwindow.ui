@@ -27,7 +27,7 @@
      <string>192.168.0.1</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="connect">
     <property name="geometry">
      <rect>
       <x>100</x>
