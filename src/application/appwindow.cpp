@@ -17,11 +17,11 @@ AppWindow::~AppWindow()
 }
 
 void AppWindow::addFiles() {
-    fd->setFileMode(QFileDialog::ExistingFiles);
+    fd->setFileMode(QFileDialog::ExistingFile);
     fd->setNameFilter(tr("Audio (*.wav)"));
     if (fd->exec()) {
         filenames = fd->selectedFiles();
     }
     lstItem = new QTreeWidgetItem(filenames, 0);
-    ui->library->addTopLevelItem(lstItem);
+    ui->myLibrary->addTopLevelItem(lstItem);
 }
