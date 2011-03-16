@@ -20,6 +20,9 @@ public:
 
 public slots:
     void addFiles();
+    void playPause();
+    void onOffMicOther();
+    void onOffMicSelf();
 
 private:
     Ui::AppWindow *ui;
