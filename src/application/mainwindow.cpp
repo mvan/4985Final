@@ -3,6 +3,7 @@
 #include "aboutwindow.h"
 #include "manwindow.h"
 #include "appwindow.h"
+#include "../control/connectioncontrol.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     aw = new AboutWindow();
     mw = new ManWindow();
     apw = new AppWindow();
+    control_ = new ConnectionControl();
 
     ui->setupUi(this);
     ui->manMenu->setEnabled(TRUE);
@@ -27,6 +29,9 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
+    if(control_->startServer(ui->serverPortValue->text().toInt())) {
+        QMessageBox::warning(this, QString("Failed to start server"), QString("No server available"), QMessageBox::Ok);
+    }
     apw->show();
 }
 
@@ -34,7 +39,6 @@ void MainWindow::openManual() {
     mw->show();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
