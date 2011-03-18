@@ -1,5 +1,6 @@
 #include "appwindow.h"
 #include "ui_appwindow.h"
+#include "../network/filetransfer.h"
 
 AppWindow::AppWindow(QWidget *parent) :
     QTabWidget(parent),
@@ -11,4 +12,13 @@ AppWindow::AppWindow(QWidget *parent) :
 AppWindow::~AppWindow()
 {
     delete ui;
+}
+
+void AppWindow::on_stream_clicked()
+{
+    HANDLE file;
+    file = CreateFile(TEXT("C:\\Users\\Admin\\Desktop\\test.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    FileTransferThread *thread = new FileTransferThread(file);
+    thread->start();
 }

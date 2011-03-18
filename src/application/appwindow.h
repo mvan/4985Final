@@ -17,6 +17,9 @@ public:
 
 private:
     Ui::AppWindow *ui;
+
+private slots:
+    void on_stream_clicked();
 };
 
 #endif // APPWINDOW_H
