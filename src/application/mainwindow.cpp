@@ -29,7 +29,7 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
-    if(control_->startServer(ui->serverPortValue->text().toInt())) {
+    if(control_->startServer(ui->serverTCPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to start server"), QString("No server available"), QMessageBox::Ok);
     }
     apw->show();
