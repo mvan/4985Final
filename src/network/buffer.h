@@ -17,6 +17,7 @@ public:
     QQueue<char*> queue; //QQueue<QByteArray*>
     QMutex queueMutex;
     QWaitCondition bufferNotFull;
+    QWaitCondition bufferNotEmpty;
 
     void bufferPacket(char* packet);
     char* grabPacket();
