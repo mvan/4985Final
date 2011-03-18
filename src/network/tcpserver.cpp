@@ -1,10 +1,28 @@
 #include "tcpserver.h"
+#include "socket.h"
 void tcpserver::run() {
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind();
     listenSock_->TCPSocket_Listen();
     while(1) {
-        socks_[numSocks_++] = (listenSock_->TCPSocket_Accept());
+        readySet_ = allSet_;
+        numReady_ = select(selectSocks_[numSocks_-1]+1, &readySet_, NULL, NULL, NULL);
+        if(FD_ISSET(&listenSock_, &readySet_)) {
+
+            int i;
+            sock s = listenSock_->TCPSocket_Accept();
+
+            for(i = 0; i < FD_SETSIZE; ++i) {
+                if(selectSocks_[i] < 0) {
+                    selectSocks_[i] = s.getSock();
+                    break;
+                }
+            }
+            FD_SET(s.getSock(), &allSet_);
+            if(s.getSock() > maxSock_) {
+                maxSock_ = s.getSock();
+            }
+        }
     }
 }
 
