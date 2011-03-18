@@ -12,7 +12,7 @@ OBJECTS_DIR = obj/
 DESTDIR = bin/
 MOC_DIR = moc/
 
-LIBS 	+= C:\Qt\mingw\lib\libws2_32.a
+LIBS 	+= C:\Qt\2010.05\mingw\lib\libws2_32.a
 
 SOURCES += src/main.cpp\
         src/application/mainwindow.cpp \
@@ -26,7 +26,7 @@ SOURCES += src/main.cpp\
     src/network/tcpserver.cpp \
     src/network/buffer.cpp \
     src/network/filetransfer.cpp \
-    src/network/filetransferin.cpp
+    src/network/filetransferin.cpp \
     src/control/connectioncontrol.cpp
 
 
@@ -44,7 +44,7 @@ HEADERS  += src/application/mainwindow.h \
     src/network/tcpserver.h \
     src/network/buffer.h \
     src/network/filetransfer.h \
-    src/network/filetransferin.h
+    src/network/filetransferin.h \
     src/control/connectioncontrol.h
 
 
