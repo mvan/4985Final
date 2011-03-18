@@ -21,9 +21,9 @@ struct sock {
         
     public:
     
-        explicit sock():bSend_(0), bRecv_(0){
-            closeEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
-        }
+        explicit sock():bSend_(0), bRecv_(0){}
+        explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
+
         virtual ~sock() {
             closesocket(sock_);
         }
@@ -32,13 +32,15 @@ struct sock {
         void TCPSocket_Bind();
         void TCPSocket_Listen();
         void TCPSocket_Connect(char* servAddr_);
+        sock TCPSocket_Accept();
         void UDPSocket_Init();
         void UDPSocket_Bind_Multicast();
         int TCPSend();
         int UDPSend_Multicast();
         int TCPRecv();
         int UDPRecv_Multicast();
-        
+        sock operator=(sock right);
+
         //inline functions
         void clrPacket() {
             ZeroMemory(packet_, PACKETSIZE);
@@ -64,10 +66,6 @@ struct sock {
         void setOverlapped(WSAOVERLAPPED ol) {
             ol_ = ol;
         }
-        void createEvent() {
-            ol_.hEvent = WSACreateEvent();
-        }
-
 };
 
 //completion routines.
