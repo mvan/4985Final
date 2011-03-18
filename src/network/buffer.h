@@ -6,7 +6,7 @@
 #include <QWaitCondition>
 
 #define DEFAULT_BUFFER_SIZE 10
-
+#define DATA_SIZE 4093
 class Buffer
 {
 public:

@@ -25,7 +25,8 @@ SOURCES += src/main.cpp\
     src/application/appwindow.cpp \
     src/network/tcpserver.cpp \
     src/network/buffer.cpp \
-    src/network/filetransfer.cpp
+    src/network/filetransfer.cpp \
+    src/network/filetransferin.cpp
 
 HEADERS  += src/application/mainwindow.h \
         src/network/network.h \
@@ -40,7 +41,9 @@ HEADERS  += src/application/mainwindow.h \
     src/application/appwindow.h \
     src/network/tcpserver.h \
     src/network/buffer.h \
-    src/network/filetransfer.h
+    src/network/filetransfer.h \
+    ../Admin/Desktop/filetransferin.h \
+    src/network/filetransferin.h
 
 
 FORMS   += src/application/mainwindow.ui \

@@ -33,26 +33,30 @@ void FileReadThread::run(){
             if(!ReadFile(file_, tempBuf, DATA_SIZE, &bytesRead, NULL)){
                 //error reading file
             }
-            //mkPacket(tempPacket, 0, 0, 0, tempBuf); //change with src and dest, msg type
-            /*if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
+            mkPacket(tempPacket, 0x00, 0x00, 0x00, tempBuf); //change with src and dest, msg type
+            if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 mutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&mutex);
                 mutex.unlock();
-            }*/
-            fileoutBuffer.bufferPacket(tempBuf);
+            }
+            fileoutBuffer.bufferPacket(tempPacket);
             ++numOfReads;
         } else if((sizeOfFile - (numOfReads * DATA_SIZE)) == 0) { // finished exactly
+            //make EOT packet
+            //fileoutBuffer.bufferPacket(eot packet)
             CloseHandle(file_);
             break;
         } else { //less than a full packet left
-            if(!ReadFile(file_, tempBuf, DATA_SIZE, &bytesRead, NULL)){
+            if(!ReadFile(file_, tempBuf, sizeOfFile - (numOfReads * DATA_SIZE), &bytesRead, NULL)){
                 //error reading file
             }
-            //mkPacket(tempPacket, 0, 0, 0, tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, '2', '2', '2', tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
             }
-            fileoutBuffer.bufferPacket(tempBuf);
+            fileoutBuffer.bufferPacket(tempPacket);
+            //make EOT packet
+            //fileoutBuffer.bufferPacket(eot packet)
             CloseHandle(file_);
             break;
         }
@@ -67,18 +71,17 @@ void FileSendThread::run(){
                       NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     QMutex mutex;
     DWORD bytesWritten;
+    char* packet;
 
    while(1){
-        /*mutex.lock();
-        fileoutBuffer.bufferNotEmpty.wait(&mutex);
-        mutex.unlock();*/
         mutex.lock();
         if(fileoutBuffer.queue.size() != 0){
+            packet = fileoutBuffer.grabPacket();
             //Send fileoutBuffer.grabPacket()
-            //WriteFile(file, fileoutBuffer.grabPacket(), DATA_SIZE, &bytesWritten, NULL);
+
+            WriteFile(file, packet, DATA_SIZE, &bytesWritten, NULL);
         }
         mutex.unlock();
-        //fileoutBuffer.bufferNotFull.wakeAll();
     }
 }
 

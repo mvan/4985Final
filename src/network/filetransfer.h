@@ -3,7 +3,7 @@
 #include <QThread>
 #include <winsock2.h>
 
-#define DATA_SIZE 4093
+
 
 class FileReadThread : public QThread{
     Q_OBJECT
