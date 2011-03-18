@@ -14,6 +14,7 @@ void tcpserver::run() {
 
             for(i = 0; i < FD_SETSIZE; ++i) {
                 if(selectSocks_[i] < 0) {
+                    socks_[i] = s;
                     selectSocks_[i] = s.getSock();
                     break;
                 }
@@ -21,6 +22,24 @@ void tcpserver::run() {
             FD_SET(s.getSock(), &allSet_);
             if(s.getSock() > maxSock_) {
                 maxSock_ = s.getSock();
+            }
+            if(i > sockIndex_) {
+                sockIndex_ = i;
+            }
+            if(--numReady_ <= 0) {
+                continue;
+            }
+        }
+        for(int i = 0; i < FD_SETSIZE; ++i) {
+            int s;
+            sock so;
+
+            so = socks_[i];
+            if((s = selectSocks_[i]) < 0) {
+                continue;
+            }
+            if(FD_ISSET(s, &readySet_)) {
+                //do some reads and shit.
             }
         }
     }
