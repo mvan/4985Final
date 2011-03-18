@@ -1,8 +1,8 @@
 #include "tcpserver.h"
 #include "socket.h"
-void tcpserver::run() {
+void tcpserver::run(int portNo) {
     listenSock_->TCPSocket_Init();
-    listenSock_->TCPSocket_Bind();
+    listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
     while(1) {
         readySet_ = allSet_;
