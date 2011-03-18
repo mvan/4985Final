@@ -8,12 +8,22 @@
 #define MAX_CLIENTS 16
 class tcpserver: public server {
 
-    sock* listenSock_;
-    sock clients_[MAX_CLIENTS];
+    private:
+        sock* listenSock_;
+        sock socks_[FD_SETSIZE];
+        SOCKET selectSocks_[FD_SETSIZE];
+        SOCKET maxSock_;
+        fd_set readySet_;
+        fd_set allSet_;
+        int numSocks_;
+        int numReady_;
+        int sockIndex_;
 
     public:
-        explicit tcpserver (){}
+        explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){}
         virtual ~tcpserver(){}
+        virtual void initSelect();
+        void addSelectSock(sock* sock);
         virtual void run();
 
 
