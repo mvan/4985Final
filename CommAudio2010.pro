@@ -12,7 +12,7 @@ OBJECTS_DIR = obj/
 DESTDIR = bin/
 MOC_DIR = moc/
 
-LIBS 	+= C:\Qt\2010.05\mingw\lib\libws2_32.a
+LIBS 	+= C:\Qt\mingw\lib\libws2_32.a
 
 SOURCES += src/main.cpp\
         src/application/mainwindow.cpp \
@@ -23,7 +23,8 @@ SOURCES += src/main.cpp\
         src/application/aboutwindow.cpp \
     src/application/manwindow.cpp \
     src/application/appwindow.cpp \
-    src/network/tcpserver.cpp
+    src/network/tcpserver.cpp \
+    src/control/connectioncontrol.cpp
 
 HEADERS  += src/application/mainwindow.h \
         src/network/network.h \
@@ -31,12 +32,13 @@ HEADERS  += src/application/mainwindow.h \
         src/network/server.h \
         src/network/udpserver.h \
         src/network/socket.h \
-        C:\Qt\2010.05\mingw\include\ws2tcpip.h \
-        C:\Qt\2010.05\mingw\include\winsock2.h \
+        C:\Qt\mingw\include\ws2tcpip.h \
+        C:\Qt\mingw\include\winsock2.h \
         src/application/aboutwindow.h \
     src/application/manwindow.h \
     src/application/appwindow.h \
-    src/network/tcpserver.h
+    src/network/tcpserver.h \
+    src/control/connectioncontrol.h
 
 
 FORMS   += src/application/mainwindow.ui \
