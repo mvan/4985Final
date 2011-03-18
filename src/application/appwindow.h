@@ -5,6 +5,12 @@
 #include <QFileDialog>
 #include <QStringList>
 #include <QTreeWidgetItem>
+#include <phonon/audiooutput.h>
+#include <phonon/seekslider.h>
+#include <phonon/mediaobject.h>
+#include <phonon/volumeslider.h>
+#include <phonon/backendcapabilities.h>
+#include <QList>
 
 namespace Ui {
     class AppWindow;
@@ -29,6 +35,13 @@ private:
     QFileDialog *fd;
     QTreeWidgetItem *lstItem;
     QStringList filenames;
+    QStringList treename;
+
+    Phonon::MediaObject mediaObject;
+    Phonon::AudioOutput *audioOutput;
+    QList<Phonon::MediaSource> mediaSources;
+
+    void setupGui();
 };
 
 #endif // APPWINDOW_H

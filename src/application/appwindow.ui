@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>665</width>
-    <height>487</height>
+    <width>667</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,11 +139,17 @@ p, li { white-space: pre-wrap; }
       <height>301</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
     <property name="dragEnabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::InternalMove</enum>
+     <enum>QAbstractItemView::NoDragDrop</enum>
     </property>
     <property name="alternatingRowColors">
      <bool>true</bool>
@@ -245,6 +251,12 @@ p, li { white-space: pre-wrap; }
       <width>311</width>
       <height>301</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>

@@ -1,20 +1,13 @@
 #include "appwindow.h"
 #include "ui_appwindow.h"
+#include <QDesktopServices>
 
 AppWindow::AppWindow(QWidget *parent) :
     QTabWidget(parent),
     ui(new Ui::AppWindow)
 {
-    ui->setupUi(this);
-    ui->addFiles->setEnabled(TRUE);
-    ui->play->setEnabled(TRUE);
-
+    setupGui();
     fd = new QFileDialog(this, Qt::Dialog);
-
-    connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
-    connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
-    connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
-    connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
 }
 
 AppWindow::~AppWindow()
@@ -23,13 +16,21 @@ AppWindow::~AppWindow()
 }
 
 void AppWindow::addFiles() {
-    fd->setFileMode(QFileDialog::ExistingFile);
-    fd->setNameFilter(tr("Audio (*.wav)"));
-    if (fd->exec()) {
-        filenames = fd->selectedFiles();
+    fd->setFileMode(QFileDialog::ExistingFiles);
+    filenames = fd->getOpenFileNames(this,tr("Select a Music File"),
+                                     QDesktopServices::storageLocation
+                                     (QDesktopServices::MusicLocation),
+                                     tr("Audio (*.wav *.mp3)"));
+
+    if (filenames.isEmpty()) {
+        return;
     }
-    lstItem = new QTreeWidgetItem(filenames, 0);
-    ui->myLibrary->addTopLevelItem(lstItem);
+
+    foreach (QString name, filenames) {
+        treename = QStringList((QFileInfo(name).fileName()));
+        lstItem = new QTreeWidgetItem(treename, 0);
+        ui->myLibrary->addTopLevelItem(lstItem);
+    }
 }
 
 void AppWindow::playPause() {
@@ -60,4 +61,15 @@ void AppWindow::onOffMicSelf() {
     } else {
         ui->txMicroSelf->setText("Turn on");
     }
+}
+
+void AppWindow::setupGui() {
+    ui->setupUi(this);
+    ui->addFiles->setEnabled(TRUE);
+    ui->play->setEnabled(TRUE);
+
+    connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
+    connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
+    connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
+    connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
 }
