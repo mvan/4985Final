@@ -11,6 +11,6 @@ class server {
         virtual ~server() {
             WinsockCleanup();
         }
-        virtual void run() = 0;
+        virtual void run(int portNo) = 0;
 };
 #endif

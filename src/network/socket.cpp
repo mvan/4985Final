@@ -51,17 +51,17 @@ void sock::TCPSocket_Init() {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-void sock::TCPSocket_Bind() {
+BOOL sock::TCPSocket_Bind(int portNo) {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
     addr_.sin_family = AF_INET;
-    addr_.sin_port = htons(TCPPORT); 
+    addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == -1) {
-        WSAError(SOCK_ERROR);
+        return FALSE;
     }
-
+    return TRUE;
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Listen
@@ -111,23 +111,24 @@ void sock::TCPSocket_Listen() {
 -- NOTES:
 -- attempts to connect a TCP socket to a server.
 ----------------------------------------------------------------------------------------------------------------------*/
-void sock::TCPSocket_Connect(char* servAddr_) {
+BOOL sock::TCPSocket_Connect(char* servAddr_, int portNo) {
 
     struct hostent *host;
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
-    addr_.sin_port = htons(TCPPORT);
+    addr_.sin_port = htons(portNo);
 
     if ((host = gethostbyname(servAddr_)) == NULL) {
-        WSAError(SOCK_ERROR);
+        return FALSE;
     }
 
     memmove((char *)&addr_.sin_addr, host -> h_addr, host -> h_length);
 
     if (connect (sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
-        WSAError(SOCK_ERROR);
+        return FALSE;
     }
+    return TRUE;
 }
 
 sock sock::TCPSocket_Accept() {
@@ -187,7 +188,7 @@ void sock::UDPSocket_Init() {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-void sock::UDPSocket_Bind_Multicast() {
+BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
@@ -195,11 +196,11 @@ void sock::UDPSocket_Bind_Multicast() {
     
     ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
     addr_.sin_family = AF_INET;
-    addr_.sin_port = htons(UDPPORT); 
+    addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
-        WSAError(SOCK_ERROR);
+        return FALSE;
     }
     
     mc_addr.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
@@ -207,18 +208,19 @@ void sock::UDPSocket_Bind_Multicast() {
     
     if(setsockopt(sock_, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
                             (char *)&mc_addr, sizeof(mc_addr)) == SOCKET_ERROR) {
-        WSAError(SOCK_ERROR);                    
+        return FALSE;
     }
     
     if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_TTL, 
                             (char *)&ttl, sizeof(ttl)) == SOCKET_ERROR) {
-        WSAError(SOCK_ERROR);                    
+        return FALSE;
     }
     
     if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_LOOP, 
                             (char *)&loopback, sizeof(BOOL)) == SOCKET_ERROR) {
-        WSAError(SOCK_ERROR);                    
+        return FALSE;
     }
+    return TRUE;
 }
 int sock::TCPSend() {
     return 0;

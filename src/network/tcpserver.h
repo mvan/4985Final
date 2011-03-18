@@ -24,7 +24,7 @@ class tcpserver: public server {
         virtual ~tcpserver(){}
         virtual void initSelect();
         void addSelectSock(sock* sock);
-        virtual void run();
+        virtual void run(int portNo = TCPPORT);
 
 
 };

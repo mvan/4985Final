@@ -29,12 +29,12 @@ struct sock {
         }
         
         void TCPSocket_Init();
-        void TCPSocket_Bind();
+        BOOL TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
-        void TCPSocket_Connect(char* servAddr_);
+        BOOL TCPSocket_Connect(char* servAddr_, int portNo);
         sock TCPSocket_Accept();
         void UDPSocket_Init();
-        void UDPSocket_Bind_Multicast();
+        BOOL UDPSocket_Bind_Multicast(int portNo);
         int TCPSend();
         int UDPSend_Multicast();
         int TCPRecv();
