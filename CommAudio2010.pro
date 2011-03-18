@@ -23,7 +23,8 @@ SOURCES += src/main.cpp\
         src/application/aboutwindow.cpp \
     src/application/manwindow.cpp \
     src/application/appwindow.cpp \
-    src/network/tcpserver.cpp
+    src/network/tcpserver.cpp \
+    src/network/buffer.cpp
 
 HEADERS  += src/application/mainwindow.h \
         src/network/network.h \
@@ -36,7 +37,8 @@ HEADERS  += src/application/mainwindow.h \
         src/application/aboutwindow.h \
     src/application/manwindow.h \
     src/application/appwindow.h \
-    src/network/tcpserver.h
+    src/network/tcpserver.h \
+    src/network/buffer.h
 
 
 FORMS   += src/application/mainwindow.ui \
