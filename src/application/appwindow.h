@@ -2,6 +2,9 @@
 #define APPWINDOW_H
 
 #include <QTabWidget>
+#include <QFileDialog>
+#include <QStringList>
+#include <QTreeWidgetItem>
 
 namespace Ui {
     class AppWindow;
@@ -15,11 +18,17 @@ public:
     explicit AppWindow(QWidget *parent = 0);
     ~AppWindow();
 
+public slots:
+    void addFiles();
+    void playPause();
+    void onOffMicOther();
+    void onOffMicSelf();
+
 private:
     Ui::AppWindow *ui;
-
-private slots:
-    void on_stream_clicked();
+    QFileDialog *fd;
+    QTreeWidgetItem *lstItem;
+    QStringList filenames;
 };
 
 #endif // APPWINDOW_H
