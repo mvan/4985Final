@@ -29,8 +29,8 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
-    if(control_->startServer(ui->serverTCPPortValue->text().toInt())) {
-        QMessageBox::warning(this, QString("Failed to start server"), QString("No server available"), QMessageBox::Ok);
+    if(!control_->startServer(ui->serverTCPPortValue->text().toInt(), ui->serverUDPPortValue->text().toInt())) {
+        QMessageBox::warning(this, QString("Failed to start server"), QString("No server available. This will only run as a client."), QMessageBox::Ok);
     }
     apw->show();
 }
