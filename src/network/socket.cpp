@@ -111,7 +111,7 @@ void sock::TCPSocket_Listen() {
 -- NOTES:
 -- attempts to connect a TCP socket to a server.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::TCPSocket_Connect(char* servAddr_, int portNo) {
+BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
     struct hostent *host;
 
@@ -119,7 +119,7 @@ BOOL sock::TCPSocket_Connect(char* servAddr_, int portNo) {
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
 
-    if ((host = gethostbyname(servAddr_)) == NULL) {
+    if ((host = gethostbyname(servAddr)) == NULL) {
         return FALSE;
     }
 

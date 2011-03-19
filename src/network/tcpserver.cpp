@@ -1,9 +1,11 @@
 #include "tcpserver.h"
 #include "socket.h"
 void tcpserver::run(int portNo) {
+
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
+
     while(1) {
         readySet_ = allSet_;
         numReady_ = select(selectSocks_[numSocks_-1]+1, &readySet_, NULL, NULL, NULL);

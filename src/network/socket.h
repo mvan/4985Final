@@ -31,7 +31,7 @@ struct sock {
         void TCPSocket_Init();
         BOOL TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
-        BOOL TCPSocket_Connect(char* servAddr_, int portNo);
+        BOOL TCPSocket_Connect(char* servAddr, int portNo);
         sock TCPSocket_Accept();
         void UDPSocket_Init();
         BOOL UDPSocket_Bind_Multicast(int portNo);

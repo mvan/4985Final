@@ -29,9 +29,9 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
-    if(control_->startServer(ui->serverTCPPortValue->text().toInt())) {
-        QMessageBox::warning(this, QString("Failed to start server"), QString("No server available"), QMessageBox::Ok);
-    }
+    /*******these each need to be in their own thread or else they'll cockblock the gui, buffers need to be global so these can access them********/
+    //control_->startTCPServer(ui->serverTCPPortValue->text().toInt());
+    //control_->startUDPServer(ui->serverTCPPortValue->text().toInt());
     apw->show();
 }
 
