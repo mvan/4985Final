@@ -14,7 +14,7 @@
    <string>Connect</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLineEdit" name="ipValue">
+   <widget class="QLineEdit" name="tcpIpValue">
     <property name="geometry">
      <rect>
       <x>40</x>

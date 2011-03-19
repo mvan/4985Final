@@ -16,7 +16,7 @@ public:
     ~ConnectionControl();
 
     bool startServer(int tcpPort, int udpPort);
-    bool connectToServer(QString ip, int port);
+    bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
 
 private:
     struct sock socket_;
