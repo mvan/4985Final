@@ -54,8 +54,14 @@ struct sock {
         size_t getSent() {
             return bSend_;
         }
+        void setSent(size_t send) {
+            bSend_ = send;
+        }
         size_t getRecv() {
             return bRecv_;
+        }
+        void setRecv(size_t recv) {
+            bRecv_ = recv;
         }
         struct sockaddr_in getAddr() {
             return addr_;
