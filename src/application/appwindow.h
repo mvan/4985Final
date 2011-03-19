@@ -29,19 +29,32 @@ public slots:
     void playPause();
     void onOffMicOther();
     void onOffMicSelf();
+    void sourceChanged(const Phonon::MediaSource &source);
+    void stateChanged(Phonon::State newState, Phonon::State oldState);
+    void metaStateChanged(Phonon::State newState, Phonon::State oldState);
+    void fileSelection();
+    void aboutToFinish();
+
+signals:
+    void playFile();
+    void pauseFile();
 
 private:
+    void setupGui();
+
     Ui::AppWindow *ui;
     QFileDialog *fd;
     QTreeWidgetItem *lstItem;
     QStringList filenames;
     QStringList treename;
 
-    Phonon::MediaObject mediaObject;
+    Phonon::SeekSlider *seekSlider;
+    Phonon::MediaObject *mediaObject;
+    Phonon::MediaObject *metaInfoResolver;
     Phonon::AudioOutput *audioOutput;
+    Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
 
-    void setupGui();
 };
 
 #endif // APPWINDOW_H
