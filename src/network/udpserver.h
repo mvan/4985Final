@@ -14,6 +14,6 @@ class udpserver: public server {
             delete rdSock_;
         }
         
-        virtual void run();
+        virtual void run(int portNo = UDPPORT);
 };
 #endif

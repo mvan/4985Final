@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 namespace Ui {
     class MainWindow;
@@ -10,6 +11,7 @@ namespace Ui {
 class AboutWindow;
 class ManWindow;
 class AppWindow;
+class ConnectionControl;
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +31,7 @@ private:
     AboutWindow *aw;
     ManWindow *mw;
     AppWindow *apw;
+    ConnectionControl *control_;
 };
 
 #endif // MAINWINDOW_H

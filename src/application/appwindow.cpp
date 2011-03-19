@@ -2,6 +2,7 @@
 #include "ui_appwindow.h"
 #include <QDesktopServices>
 #include <QMessageBox>
+#include "../network/filetransfer.h"
 
 AppWindow::AppWindow(QWidget *parent) :
         QTabWidget(parent),
@@ -176,7 +177,6 @@ void AppWindow::fileSelection() {
     if (index >= mediaSources.size()) {
         return;
     }
-
     mediaObject->setCurrentSource(mediaSources[index]);
 
     QString title = QFileInfo(mediaObject->currentSource().fileName())
@@ -192,8 +192,7 @@ void AppWindow::fileSelection() {
     }
 }
 
-void AppWindow::aboutToFinish()
-{
+void AppWindow::aboutToFinish() {
     int index = mediaSources.indexOf(mediaObject->currentSource()) + 1;
     if (mediaSources.size() > index) {
         mediaObject->enqueue(mediaSources.at(index));

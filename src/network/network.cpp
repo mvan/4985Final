@@ -62,5 +62,5 @@ void mkPacket(char* buf, char msgtype, char srcClient,
     buf[0] = msgtype;
     buf[1] = srcClient;
     buf[2] = destClient;
-    strncpy((buf+3), data, PACKETSIZE-3);
+    memmove((buf+3), data, PACKETSIZE-3);
 }
