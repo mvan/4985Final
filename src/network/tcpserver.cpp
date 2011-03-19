@@ -10,25 +10,7 @@ void tcpserver::run(int portNo) {
         readySet_ = allSet_;
         numReady_ = select(selectSocks_[numSocks_-1]+1, &readySet_, NULL, NULL, NULL);
         if(FD_ISSET(&listenSock_, &readySet_)) {
-
-            int i;
-            sock s = listenSock_->TCPSocket_Accept();
-
-            for(i = 0; i < FD_SETSIZE; ++i) {
-                if(selectSocks_[i] < 0) {
-                    socks_[i] = s;
-                    selectSocks_[i] = s.getSock();
-                    break;
-                }
-            }
-            FD_SET(s.getSock(), &allSet_);
-            if(s.getSock() > maxSock_) {
-                maxSock_ = s.getSock();
-            }
-            if(i > sockIndex_) {
-                sockIndex_ = i;
-            }
-            if(--numReady_ <= 0) {
+            if(addSelectSock() <= 0) {
                 continue;
             }
         }
@@ -57,6 +39,23 @@ void tcpserver::initSelect() {
     FD_SET(listenSock_->getSock(), &allSet_);
 }
 
-void tcpserver::addSelectSock(sock* sock) {
+int tcpserver::addSelectSock() {
+    int i;
+    sock s = listenSock_->TCPSocket_Accept();
 
+    for(i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] < 0) {
+            socks_[i] = s;
+            selectSocks_[i] = s.getSock();
+            break;
+        }
+    }
+    FD_SET(s.getSock(), &allSet_);
+    if(s.getSock() > maxSock_) {
+        maxSock_ = s.getSock();
+    }
+    if(i > sockIndex_) {
+        sockIndex_ = i;
+    }
+    return --numReady_;
 }
