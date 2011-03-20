@@ -27,7 +27,9 @@ SOURCES += src/main.cpp\
     src/network/buffer.cpp \
     src/network/filetransfer.cpp \
     src/network/filetransferin.cpp \
-    src/control/connectioncontrol.cpp
+    src/control/connectioncontrol.cpp \
+    src/control/udpserverthread.cpp \
+    src/control/tcpserverthread.cpp
 
 
 HEADERS  += src/application/mainwindow.h \
@@ -45,7 +47,9 @@ HEADERS  += src/application/mainwindow.h \
     src/network/buffer.h \
     src/network/filetransfer.h \
     src/network/filetransferin.h \
-    src/control/connectioncontrol.h
+    src/control/connectioncontrol.h \
+    src/control/udpserverthread.h \
+    src/control/tcpserverthread.h
 
 
 

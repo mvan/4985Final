@@ -2,13 +2,11 @@
 #define CONNECTIONCONTROL_H
 
 #include <QString>
+
+#include "udpserverthread.h"
+#include "tcpserverthread.h"
 #include "../network/network.h"
 #include "../network/socket.h"
-#include "../network/tcpserver.h"
-#include "../network/udpserver.h"
-
-class tcpserver;
-class udpserver;
 
 class ConnectionControl {
 public:
@@ -20,8 +18,8 @@ public:
 
 private:
     struct sock socket_;
-    tcpserver *tcpServer_;
-    udpserver *udpServer_;
+    UDPServerThread *udpServerThread_;
+    TCPServerThread *tcpServerThread_;
 };
 
 #endif // CONNECTIONCONTROL_H
