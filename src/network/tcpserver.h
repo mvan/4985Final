@@ -23,7 +23,7 @@ class tcpserver: public server {
         explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){}
         virtual ~tcpserver(){}
         virtual void initSelect();
-        void addSelectSock(sock* sock);
+        int addSelectSock();
         virtual void run(int portNo = TCPPORT);
 
 

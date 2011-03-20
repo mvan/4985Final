@@ -111,7 +111,7 @@ void sock::TCPSocket_Listen() {
 -- NOTES:
 -- attempts to connect a TCP socket to a server.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::TCPSocket_Connect(char* servAddr_, int portNo) {
+BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
     struct hostent *host;
 
@@ -119,7 +119,7 @@ BOOL sock::TCPSocket_Connect(char* servAddr_, int portNo) {
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
 
-    if ((host = gethostbyname(servAddr_)) == NULL) {
+    if ((host = gethostbyname(servAddr)) == NULL) {
         return FALSE;
     }
 
@@ -223,7 +223,18 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
     return TRUE;
 }
 int sock::TCPSend() {
-    return 0;
+    WSABUF buf;
+    DWORD wait;
+
+    buf.buf = packet_;
+    buf.len = PACKETSIZE;
+
+    WSASend(sock_, &buf, 1, NULL, 0, &ol_, TCPSendCompRoutine);
+    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    if(wait == WSA_WAIT_FAILED) {
+        return 0;
+    }
+    return 1;
 }
 int sock::UDPSend_Multicast() {
     WSABUF buf;
@@ -297,8 +308,25 @@ void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
     }
     s->clrPacket();
 }
-void CALLBACK TCPCompRoutine(DWORD error, DWORD transferred,
+void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    
-                       
+    sock* s = (sock*)lpOverlapped;
+    if(cbTransferred == 0 || error != 0) {
+        WSAError(WR_ERROR);
+    }
+    s->clrPacket();
+}
+void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
+                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
+    sock* s = (sock*)lpOverlapped;
+    char* buf = (char*)malloc(PACKETSIZE);
+
+    if(cbTransferred == 0 || error != 0) {
+        WSAError(RD_ERROR);
+    } else {
+        strncpy(buf, s->packet_, PACKETSIZE);
+        //process buffer, check message type, push onto correct buffer, signal buffer event.
+        s->clrPacket();
+    }
+
 }

@@ -2,7 +2,7 @@
 #define CONNECTIONCONTROL_H
 
 #include <QString>
-
+#include "../network/network.h"
 #include "../network/socket.h"
 #include "../network/tcpserver.h"
 #include "../network/udpserver.h"
@@ -12,8 +12,8 @@ class udpserver;
 
 class ConnectionControl {
 public:
-    ConnectionControl();
-    ~ConnectionControl();
+    explicit ConnectionControl();
+    virtual ~ConnectionControl();
 
     bool startServer(int tcpPort, int udpPort);
     bool connectToServer(QString tcpIp, int tcpPort, int udpPort);

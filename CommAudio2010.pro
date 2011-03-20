@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT   += core gui
+QT   += core gui phonon multimedia
 
 TARGET = CommAudio2010
 TEMPLATE = app

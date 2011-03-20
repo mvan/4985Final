@@ -31,7 +31,7 @@ struct sock {
         void TCPSocket_Init();
         BOOL TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
-        BOOL TCPSocket_Connect(char* servAddr_, int portNo);
+        BOOL TCPSocket_Connect(char* servAddr, int portNo);
         sock TCPSocket_Accept();
         void UDPSocket_Init();
         BOOL UDPSocket_Bind_Multicast(int portNo);
@@ -54,8 +54,14 @@ struct sock {
         size_t getSent() {
             return bSend_;
         }
+        void setSent(size_t send) {
+            bSend_ = send;
+        }
         size_t getRecv() {
             return bRecv_;
+        }
+        void setRecv(size_t recv) {
+            bRecv_ = recv;
         }
         struct sockaddr_in getAddr() {
             return addr_;

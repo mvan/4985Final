@@ -29,6 +29,7 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
+    /*******these each need to be in their own thread or else they'll cockblock the gui, buffers need to be global so these can access them********/
     if(!control_->startServer(ui->serverTCPPortValue->text().toInt(), ui->serverUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to start server"), QString("This will only run as a client."), QMessageBox::Ok);
     }
