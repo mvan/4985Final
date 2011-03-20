@@ -1,13 +1,13 @@
 #include "connectioncontrol.h"
 
 ConnectionControl::ConnectionControl() {
-    tcpserv_ = new tcpserver();
-    udpserv_ = new udpserver();
+    tcpServer_ = new tcpserver();
+    udpServer_ = new udpserver();
 }
 
 ConnectionControl::~ConnectionControl() {
-    delete tcpserv_;
-    delete udpserv_;
+    delete tcpServer_;
+    delete udpServer_;
 }
 
 bool ConnectionControl::startServer(int tcpPort, int udpPort) {
@@ -24,6 +24,6 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort)
     //TODO: Duncan, we might need to be able to choose the port too.
     //Also, if you can return a boolean of success/failure, it would be nice.
     socket_.TCPSocket_Init();
-    socket_.TCPSocket_Connect(ip.toAscii().data(), port); //<< if this fail return false to notify the gui
+    socket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort); //<< if this fail return false to notify the gui
     return true;
 }
