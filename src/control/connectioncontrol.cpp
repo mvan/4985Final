@@ -11,7 +11,7 @@ ConnectionControl::~ConnectionControl() {
 }
 
 bool ConnectionControl::startServer(int tcpPort, int udpPort) {
-    //TODO: this gives segfault.
+    //TODO: put this in a thread.
     //tcpServer_->run();
     udpServer_->run(udpPort);
     return true;
