@@ -72,6 +72,9 @@ struct sock {
         void setOverlapped(WSAOVERLAPPED ol) {
             ol_ = ol;
         }
+        void createOLEvent() {
+            ol_.hEvent = WSACreateEvent();
+        }
 };
 
 //completion routines.
