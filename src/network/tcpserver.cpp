@@ -23,7 +23,7 @@ void tcpserver::run(int portNo) {
                 continue;
             }
             if(FD_ISSET(s, &readySet_)) {
-                //do some reads and shit.
+                socks_[i].TCPRecv();
             }
         }
     }

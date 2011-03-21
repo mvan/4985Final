@@ -295,7 +295,7 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
         WSAError(RD_ERROR);
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
-        //process buffer, check message type, push onto correct buffer, signal buffer event.
+        ProcessUDPPacket();
         s->clrPacket();
     }
 
@@ -325,7 +325,7 @@ void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
         WSAError(RD_ERROR);
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
-        //process buffer, check message type, push onto correct buffer, signal buffer event.
+        ProcessTCPPacket(buf);
         s->clrPacket();
     }
 
