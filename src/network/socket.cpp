@@ -289,7 +289,7 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
 
     sock* s = (sock*)lpOverlapped;
-    char* buf = (char*)malloc(PACKETSIZE);
+    char buf[PACKETSIZE];
 
     if(cbTransferred == 0 || error != 0) {
         WSAError(RD_ERROR);
@@ -319,7 +319,7 @@ void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
-    char* buf = (char*)malloc(PACKETSIZE);
+    char buf[PACKETSIZE];
 
     if(cbTransferred == 0 || error != 0) {
         WSAError(RD_ERROR);
