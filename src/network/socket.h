@@ -14,7 +14,6 @@ struct sock {
     
     private:
         SOCKET sock_;
-        HANDLE closeEvent_;
         size_t bSend_;
         size_t bRecv_;
         struct sockaddr_in addr_;

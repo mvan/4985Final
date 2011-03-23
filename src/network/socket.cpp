@@ -25,7 +25,7 @@
 void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
 
-    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
+    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
@@ -295,7 +295,7 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
         WSAError(RD_ERROR);
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
-        ProcessUDPPacket();
+        ProcessUDPPacket(buf);
         s->clrPacket();
     }
 
