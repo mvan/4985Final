@@ -26,6 +26,5 @@ class tcpserver: public server {
         int addSelectSock();
         virtual void run(int portNo = TCPPORT);
 
-
 };
 #endif // TCPSERVER_H

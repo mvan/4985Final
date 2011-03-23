@@ -51,6 +51,7 @@ HEADERS  += src/application/mainwindow.h \
     src/control/udpserverthread.h \
     src/control/tcpserverthread.h \
     src/global.h
+    src/network/externs.h
 
 
 

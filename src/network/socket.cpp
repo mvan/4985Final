@@ -25,7 +25,7 @@
 void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
 
-    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM,0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
+    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
@@ -222,6 +222,7 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
     }
     return TRUE;
 }
+
 int sock::TCPSend() {
     WSABUF buf;
     DWORD wait;
@@ -231,11 +232,13 @@ int sock::TCPSend() {
 
     WSASend(sock_, &buf, 1, NULL, 0, &ol_, TCPSendCompRoutine);
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
         return 0;
     }
     return 1;
 }
+
 int sock::UDPSend_Multicast() {
     WSABUF buf;
     DWORD wait;
@@ -254,9 +257,24 @@ int sock::UDPSend_Multicast() {
     }
     return 1;
 }
+
 int sock::TCPRecv() {
-    return 0;
+    WSABUF buf;
+    DWORD wait, flags;
+
+    buf.buf = packet_;
+    buf.len = PACKETSIZE;
+
+    WSARecv(sock_, &buf, 1, NULL, &flags, &ol_, TCPSendCompRoutine);
+
+    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
+    WSAResetEvent(ol_.hEvent);
+    if(wait == WSA_WAIT_FAILED) {
+        return 0;
+    }
+    return 1;
 }
+
 int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
     WSABUF buf;
@@ -295,11 +313,12 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
         WSAError(RD_ERROR);
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
-        ProcessUDPPacket();
+        ProcessUDPPacket(buf);
         s->clrPacket();
     }
 
 }
+
 void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
@@ -308,6 +327,7 @@ void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
     }
     s->clrPacket();
 }
+
 void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
@@ -316,6 +336,7 @@ void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
     }
     s->clrPacket();
 }
+
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
