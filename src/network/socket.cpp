@@ -340,14 +340,25 @@ void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
-    char buf[PACKETSIZE];
+    static char buf[PACKETSIZE];
 
     if(cbTransferred == 0 || error != 0) {
         WSAError(RD_ERROR);
-    } else {
+    } else if(s->getRecv() == PACKETSIZE) {
+        ProcessTCPPacket(buf);
+        s->clrPacket();
+        ZeroMemory(buf, PACKETSIZE);
+        return;
+    } else if(cbTransferred == PACKETSIZE){
         strncpy(buf, s->packet_, PACKETSIZE);
         ProcessTCPPacket(buf);
         s->clrPacket();
+        ZeroMemory(buf, PACKETSIZE);
+        return;
+    } else if(cbTransferred < PACKETSIZE) {
+        strncpy(buf+s->getRecv(), s->packet_, PACKETSIZE-s->getRecv());
+        s->clrPacket();
+        s->TCPRecv();
+        return;
     }
-
 }
