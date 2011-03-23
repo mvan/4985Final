@@ -49,7 +49,8 @@ HEADERS  += src/application/mainwindow.h \
     src/network/filetransferin.h \
     src/control/connectioncontrol.h \
     src/control/udpserverthread.h \
-    src/control/tcpserverthread.h
+    src/control/tcpserverthread.h \
+    src/network/externs.h
 
 
 

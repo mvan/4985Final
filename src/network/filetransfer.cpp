@@ -9,7 +9,7 @@ FileReadThread::FileReadThread(HANDLE handle):file_(handle){}
 void FileReadThread::run(){
 
     DWORD sizeOfFile;
-    int numOfReads = 0;
+    DWORD numOfReads = 0;
     DWORD bytesRead;
     char* tempPacket;
     char* tempBuf;
