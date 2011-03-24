@@ -3,7 +3,7 @@
 
 #include <QList>
 
-#include "../global.h"
+#include "../network/network.h"
 #include "../network/socket.h"
 #include "connectioncontrol.h"
 
