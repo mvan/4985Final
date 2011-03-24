@@ -29,7 +29,11 @@ SOURCES += src/main.cpp\
         src/network/filetransferin.cpp \
         src/control/connectioncontrol.cpp \
         src/control/udpserverthread.cpp \
-        src/control/tcpserverthread.cpp
+        src/control/tcpserverthread.cpp \
+    src/network/audiotransfer.cpp \
+    src/network/audiotransferin.cpp \
+    src/network/chattransfer.cpp \
+    src/network/chattransferin.cpp
 
 
 HEADERS  += src/application/mainwindow.h \
@@ -48,7 +52,11 @@ HEADERS  += src/application/mainwindow.h \
         src/control/connectioncontrol.h \
         src/control/udpserverthread.h \
         src/control/tcpserverthread.h \
-        src/network/externs.h
+        src/network/externs.h \
+    src/network/audiotransfer.h \
+    src/network/audiotransferin.h \
+    src/network/chattransfer.h \
+    src/network/chattransferin.h
 
 
 
