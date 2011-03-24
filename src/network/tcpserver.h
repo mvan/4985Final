@@ -1,6 +1,7 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 #include <QMap>
+#include <QList>
 #include "socket.h"
 #include "server.h"
 #include "network.h"
@@ -18,6 +19,7 @@ class tcpserver: public server {
         int numSocks_;
         int numReady_;
         int sockIndex_;
+        QList<sock> currentClients_;
 
     public:
         explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){}
@@ -25,7 +27,7 @@ class tcpserver: public server {
         virtual void initSelect();
         int addSelectSock();
         virtual void run(int portNo = TCPPORT);
-
+        QList<sock> getAllClients();
 
 };
 #endif // TCPSERVER_H

@@ -9,7 +9,7 @@ FileReadThread::FileReadThread(HANDLE handle):file_(handle){}
 void FileReadThread::run(){
 
     DWORD sizeOfFile;
-    int numOfReads = 0;
+    DWORD numOfReads = 0;
     DWORD bytesRead;
     char* tempPacket;
     char* tempBuf;
@@ -33,7 +33,7 @@ void FileReadThread::run(){
             if(!ReadFile(file_, tempBuf, DATA_SIZE, &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, 0x00, 0x00, 0x00, tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, 0x00, tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 mutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&mutex);
@@ -50,7 +50,7 @@ void FileReadThread::run(){
             if(!ReadFile(file_, tempBuf, sizeOfFile - (numOfReads * DATA_SIZE), &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, '2', '2', '2', tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, '2', tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
             }

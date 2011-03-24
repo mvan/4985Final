@@ -13,8 +13,7 @@
 #define MSG_LIST 0x05
 void WinsockInit();
 void WinsockCleanup();
-void mkPacket(char* buf, char msgtype, char srcClient,
-              char destClient, char* data);
+void mkPacket(char* buf, char msgtype, char* data);
 void ProcessUDPPacket(char* packet);
 void ProcessTCPPacket(char* packet);
 #endif

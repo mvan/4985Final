@@ -4,6 +4,7 @@
 #include "manwindow.h"
 #include "appwindow.h"
 #include "../control/connectioncontrol.h"
+#include "../control/servercontrol.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     aw = new AboutWindow();
     mw = new ManWindow();
     apw = new AppWindow();
-    control_ = new ConnectionControl();
+    connectionControl_ = new ConnectionControl();
+    serverControl_ = new ServerControl();
 
     ui->setupUi(this);
     ui->manMenu->setEnabled(TRUE);
@@ -29,11 +31,10 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
-    /*******these each need to be in their own thread or else they'll cockblock the gui, buffers need to be global so these can access them********/
-    if(!control_->startServer(ui->serverTCPPortValue->text().toInt(), ui->serverUDPPortValue->text().toInt())) {
+    if(!connectionControl_->startServer(ui->serverTCPPortValue->text().toInt(), ui->serverUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to start server"), QString("This will only run as a client."), QMessageBox::Ok);
     }
-    if(!control_->connectToServer(ui->tcpIpValue->text(), ui->clientTCPPortValue->text().toInt(), ui->clientUDPPortValue->text().toInt())) {
+    if(!connectionControl_->connectToServer(ui->tcpIpValue->text(), ui->clientTCPPortValue->text().toInt(), ui->clientUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to connect to server"), QString("No server available. This will only run as a server."), QMessageBox::Ok);
     }
     apw->show();
@@ -45,4 +46,12 @@ void MainWindow::openManual() {
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+ConnectionControl* MainWindow::getConnectionControl() {
+    return connectionControl_;
+}
+
+ServerControl* MainWindow::getServerControl() {
+    return serverControl_;
 }
