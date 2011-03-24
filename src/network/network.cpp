@@ -56,10 +56,13 @@ void WinsockCleanup() {
 }
 
 //SERIOUSLY, THIS IS A SKETCHY FUNCTION, DON'T PASS ANY NULL PARAMETERS OR A BUFFER THAT ISN'T PACKETSIZE
-void mkPacket(char* buf, char msgtype, char* data) {
+void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClient, char* data) {
     ZeroMemory(buf, PACKETSIZE);
     buf[0] = msgtype;
-    memmove((buf+1), data, PACKETSIZE-1);
+    buf[1] = LOBYTE(packetSize);
+    buf[2] = HIBYTE(packetSize);
+    buf[3] = destClient;
+    memmove((buf+4), data, PACKETSIZE-4);
 }
 
 void ProcessUDPPacket(char* packet) {
@@ -87,4 +90,8 @@ void ProcessTCPPacket(char* packet) {
         default:
             break;
     }
+}
+
+unsigned short dataLength(char* buf) {
+    return MAKEWORD(buf[1], buf[2]);
 }
