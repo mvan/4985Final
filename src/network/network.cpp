@@ -1,7 +1,8 @@
-  #include <winsock2.h>
+#include <winsock2.h>
 #include <QString>
 #include "network.h"
 #include "errors.h"
+#include "externs.h"
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: WinsockInit
 --
@@ -66,27 +67,41 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
 }
 
 void ProcessUDPPacket(char* packet) {
-    switch(packet[0]) {
-        default:
-            break;
-            //push data on to stream buffer.
-    }
+    audioinBuffer.bufferPacket(packet);
 }
 
 void ProcessTCPPacket(char* packet) {
     switch(packet[0]) {
+        case MSG_ACK:
+            //acknowledge a request...any request.
+            break;
+        case MSG_STREAMREQ:
+            //begin stream.
+            break;
+        case MSG_STREAMPAUSE:
+            //pause
+            break;
+        case MSG_STREAMCOMPLETE:
+            //end stream.
+            break;
+        case MSG_FTREQ:
+            //notify the start of a file transfer.
+            break;
         case MSG_FT:
-            //send file data.
+            fileinBuffer.bufferPacket(packet);
             break;
         case MSG_FTCOMPLETE:
             //send message to close file
             break;
         case MSG_CHAT:
-            //display to chat window
+            chatinBuffer.bufferPacket(packet);
+            break;
+        case MSG_LISTREQ:
+            //request a file list.
             break;
         case MSG_LIST:
+            //send file list.
             break;
-            //send list of all songs on playlist.
         default:
             break;
     }

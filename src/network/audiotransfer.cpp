@@ -33,7 +33,7 @@ void AudioReadThread::run(){
             if(!ReadFile(file_, tempBuf, DATA_SIZE, &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_AUDIO, tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf); //change with src and dest, msg type
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 mutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&mutex);
@@ -43,7 +43,7 @@ void AudioReadThread::run(){
             ++numOfReads;
         } else if((sizeOfFile - (numOfReads * DATA_SIZE)) == 0) { // finished exactly
             memset(tempBuf, 0, sizeof(tempBuf));
-            mkPacket(tempPacket, MSG_FTCOMPLETE, tempBuf);
+            mkPacket(tempPacket, MSG_FTCOMPLETE, (unsigned short)bytesRead, 0, tempBuf);
             audiooutBuffer.bufferPacket(tempPacket);
             CloseHandle(file_);
             break;
@@ -51,14 +51,14 @@ void AudioReadThread::run(){
             if(!ReadFile(file_, tempBuf, sizeOfFile - (numOfReads * DATA_SIZE), &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_AUDIO, tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0, tempBuf); //change with src and dest, msg type
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
             }
             audiooutBuffer.bufferPacket(tempPacket);
             //make EOT packet
             memset(tempBuf, 0, sizeof(tempBuf));
-            mkPacket(tempPacket, MSG_FTCOMPLETE, tempBuf);
+            mkPacket(tempPacket, MSG_FTCOMPLETE, (unsigned short)bytesRead, 0, tempBuf);
             audiooutBuffer.bufferPacket(tempPacket);
             CloseHandle(file_);
             break;

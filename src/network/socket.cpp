@@ -131,13 +131,13 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
     return TRUE;
 }
 
-sock sock::TCPSocket_Accept() {
+sock* sock::TCPSocket_Accept() {
     int addrsize;
     SOCKET s;
     if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
-        WSAError(SOCK_ERROR);
+        return 0;
     }
-    return sock(s);
+    return new sock(s);
 }
 
 /*------------------------------------------------------------------------------------------------------------------

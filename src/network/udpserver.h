@@ -9,7 +9,9 @@ class udpserver: public server {
         sock* rdSock_;
         
     public:
-        explicit udpserver():server(){}
+        explicit udpserver():server(){
+            rdSock_ = new sock();
+        }
         virtual ~udpserver() {
             delete rdSock_;
         }
