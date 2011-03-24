@@ -1,12 +1,12 @@
-#include "filetransfer.h"
+#include "audiotransfer.h"
 #include "network.h"
 #include "buffer.h"
 
-Buffer fileoutBuffer;
+Buffer audiooutBuffer;
 
-FileReadThread::FileReadThread(HANDLE handle):file_(handle){}
+AudioReadThread::AudioReadThread(HANDLE handle):file_(handle){}
 
-void FileReadThread::run(){
+void AudioReadThread::run(){
 
     DWORD sizeOfFile;
     DWORD numOfReads = 0;
@@ -25,7 +25,7 @@ void FileReadThread::run(){
     file = CreateFile(TEXT("C:\\Users\\Admin\\Desktop\\temp.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    FileSendThread *thread = new FileSendThread();
+    AudioSendThread *thread = new AudioSendThread();
     thread->start();
 
     while((numOfReads * DATA_SIZE) < sizeOfFile){
@@ -33,61 +33,57 @@ void FileReadThread::run(){
             if(!ReadFile(file_, tempBuf, DATA_SIZE, &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_FT, tempBuf); //change with src and dest, msg type
-            if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
+            mkPacket(tempPacket, MSG_AUDIO, tempBuf); //change with src and dest, msg type
+            if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 mutex.lock();
-                fileoutBuffer.bufferNotFull.wait(&mutex);
+                audiooutBuffer.bufferNotFull.wait(&mutex);
                 mutex.unlock();
             }
-            fileoutBuffer.bufferPacket(tempPacket);
+            audiooutBuffer.bufferPacket(tempPacket);
             ++numOfReads;
         } else if((sizeOfFile - (numOfReads * DATA_SIZE)) == 0) { // finished exactly
             memset(tempBuf, 0, sizeof(tempBuf));
             mkPacket(tempPacket, MSG_FTCOMPLETE, tempBuf);
-            fileoutBuffer.bufferPacket(tempPacket);
+            audiooutBuffer.bufferPacket(tempPacket);
             CloseHandle(file_);
             break;
         } else { //less than a full packet left
             if(!ReadFile(file_, tempBuf, sizeOfFile - (numOfReads * DATA_SIZE), &bytesRead, NULL)){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_FT, tempBuf); //change with src and dest, msg type
-            if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
-                fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
+            mkPacket(tempPacket, MSG_AUDIO, tempBuf); //change with src and dest, msg type
+            if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
+                audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
             }
-            fileoutBuffer.bufferPacket(tempPacket);
+            audiooutBuffer.bufferPacket(tempPacket);
             //make EOT packet
             memset(tempBuf, 0, sizeof(tempBuf));
             mkPacket(tempPacket, MSG_FTCOMPLETE, tempBuf);
-            fileoutBuffer.bufferPacket(tempPacket);
+            audiooutBuffer.bufferPacket(tempPacket);
             CloseHandle(file_);
             break;
         }
     }
 }
 
-FileSendThread::FileSendThread(){}
+AudioSendThread::AudioSendThread(){}
 
-void FileSendThread::run(){
-    HANDLE file;
-    file = CreateFile(TEXT("C:\\Users\\Admin\\Desktop\\temp.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+void AudioSendThread::run(){
+
     QMutex mutex;
     DWORD bytesWritten;
     char* packet;
 
    while(1){
-        fileoutBuffer.queueMutex.lock();
-        if(fileoutBuffer.queue.size() != 0){
-            packet = fileoutBuffer.grabPacket();
+        audiooutBuffer.queueMutex.lock();
+        if(audiooutBuffer.queue.size() != 0){
+            packet = audiooutBuffer.grabPacket();
             //Send fileoutBuffer.grabPacket()
             if(packet[0] == MSG_FTCOMPLETE){
-                fileoutBuffer.queueMutex.unlock();
+                audiooutBuffer.queueMutex.unlock();
                 break;
             }
-            //WriteFile(file, packet, DATA_SIZE, &bytesWritten, NULL);
         }
-        fileoutBuffer.queueMutex.unlock();
+        audiooutBuffer.queueMutex.unlock();
     }
 }
-

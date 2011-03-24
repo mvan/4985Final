@@ -3,7 +3,6 @@
 #include <QMessageBox>
 
 Buffer fileinBuffer;
-
 FileWriteThread::FileWriteThread(HANDLE handle):file_(handle){
 
 }
@@ -18,17 +17,19 @@ void FileWriteThread::run(){
     packet = (char *)malloc(PACKETSIZE * sizeof(char *));
 
     while(1){
-        mutex.lock();
+        fileinBuffer.queueMutex.lock();
         if(fileinBuffer.queue.size() != 0){
-            mutex.unlock();
+
             packet = fileinBuffer.grabPacket();
-            WriteFile(file_, packet, DATA_SIZE, &bytesWritten, NULL);
-            /*if(packet[3] == EOT){   If packet type is end of transmission, close handle, end thread
+            fileinBuffer.queueMutex.unlock();
+            if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
                 CloseHandle(file_);
                 msg.exec();
                 return;
-            }*/
+            }
+            WriteFile(file_, (packet+1), PACKETSIZE - 1, &bytesWritten, NULL); //length of packet
+
         }
-        mutex.unlock();
+        fileinBuffer.queueMutex.unlock();
     }
 }

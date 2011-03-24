@@ -4,9 +4,10 @@
 #include <QMutex>
 #include "network.h"
 #include <QWaitCondition>
+#include <QByteArray>
 
 #define DEFAULT_BUFFER_SIZE 10
-#define DATA_SIZE 4093
+#define DATA_SIZE 4095
 class Buffer
 {
 public:
@@ -14,7 +15,7 @@ public:
     Buffer(int size);
     ~Buffer();
     int bufferSize;
-    QQueue<char*> queue; //QQueue<QByteArray*>
+    QQueue<QByteArray> queue; //QQueue<QByteArray*>
     QMutex queueMutex;
     QWaitCondition bufferNotFull;
     QWaitCondition bufferNotEmpty;

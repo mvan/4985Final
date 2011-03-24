@@ -30,8 +30,12 @@ SOURCES += src/main.cpp\
         src/control/connectioncontrol.cpp \
         src/control/udpserverthread.cpp \
         src/control/tcpserverthread.cpp \
-    src/control/clientcontrol.cpp \
-    src/control/servercontrol.cpp
+        src/control/clientcontrol.cpp \
+        src/control/servercontrol.cpp
+        src/network/audiotransfer.cpp \
+        src/network/audiotransferin.cpp \
+        src/network/chattransfer.cpp \
+        src/network/chattransferin.cpp
 
 
 HEADERS  += src/application/mainwindow.h \
@@ -51,8 +55,12 @@ HEADERS  += src/application/mainwindow.h \
         src/control/udpserverthread.h \
         src/control/tcpserverthread.h \
         src/network/externs.h \
-    src/control/clientcontrol.h \
-    src/control/servercontrol.h
+        src/control/clientcontrol.h \
+        src/control/servercontrol.h
+        src/network/audiotransfer.h \
+        src/network/audiotransferin.h \
+        src/network/chattransfer.h \
+        src/network/chattransferin.h
 
 
 
