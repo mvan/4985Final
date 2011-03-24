@@ -23,3 +23,7 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort)
     socket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort); //<< if this fail return false to notify the gui
     return true;
 }
+
+sock* ConnectionControl::getSocket() {
+    return &socket_;
+}

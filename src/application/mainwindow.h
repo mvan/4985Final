@@ -12,7 +12,6 @@ class AboutWindow;
 class ManWindow;
 class AppWindow;
 class ConnectionControl;
-class ServerControl;
 
 class MainWindow : public QMainWindow
 {
@@ -23,7 +22,6 @@ public:
     ~MainWindow();
 
     ConnectionControl* getConnectionControl();
-    ServerControl* getServerControl();
 
 public slots:
     void openAbout();
@@ -36,7 +34,6 @@ private:
     ManWindow *mw;
     AppWindow *apw;
     ConnectionControl *connectionControl_;
-    ServerControl *serverControl_;
 };
 
 #endif // MAINWINDOW_H

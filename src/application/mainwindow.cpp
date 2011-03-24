@@ -4,17 +4,15 @@
 #include "manwindow.h"
 #include "appwindow.h"
 #include "../control/connectioncontrol.h"
-#include "../control/servercontrol.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    connectionControl_ = new ConnectionControl();
     aw = new AboutWindow();
     mw = new ManWindow();
-    apw = new AppWindow();
-    connectionControl_ = new ConnectionControl();
-    serverControl_ = new ServerControl();
+    apw = new AppWindow(connectionControl_);
 
     ui->setupUi(this);
     ui->manMenu->setEnabled(TRUE);
@@ -50,8 +48,4 @@ MainWindow::~MainWindow() {
 
 ConnectionControl* MainWindow::getConnectionControl() {
     return connectionControl_;
-}
-
-ServerControl* MainWindow::getServerControl() {
-    return serverControl_;
 }

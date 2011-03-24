@@ -3,7 +3,7 @@
 
 #include <QString>
 
-struct playlistItem { // We will need something else in this stucture
+struct PlaylistItem { // We will need something else in this stucture
     QString filename;
 };
 

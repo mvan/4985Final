@@ -16,12 +16,15 @@ namespace Ui {
     class AppWindow;
 }
 
+class ServerControl;
+class ConnectionControl;
+
 class AppWindow : public QTabWidget
 {
     Q_OBJECT
 
 public:
-    explicit AppWindow(QWidget *parent = 0);
+    explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
     ~AppWindow();
 
 public slots:
@@ -54,6 +57,8 @@ private:
     Phonon::AudioOutput *audioOutput;
     Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
+
+    ServerControl *serverControl_;
 
 };
 
