@@ -7,7 +7,7 @@
 #include <QByteArray>
 
 #define DEFAULT_BUFFER_SIZE 10
-#define DATA_SIZE 4093
+#define DATA_SIZE 4095
 class Buffer
 {
 public:

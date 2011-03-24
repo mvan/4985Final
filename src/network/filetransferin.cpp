@@ -27,7 +27,7 @@ void FileWriteThread::run(){
                 msg.exec();
                 return;
             }
-            WriteFile(file_, packet, DATA_SIZE, &bytesWritten, NULL); //length of packet
+            WriteFile(file_, (packet+1), PACKETSIZE - 1, &bytesWritten, NULL); //length of packet
 
         }
         fileinBuffer.queueMutex.unlock();
