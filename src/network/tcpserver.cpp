@@ -42,6 +42,7 @@ void tcpserver::initSelect() {
 int tcpserver::addSelectSock() {
     int i;
     sock s = listenSock_->TCPSocket_Accept();
+    currentClients_.push_back(s);
 
     for(i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] < 0) {
@@ -58,4 +59,8 @@ int tcpserver::addSelectSock() {
         sockIndex_ = i;
     }
     return --numReady_;
+}
+
+QList<sock> tcpserver::getAllClients() {
+    return currentClients_;
 }
