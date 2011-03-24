@@ -3,8 +3,7 @@
 
 #include <QString>
 
-struct playlistItem {
-    QString serverIP;
+struct playlistItem { // We will need something else in this stucture
     QString filename;
 };
 
