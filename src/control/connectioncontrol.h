@@ -15,6 +15,7 @@ public:
 
     bool startServer(int tcpPort, int udpPort);
     bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
+    sock* getSocket();
 
 private:
     struct sock socket_;

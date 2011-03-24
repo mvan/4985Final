@@ -3,13 +3,15 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include "../network/filetransfer.h"
+#include "../control/servercontrol.h"
 
-AppWindow::AppWindow(QWidget *parent) :
+AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
         QTabWidget(parent),
         ui(new Ui::AppWindow) {
     audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
+    serverControl_ = new ServerControl(connectionControl);
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -50,6 +52,8 @@ void AppWindow::addFiles() {
 
         Phonon::MediaSource mediaSource(name);
         mediaSources.append(mediaSource);
+
+        serverControl_->addAudioFile(name);
     }
     if (!mediaSources.isEmpty()) {
         metaInfoResolver->setCurrentSource(mediaSources.at(index));

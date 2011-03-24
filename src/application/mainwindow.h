@@ -21,6 +21,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    ConnectionControl* getConnectionControl();
+
 public slots:
     void openAbout();
     void openManual();
@@ -31,7 +33,7 @@ private:
     AboutWindow *aw;
     ManWindow *mw;
     AppWindow *apw;
-    ConnectionControl *control_;
+    ConnectionControl *connectionControl_;
 };
 
 #endif // MAINWINDOW_H
