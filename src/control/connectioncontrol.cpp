@@ -24,6 +24,6 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort)
     return true;
 }
 
-sock* ConnectionControl::getSocket() {
-    return &socket_;
+TCPServerThread* ConnectionControl::getTCPServerThread() {
+    return tcpServerThread_;
 }

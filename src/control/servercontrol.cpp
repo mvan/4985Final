@@ -2,14 +2,16 @@
 
 ServerControl::ServerControl(ConnectionControl *connectionControl):
     connectionControl_(connectionControl){
-    socket_ = connectionControl->getSocket();
 }
 
 ServerControl::~ServerControl() {
 }
 
 bool ServerControl::addAudioFile(QString filename) {
-    //memcpy(socket_->packet_, (unsigned char *)&item, sizeof(item) + item.filename.size());
-    socket_->TCPSend();
+    clientsSocket_ = connectionControl_->getTCPServerThread()->getTCPServer()->getAllClients();
+    foreach(sock socket, clientsSocket_) {
+        mkPacket(socket.packet_, 0x0A, filename.size(), 0x00, filename.toAscii().data()); //Change the client destination
+        socket.TCPSend();
+    }
     return true;
 }

@@ -16,7 +16,7 @@ public:
 
 private:
     ConnectionControl* connectionControl_;
-    sock* socket_;
+    QList<sock> clientsSocket_;
 };
 
 #endif // SERVERCONTROL_H

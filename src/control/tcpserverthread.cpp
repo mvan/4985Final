@@ -11,3 +11,7 @@ TCPServerThread::~TCPServerThread() {
 void TCPServerThread::run() {
     tcpServer_->run(port_);
 }
+
+tcpserver* TCPServerThread::getTCPServer() {
+    return tcpServer_;
+}

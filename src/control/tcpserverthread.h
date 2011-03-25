@@ -15,6 +15,8 @@ public:
 
     void run();
 
+    tcpserver* getTCPServer();
+
 signals:
 
 public slots:
