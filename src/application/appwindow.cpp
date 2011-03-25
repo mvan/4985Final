@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include "../network/filetransfer.h"
 #include "../control/servercontrol.h"
+#include "../network/externs.h"
 
 AppWindow *externAppWindow;
 
@@ -15,6 +16,8 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
     serverControl_ = new ServerControl(connectionControl);
+    chatInThread_ = new ChatWriteThread();
+    //chatInThread_->start();
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -101,6 +104,8 @@ void AppWindow::setupGui() {
     ui->seekSlider->setMediaObject(mediaObject);
     ui->volumeSlider->setAudioOutput(audioOutput);
 
+    connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
+    connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
@@ -197,6 +202,15 @@ void AppWindow::fileSelection() {
     else {
         mediaObject->stop();
     }
+}
+void AppWindow::addChat(char* packet) {
+    ui->chatLog->append(QString(packet));
+}
+
+void AppWindow::sendChat() {
+    chatoutBuffer.bufferPacket(ui->message->toPlainText().toAscii().data());
+    ui->chatLog->append(ui->message->toPlainText());
+    ui->message->clear();
 }
 
 void AppWindow::aboutToFinish() {
