@@ -206,6 +206,7 @@ void AppWindow::addChat(char* packet) {
 
 void AppWindow::sendChat() {
     chatoutBuffer.bufferPacket(ui->message->toPlainText().toAscii().data());
+    ui->chatLog->append(ui->message->toPlainText());
     ui->message->clear();
 }
 
