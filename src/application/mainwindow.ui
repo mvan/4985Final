@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>192.168.0.10</string>
+     <string>0.0.0.1</string>
     </property>
    </widget>
    <widget class="QPushButton" name="connect">
@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Multicast Group IP:</string>
+     <string>TCP Server IP:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="userValue">

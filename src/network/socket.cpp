@@ -25,7 +25,7 @@
 void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
 
-    if ((sock_ = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
+    if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
@@ -129,15 +129,19 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
         return FALSE;
     }
     return TRUE;
+
 }
 
 sock sock::TCPSocket_Accept() {
+
     int addrsize;
     SOCKET s;
+
     if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
-        return sock();
+        WSAError(SOCK_ERROR);
     }
     return sock(s);
+
 }
 
 /*------------------------------------------------------------------------------------------------------------------
@@ -165,6 +169,9 @@ void sock::UDPSocket_Init() {
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
+
+    createOLEvent();
+
     setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
     setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
 }
@@ -224,19 +231,9 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 }
 
 int sock::TCPSend() {
-    WSABUF buf;
-    DWORD wait;
 
-    buf.buf = packet_;
-    buf.len = PACKETSIZE;
+    return send(sock_, packet_, PACKETSIZE, 0);
 
-    WSASend(sock_, &buf, 1, NULL, 0, &ol_, TCPSendCompRoutine);
-    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
-    if(wait == WSA_WAIT_FAILED) {
-        return 0;
-    }
-    return 1;
 }
 
 int sock::UDPSend_Multicast() {
@@ -259,20 +256,13 @@ int sock::UDPSend_Multicast() {
 }
 
 int sock::TCPRecv() {
-    WSABUF buf;
-    DWORD wait, flags;
+    int nRead;
 
-    buf.buf = packet_;
-    buf.len = PACKETSIZE;
+    nRead = recv(sock_, packet_, PACKETSIZE, 0);
+    ProcessTCPPacket(packet_);
 
-    WSARecv(sock_, &buf, 1, NULL, &flags, &ol_, TCPSendCompRoutine);
+    return nRead;
 
-    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
-    if(wait == WSA_WAIT_FAILED) {
-        return 0;
-    }
-    return 1;
 }
 
 int sock::UDPRecv_Multicast() {

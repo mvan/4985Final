@@ -29,11 +29,18 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
-    if(!connectionControl_->startServer(ui->serverTCPPortValue->text().toInt(), ui->serverUDPPortValue->text().toInt())) {
-        QMessageBox::warning(this, QString("Failed to start server"), QString("This will only run as a client."), QMessageBox::Ok);
+    if(!connectionControl_->startServer(ui->serverTCPPortValue->text().toInt(),
+                                        ui->serverUDPPortValue->text().toInt())) {
+        QMessageBox::warning(this, QString("Failed to start server"),
+                    QString("This will only run as a client."),
+                    QMessageBox::Ok);
     }
-    if(!connectionControl_->connectToServer(ui->tcpIpValue->text(), ui->clientTCPPortValue->text().toInt(), ui->clientUDPPortValue->text().toInt())) {
-        QMessageBox::warning(this, QString("Failed to connect to server"), QString("No server available. This will only run as a server."), QMessageBox::Ok);
+    if(!connectionControl_->connectToServer(ui->tcpIpValue->text(),
+                                            ui->clientTCPPortValue->text().toInt(),
+                                            ui->clientUDPPortValue->text().toInt())) {
+        QMessageBox::warning(this, QString("Failed to connect to server"),
+                     QString("No server available. This will only run as a server."),
+                     QMessageBox::Ok);
     }
     apw->show();
 }

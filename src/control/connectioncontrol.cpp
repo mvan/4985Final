@@ -16,7 +16,6 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
 
 bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort) {
     socket_.UDPSocket_Init();
-    socket_.createOLEvent();
     socket_.UDPSend_Multicast();
     //TODO: Duncan, if you can return a boolean of success/failure, it would be nice.
     socket_.TCPSocket_Init();

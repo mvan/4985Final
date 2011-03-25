@@ -20,7 +20,7 @@ struct sock {
         
     public:
     
-        explicit sock():bSend_(0), bRecv_(0){}
+        explicit sock():sock_(0), bSend_(0), bRecv_(0){}
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
 
         virtual ~sock() {
@@ -32,12 +32,15 @@ struct sock {
         void TCPSocket_Listen();
         BOOL TCPSocket_Connect(char* servAddr, int portNo);
         sock TCPSocket_Accept();
+
         void UDPSocket_Init();
         BOOL UDPSocket_Bind_Multicast(int portNo);
+
         int TCPSend();
-        int UDPSend_Multicast();
+        int UDPSend_Multicast();   
         int TCPRecv();
         int UDPRecv_Multicast();
+
         sock operator=(sock right);
 
         //inline functions
