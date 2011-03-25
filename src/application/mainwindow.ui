@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="connect">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>160</x>
       <y>210</y>
       <width>111</width>
       <height>31</height>
@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Multicast Group IP:</string>
+     <string>TCP Server IP:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="userValue">
@@ -219,6 +219,19 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>8000</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>210</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Run Offline</string>
     </property>
    </widget>
   </widget>

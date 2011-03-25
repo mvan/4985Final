@@ -5,10 +5,11 @@ void tcpserver::run(int portNo) {
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
+    initSelect();
 
     while(1) {
         readySet_ = allSet_;
-        numReady_ = select(selectSocks_[numSocks_-1]+1, &readySet_, NULL, NULL, NULL);
+        numReady_ = select(NULL, &readySet_, NULL, NULL, NULL);
         if(FD_ISSET(&listenSock_, &readySet_)) {
             if(addSelectSock() <= 0) {
                 continue;
@@ -30,6 +31,7 @@ void tcpserver::run(int portNo) {
 }
 
 void tcpserver::initSelect() {
+
     selectSocks_[numSocks_] = listenSock_->getSock();
     socks_[numSocks_++] = *listenSock_;
 
@@ -37,11 +39,18 @@ void tcpserver::initSelect() {
 
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
+
 }
 
 int tcpserver::addSelectSock() {
+
     int i;
     sock s = listenSock_->TCPSocket_Accept();
+
+    if(s.getSock() == 0) {
+        return 0;
+    }
+
     currentClients_.push_back(s);
 
     for(i = 0; i < FD_SETSIZE; ++i) {
@@ -59,6 +68,7 @@ int tcpserver::addSelectSock() {
         sockIndex_ = i;
     }
     return --numReady_;
+
 }
 
 QList<sock> tcpserver::getAllClients() {

@@ -22,8 +22,12 @@ class tcpserver: public server {
         QList<sock> currentClients_;
 
     public:
-        explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){}
-        virtual ~tcpserver(){}
+        explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){
+            listenSock_ = new sock();
+        }
+        virtual ~tcpserver(){
+            delete listenSock_;
+        }
         virtual void initSelect();
         int addSelectSock();
         virtual void run(int portNo = TCPPORT);
