@@ -11,22 +11,22 @@ struct sock {
 
     WSAOVERLAPPED ol_;
     char packet_[PACKETSIZE];
-    
+
     private:
         SOCKET sock_;
         size_t bSend_;
         size_t bRecv_;
         struct sockaddr_in addr_;
-        
+
     public:
-    
+
         explicit sock():sock_(0), bSend_(0), bRecv_(0){}
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
 
         virtual ~sock() {
             closesocket(sock_);
         }
-        
+
         void TCPSocket_Init();
         BOOL TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
@@ -37,7 +37,7 @@ struct sock {
         BOOL UDPSocket_Bind_Multicast(int portNo);
 
         int TCPSend();
-        int UDPSend_Multicast();   
+        int UDPSend_Multicast();
         int TCPRecv();
         int UDPRecv_Multicast();
 

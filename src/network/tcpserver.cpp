@@ -16,7 +16,7 @@ void tcpserver::run(int portNo) {
             }
         }
         for(int i = 0; i < FD_SETSIZE; ++i) {
-            int s;
+            int s, nRead = 0;
             sock so;
 
             so = socks_[i];
@@ -24,7 +24,10 @@ void tcpserver::run(int portNo) {
                 continue;
             }
             if(FD_ISSET(s, &readySet_)) {
-                socks_[i].TCPRecv();
+                nRead = socks_[i].TCPRecv();
+                if(nRead > 0) {
+                    ProcessTCPPacket(socks_[i].packet_);
+                }
             }
         }
     }
@@ -74,3 +77,4 @@ int tcpserver::addSelectSock() {
 QList<sock> tcpserver::getAllClients() {
     return currentClients_;
 }
+

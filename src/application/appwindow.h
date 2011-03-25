@@ -27,6 +27,8 @@ public:
     explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
     ~AppWindow();
 
+    void updateOtherPlaylist(char *filename);
+
 public slots:
     void addFiles();
     void playPause();

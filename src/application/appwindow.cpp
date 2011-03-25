@@ -5,9 +5,12 @@
 #include "../network/filetransfer.h"
 #include "../control/servercontrol.h"
 
+AppWindow *externAppWindow;
+
 AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
         QTabWidget(parent),
         ui(new Ui::AppWindow) {
+    externAppWindow = this;
     audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
@@ -201,4 +204,14 @@ void AppWindow::aboutToFinish() {
     if (mediaSources.size() > index) {
         mediaObject->enqueue(mediaSources.at(index));
     }
+}
+
+void AppWindow::updateOtherPlaylist(char *filename) {
+    //Add filename into "other" playlist
+    QStringList filenames = QStringList(QString(filename));
+    QTreeWidgetItem *item = new QTreeWidgetItem(filenames, 0);
+    ui->otherLibrary->addTopLevelItem(item);
+
+    //Add file to any cleint connected to this server
+    serverControl_->addAudioFile(QString(filename));
 }

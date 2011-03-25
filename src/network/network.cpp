@@ -69,8 +69,7 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
 void ProcessUDPPacket(char* packet) {
     audioinBuffer.bufferPacket(packet);
 }
-
-void ProcessTCPPacket(char* packet) {
+int ProcessTCPPacket(char* packet) {
     switch(packet[0]) {
         case MSG_ACK:
             //acknowledge a request...any request.
@@ -99,12 +98,13 @@ void ProcessTCPPacket(char* packet) {
         case MSG_LISTREQ:
             //request a file list.
             break;
-        case MSG_LIST:
-            //send file list.
+        case MSG_LIST: //recv a playlist item
+            externAppWindow->updateOtherPlaylist(packet+4);
             break;
         default:
-            break;
+            return 0;
     }
+    return 0;
 }
 
 unsigned short dataLength(char* buf) {

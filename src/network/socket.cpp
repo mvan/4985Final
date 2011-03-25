@@ -53,7 +53,7 @@ void sock::TCPSocket_Init() {
 ----------------------------------------------------------------------------------------------------------------------*/
 BOOL sock::TCPSocket_Bind(int portNo) {
 
-    ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
+    ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -88,7 +88,7 @@ void sock::TCPSocket_Listen() {
     if(listen(sock_, 5)) {
         WSAError(SOCK_ERROR);
     }
-    
+
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Connect
@@ -200,8 +200,8 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
     BOOL loopback = FALSE;
-    
-    ZeroMemory(&addr_, sizeof(struct sockaddr_in)); 
+
+    ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -209,21 +209,21 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
     if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
         return FALSE;
     }
-    
+
     mc_addr.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
     mc_addr.imr_interface.s_addr = INADDR_ANY;
-    
-    if(setsockopt(sock_, IPPROTO_IP, IP_ADD_MEMBERSHIP, 
+
+    if(setsockopt(sock_, IPPROTO_IP, IP_ADD_MEMBERSHIP,
                             (char *)&mc_addr, sizeof(mc_addr)) == SOCKET_ERROR) {
         return FALSE;
     }
-    
-    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_TTL, 
+
+    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_TTL,
                             (char *)&ttl, sizeof(ttl)) == SOCKET_ERROR) {
         return FALSE;
     }
-    
-    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_LOOP, 
+
+    if(setsockopt(sock_, IPPROTO_IP, IP_MULTICAST_LOOP,
                             (char *)&loopback, sizeof(BOOL)) == SOCKET_ERROR) {
         return FALSE;
     }
@@ -259,7 +259,6 @@ int sock::TCPRecv() {
     int nRead;
 
     nRead = recv(sock_, packet_, PACKETSIZE, 0);
-    ProcessTCPPacket(packet_);
 
     return nRead;
 
