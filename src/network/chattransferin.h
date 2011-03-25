@@ -6,7 +6,8 @@
 class ChatWriteThread : public QThread{
     Q_OBJECT
 
-
+signals:
+    void addChatToDisplay(char* packet);
 protected:
     void run();
 };

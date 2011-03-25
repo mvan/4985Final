@@ -8,8 +8,14 @@ void tcpserver::run(int portNo) {
     initSelect();
 
     while(1) {
+
+        TIMEVAL tv;
+        tv.tv_sec = INFINITE;
+        tv.tv_usec = INFINITE;
         readySet_ = allSet_;
+
         numReady_ = select(NULL, &readySet_, NULL, NULL, NULL);
+
         if(FD_ISSET(&listenSock_, &readySet_)) {
             if(addSelectSock() <= 0) {
                 continue;
@@ -35,7 +41,6 @@ void tcpserver::run(int portNo) {
 
 void tcpserver::initSelect() {
 
-    selectSocks_[numSocks_] = listenSock_->getSock();
     socks_[numSocks_++] = *listenSock_;
 
     memset(&selectSocks_, -1, FD_SETSIZE);

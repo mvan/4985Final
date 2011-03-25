@@ -16,7 +16,7 @@ void ChatWriteThread::run(){
 
             packet = chatinBuffer.grabPacket();
             chatinBuffer.queueMutex.unlock();
-            //add packet data to chat display
+            emit(addChatToDisplay(packet));
         }
         chatinBuffer.queueMutex.unlock();
     }
