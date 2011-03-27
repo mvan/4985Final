@@ -2,7 +2,7 @@
 
 ServerControl::ServerControl(ConnectionControl *connectionControl):
     connectionControl_(connectionControl){
-    socket_ = connectionControl->getSocket();
+    socket_ = connectionControl->getTCPSocket();
 }
 
 ServerControl::~ServerControl() {

@@ -15,10 +15,12 @@ public:
 
     bool startServer(int tcpPort, int udpPort);
     bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
-    sock* getSocket();
+    sock* getTCPSocket();
+    sock* getUDPSocket();
 
 private:
-    struct sock socket_;
+    sock TCPSocket_;
+    sock UDPSocket_;
     UDPServerThread *udpServerThread_;
     TCPServerThread *tcpServerThread_;
 };
