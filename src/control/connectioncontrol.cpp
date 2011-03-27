@@ -15,14 +15,22 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
 }
 
 bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort) {
-    socket_.UDPSocket_Init();
-    socket_.UDPSend_Multicast();
-    //TODO: Duncan, if you can return a boolean of success/failure, it would be nice.
-    socket_.TCPSocket_Init();
-    socket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort); //<< if this fail return false to notify the gui
+    UDPSocket_.UDPSocket_Init();
+    UDPSocket_.UDPSend_Multicast();
+    TCPSocket_.TCPSocket_Init();
+    TCPSocket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort); //<< if this fail return false to notify the gui
     return true;
 }
 
+
 TCPServerThread* ConnectionControl::getTCPServerThread() {
     return tcpServerThread_;
+}
+
+sock* ConnectionControl::getTCPSocket() {
+    return &TCPSocket_;
+}
+
+sock* ConnectionControl::getUDPSocket() {
+    return &UDPSocket_;
 }

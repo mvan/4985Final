@@ -18,6 +18,12 @@ public:
     TCPServerThread* getTCPServerThread();
 
 private:
+    sock* getTCPSocket();
+    sock* getUDPSocket();
+
+private:
+    sock TCPSocket_;
+    sock UDPSocket_;
     UDPServerThread *udpServerThread_;
     TCPServerThread *tcpServerThread_;
     struct sock socket_;

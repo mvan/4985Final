@@ -41,7 +41,7 @@ void tcpserver::run(int portNo) {
 
 void tcpserver::initSelect() {
 
-    socks_[numSocks_++] = *listenSock_;
+    socks_[numSocks_] = *listenSock_;
 
     memset(&selectSocks_, -1, FD_SETSIZE);
 
