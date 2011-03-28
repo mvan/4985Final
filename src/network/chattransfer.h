@@ -3,12 +3,13 @@
 #include <QThread>
 #include <winsock2.h>
 
-class ChatSendThread : public QThread{
+class ChatSendThread : public QThread {
     Q_OBJECT
 
 public:
     ChatSendThread();
-
+signals:
+    void sendChatPacket(char* packet);
 protected:
     void run();
 };

@@ -17,16 +17,14 @@ public:
     bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
     TCPServerThread* getTCPServerThread();
 
-private:
-    sock* getTCPSocket();
-    sock* getUDPSocket();
+    sock getTCPSocket();
+    sock getUDPSocket();
 
 private:
     sock TCPSocket_;
     sock UDPSocket_;
     UDPServerThread *udpServerThread_;
     TCPServerThread *tcpServerThread_;
-    struct sock socket_;
 };
 
 #endif // CONNECTIONCONTROL_H

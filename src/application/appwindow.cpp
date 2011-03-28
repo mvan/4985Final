@@ -16,8 +16,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
     serverControl_ = new ServerControl(connectionControl);
+    connectionControl_ = connectionControl;
+
     chatInThread_ = new ChatWriteThread();
-    //chatInThread_->start();
+    chatInThread_->start();
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -104,8 +106,11 @@ void AppWindow::setupGui() {
     ui->seekSlider->setMediaObject(mediaObject);
     ui->volumeSlider->setAudioOutput(audioOutput);
 
+    //connect chat signals
     connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
+
+    //connect lots of other signals
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
@@ -208,7 +213,13 @@ void AppWindow::addChat(char* packet) {
 }
 
 void AppWindow::sendChat() {
-    chatoutBuffer.bufferPacket(ui->message->toPlainText().toAscii().data());
+    char packet[PACKETSIZE], buf[PACKETSIZE];
+    ZeroMemory(packet, PACKETSIZE);
+    strcpy(buf, ui->message->toPlainText().toAscii().data());
+    mkPacket(packet,MSG_CHAT,strlen(buf), 0, buf);
+    connectionControl_->getTCPSocket().setPacket(packet);
+    connectionControl_->getTCPSocket().TCPSend();
+    connectionControl_->getTCPSocket().clrPacket();
     ui->chatLog->append(ui->message->toPlainText());
     ui->message->clear();
 }

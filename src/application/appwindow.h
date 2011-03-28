@@ -11,6 +11,7 @@
 #include <phonon/volumeslider.h>
 #include <phonon/backendcapabilities.h>
 #include <QList>
+#include "../control/connectioncontrol.h"
 #include "../network/chattransfer.h"
 #include "../network/chattransferin.h"
 #include "../network/audiotransfer.h"
@@ -67,9 +68,9 @@ private:
     Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
 
+    ConnectionControl* connectionControl_;
     ServerControl *serverControl_;
     ChatWriteThread* chatInThread_;
-    ChatSendThread* chatOutThread_;
     AudioReadThread* audioOutThread_;
     AudioWriteThread* audioInThread_;
     FileReadThread* fileOutThread_;

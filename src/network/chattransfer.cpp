@@ -6,19 +6,21 @@ Buffer chatoutBuffer;
 void ChatSendThread::run(){
 
     QMutex mutex;
-    DWORD bytesWritten;
     char* packet;
+    packet = (char*)malloc(PACKETSIZE);
 
-   while(1){
+    while(1){
+
         chatoutBuffer.queueMutex.lock();
         if(chatoutBuffer.queue.size() != 0){
-            packet = chatoutBuffer.grabPacket();
-            //Send fileoutBuffer.grabPacket()
-            /*if(packet[0] == MSG_FTCOMPLETE){
-                chatoutBuffer.queueMutex.unlock();
-                break;
-            }*/
+
+            strcpy(packet, chatoutBuffer.grabPacket());
+            emit(sendChatPacket(packet));
+            ZeroMemory(packet, PACKETSIZE);
+
         }
         chatoutBuffer.queueMutex.unlock();
+
     }
+    free(packet);
 }
