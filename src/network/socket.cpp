@@ -32,7 +32,7 @@ void sock::TCPSocket_Init() {
     setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
 }
 /*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: TCPSocket_Listen
+-- FUNCTION: TCPSocket_Bind
 --
 -- DATE: Feb 19, 2011
 --
@@ -42,8 +42,7 @@ void sock::TCPSocket_Init() {
 --
 -- PROGRAMMER: Duncan Donaldson
 --
--- INTERFACE: void TCPSocket_Listen(SOCKET* socket, int PortNo)
---				socket - pointer to the socket to be initialized
+-- INTERFACE: void TCPSocket_Bind(int portNo)
 --				PortNo - the port number to bind to.
 --
 -- RETURNS: void
@@ -134,10 +133,9 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
 sock sock::TCPSocket_Accept() {
 
-    int addrsize;
     SOCKET s;
 
-    if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
+    if((s = accept(sock_, NULL, NULL)) == INVALID_SOCKET) {
         return sock();
     }
     return sock(s);
