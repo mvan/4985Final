@@ -138,7 +138,7 @@ sock sock::TCPSocket_Accept() {
     SOCKET s;
 
     if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
-        WSAError(SOCK_ERROR);
+        return sock();
     }
     return sock(s);
 

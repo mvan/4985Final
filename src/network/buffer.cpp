@@ -1,14 +1,5 @@
 #include "buffer.h"
-
-Buffer::Buffer():bufferSize(DEFAULT_BUFFER_SIZE)
-{
-}
-
-Buffer::Buffer(int size):bufferSize(size)
-{
-}
-
-Buffer::~Buffer(){}
+#include<winsock2.h>
 
 void Buffer::bufferPacket(char* packet){
     this->queueMutex.lock();
@@ -17,9 +8,9 @@ void Buffer::bufferPacket(char* packet){
 }
 
 char* Buffer::grabPacket(){
-    char* temp;
+    char* temp = (char*)malloc(PACKETSIZE);
     this->queueMutex.lock();
-    temp = this->queue.dequeue().data();
+    strcpy(temp, this->queue.dequeue().data());
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
     return temp;

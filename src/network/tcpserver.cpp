@@ -1,7 +1,6 @@
 #include "tcpserver.h"
 #include "socket.h"
 void tcpserver::run(int portNo) {
-
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
@@ -9,14 +8,11 @@ void tcpserver::run(int portNo) {
 
     while(1) {
 
-        TIMEVAL tv;
-        tv.tv_sec = INFINITE;
-        tv.tv_usec = INFINITE;
         readySet_ = allSet_;
 
         numReady_ = select(NULL, &readySet_, NULL, NULL, NULL);
 
-        if(FD_ISSET(&listenSock_, &readySet_)) {
+        if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
             if(addSelectSock() <= 0) {
                 continue;
             }
