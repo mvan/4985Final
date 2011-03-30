@@ -26,9 +26,10 @@ class tcpserver: public server {
             delete listenSock_;
         }
         virtual void initSelect();
-        int addSelectSock();
+        SOCKET addSelectSock();
         virtual void run(int portNo = TCPPORT);
         QList<sock> getAllClients();
+        sock find_sock(SOCKET s);
 
 };
 #endif // TCPSERVER_H
