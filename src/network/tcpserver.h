@@ -23,10 +23,12 @@ class tcpserver: public server {
             listenSock_ = new sock();
         }
         virtual ~tcpserver(){
+            listenSock_->socket_close();
             delete listenSock_;
         }
         virtual void initSelect();
         SOCKET addSelectSock();
+        void removeSelectSock(SOCKET s);
         virtual void run(int portNo = TCPPORT);
         QList<sock> getAllClients();
         sock find_sock(SOCKET s);

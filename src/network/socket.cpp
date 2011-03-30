@@ -297,18 +297,6 @@ int sock::UDPRecv_Multicast() {
     return 1;
 }
 
-sock sock::operator=(sock right) {
-    if(this == &right) {
-        return *this;
-    }
-    addr_ = right.getAddr();
-    bRecv_ = right.getRecv();
-    bSend_ = right.getSent();
-    sock_ = right.getSock();
-
-    return *this;
-}
-
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
 

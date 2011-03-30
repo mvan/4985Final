@@ -22,10 +22,8 @@ class sock {
 
         explicit sock():sock_(0), bSend_(0), bRecv_(0){}
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
+        virtual ~sock() {}
 
-        virtual ~sock() {
-            closesocket(sock_);
-        }
 
         void TCPSocket_Init();
         void TCPSocket_Bind(int portNo);
@@ -40,8 +38,6 @@ class sock {
         int UDPSend_Multicast();
         int TCPRecv();
         int UDPRecv_Multicast();
-
-        sock operator=(sock right);
 
         //inline functions
         void clrPacket() {
@@ -79,6 +75,9 @@ class sock {
         }
         void setPacket(char* packet) {
             strcpy(packet_, packet);
+        }
+        void socket_close() {
+            closesocket(sock_);
         }
 };
 

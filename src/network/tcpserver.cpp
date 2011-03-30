@@ -37,6 +37,9 @@ void tcpserver::run(int portNo) {
             }
             if(FD_ISSET(s, &readySet_)) {
                 nRead = find_sock(s).TCPRecv();
+                if(nRead == 0) {
+                    removeSelectSock(s);
+                }
                 if(nRead > 0) {
                     ProcessTCPPacket(find_sock(s).packet_);
                 }
@@ -76,6 +79,22 @@ SOCKET tcpserver::addSelectSock() {
     }
     FD_SET(s, &allSet_);
     return s;
+}
+
+void tcpserver::removeSelectSock(SOCKET s) {
+
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] == s) {
+
+            FD_CLR(s, &allSet_);
+            selectSocks_[i] = -1;
+            currentClients_.removeAt(i);
+            closesocket(s);
+            return;
+
+        }
+    }
+
 }
 
 QList<sock> tcpserver::getAllClients() {
