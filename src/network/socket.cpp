@@ -24,8 +24,12 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
+    bool reuseaddr = true;
 
-    if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+    if ((sock_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR){
         WSAError(SOCK_ERROR);
     }
     if(setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR){
@@ -61,7 +65,7 @@ void sock::TCPSocket_Bind(int portNo) {
     addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
+    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);
     }
 }
@@ -86,11 +90,9 @@ void sock::TCPSocket_Bind(int portNo) {
 -- Sets a TCP socket to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::TCPSocket_Listen() {
-
     if(listen(sock_, 5)) {
         WSAError(SOCK_ERROR);
     }
-
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Connect
@@ -166,15 +168,22 @@ SOCKET sock::TCPSocket_Accept() {
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::UDPSocket_Init() {
     int sizebuf = BUFSIZE;
+    bool reuseaddr = true;
 
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
 
     createOLEvent();
-
-    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Bind
@@ -246,7 +255,7 @@ int sock::UDPSend_Multicast() {
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
-                        sizeof(addr_), &(this->ol_), UDPSendCompRoutine);
+                        sizeof(addr_), &(this->ol_), sendCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
@@ -309,7 +318,7 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
 
 }
 
-void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
     if(cbTransferred == 0 || error != 0) {

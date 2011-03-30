@@ -6,10 +6,11 @@
 #include "errors.h"
 #define BUFSIZE 40960
 
-struct sock {
+class sock {
 
-    WSAOVERLAPPED ol_;
-    char packet_[PACKETSIZE];
+    public:
+        WSAOVERLAPPED ol_;
+        char packet_[PACKETSIZE];
 
     private:
         SOCKET sock_;
@@ -84,10 +85,8 @@ struct sock {
 //completion routines.
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 #endif
