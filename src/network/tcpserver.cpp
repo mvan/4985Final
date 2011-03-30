@@ -1,14 +1,21 @@
 #include "tcpserver.h"
 #include "socket.h"
 void tcpserver::run(int portNo) {
+
+    TIMEVAL tv;
+
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
     initSelect();
 
+    tv.tv_sec = INFINITE;
+    tv.tv_usec = 0;
+
     while(1) {
 
-        readySet_ = allSet_;
+        FD_ZERO(&readySet_);
+        this->readySet_ = this->allSet_;
 
         if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             int balls = WSAGetLastError();
@@ -20,6 +27,7 @@ void tcpserver::run(int portNo) {
                 continue;
             }
         }
+
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
             SOCKET s;
@@ -47,9 +55,7 @@ void tcpserver::initSelect() {
     }
 
     FD_ZERO(&allSet_);
-    FD_ZERO(&readySet_);
     FD_SET(listenSock_->getSock(), &allSet_);
-    FD_SET(listenSock_->getSock(), &readySet_);
 
 }
 
@@ -73,7 +79,6 @@ int tcpserver::addSelectSock() {
         }
     }
     FD_SET(s, &allSet_);
-    FD_SET(s, &readySet_);
     return --numReady_;
 
 }
