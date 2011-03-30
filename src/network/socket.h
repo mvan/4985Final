@@ -1,6 +1,5 @@
 #ifndef SOCKET_H
 #define SOCKET_H
-
 #include <winsock2.h>
 #include "network.h"
 #include <ws2tcpip.h>
@@ -28,10 +27,10 @@ struct sock {
         }
 
         void TCPSocket_Init();
-        BOOL TCPSocket_Bind(int portNo);
+        void TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
         BOOL TCPSocket_Connect(char* servAddr, int portNo);
-        sock TCPSocket_Accept();
+        SOCKET TCPSocket_Accept();
 
         void UDPSocket_Init();
         BOOL UDPSocket_Bind_Multicast(int portNo);
