@@ -28,8 +28,12 @@ void sock::TCPSocket_Init() {
     if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
-    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if(setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR){
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR){
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Bind
@@ -50,17 +54,16 @@ void sock::TCPSocket_Init() {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::TCPSocket_Bind(int portNo) {
+void sock::TCPSocket_Bind(int portNo) {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == -1) {
-        return FALSE;
+    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
     }
-    return TRUE;
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Listen
@@ -131,14 +134,14 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
 }
 
-sock sock::TCPSocket_Accept() {
+SOCKET sock::TCPSocket_Accept() {
 
     SOCKET s;
 
     if((s = accept(sock_, NULL, NULL)) == INVALID_SOCKET) {
-        return sock();
+        return 0;
     }
-    return sock(s);
+    return s;
 
 }
 

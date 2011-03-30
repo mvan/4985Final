@@ -13,16 +13,13 @@ class tcpserver: public server {
         sock* listenSock_;
         sock socks_[FD_SETSIZE];
         SOCKET selectSocks_[FD_SETSIZE];
-        SOCKET maxSock_;
         fd_set readySet_;
         fd_set allSet_;
-        int numSocks_;
         int numReady_;
-        int sockIndex_;
         QList<sock> currentClients_;
 
     public:
-        explicit tcpserver ():numSocks_(0), numReady_(0), sockIndex_(-1){
+        explicit tcpserver (): numReady_(0){
             listenSock_ = new sock();
         }
         virtual ~tcpserver(){
