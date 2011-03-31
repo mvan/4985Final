@@ -8,7 +8,8 @@
 #include <QByteArray>
 
 #define DEFAULT_BUFFER_SIZE 10
-#define DATA_SIZE 4095
+#define DATA_SIZE 4092
+
 class Buffer:public QObject
 {
     Q_OBJECT
@@ -22,7 +23,7 @@ public:
     QWaitCondition bufferNotEmpty;
 
     void bufferPacket(char* packet);
-    char* grabPacket();
+    void grabPacket(char* buf);
 };
 
 #endif // BUFFER_H
