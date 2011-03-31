@@ -7,20 +7,22 @@ void ChatSendThread::run(){
 
     QMutex mutex;
     char* packet;
+    char* tempPacket;
     packet = (char*)malloc(PACKETSIZE);
+    tempPacket = (char*)malloc(PACKETSIZE);
 
     while(1){
-
-        chatoutBuffer.queueMutex.lock();
-        if(chatoutBuffer.queue.size() != 0){
-
-            strcpy(packet, chatoutBuffer.grabPacket());
-            emit(sendChatPacket(packet));
-            ZeroMemory(packet, PACKETSIZE);
-
+        if(chatoutBuffer.queue.size() == 0){
+            chatoutBuffer.queueMutex.lock();
+            chatoutBuffer.bufferNotEmpty.wait(&chatoutBuffer.queueMutex);
+            chatoutBuffer.queueMutex.unlock();
         }
-        chatoutBuffer.queueMutex.unlock();
+        chatoutBuffer.grabPacket(tempPacket);
+        strcpy(packet, tempPacket);
+        emit(sendChatPacket(packet));
+        ZeroMemory(packet, PACKETSIZE);
 
     }
     free(packet);
+    free(tempPacket);
 }
