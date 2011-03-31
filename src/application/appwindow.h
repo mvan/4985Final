@@ -12,7 +12,6 @@
 #include <phonon/backendcapabilities.h>
 #include <QList>
 #include "../control/connectioncontrol.h"
-#include "../network/chattransfer.h"
 #include "../network/chattransferin.h"
 #include "../network/audiotransfer.h"
 #include "../network/audiotransferin.h"

@@ -9,13 +9,13 @@ class FileReadThread : public QThread{
     Q_OBJECT
 
 public:
-    FileReadThread(HANDLE handle);
+    FileReadThread(QString file);
 
 protected:
     void run();
 
 private:
-    HANDLE file_;
+    QString file_;
 };
 
 class FileSendThread : public QThread{

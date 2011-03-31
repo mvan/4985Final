@@ -244,10 +244,11 @@ void AppWindow::updateOtherPlaylist(char *filename) {
 void AppWindow::on_transfer_clicked()
 {
     HANDLE file;
-    file = CreateFile(TEXT("C:\\Users\\Daniel\\Desktop\\test.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    file = CreateFile(TEXT("C:\\Users\\Admin\\Desktop\\test.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                 NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    QString string = "C:\\Users\\Admin\\Desktop\\test.txt";
     FileReadThread *thread;
-    thread = new FileReadThread(file);
+    thread = new FileReadThread(string);
     thread->start();
     thread->wait();
 }
