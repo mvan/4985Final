@@ -12,6 +12,7 @@ void ChatWriteThread::run(){
     packet = (char *)malloc(PACKETSIZE);
 
     while(1){
+
         chatinBuffer.queueMutex.lock();
         if(chatinBuffer.queue.size() != 0){
 

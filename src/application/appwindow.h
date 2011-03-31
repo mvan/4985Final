@@ -13,10 +13,7 @@
 #include <QList>
 #include "../control/connectioncontrol.h"
 #include "../network/chattransferin.h"
-#include "../network/audiotransfer.h"
-#include "../network/audiotransferin.h"
-#include "../network/filetransfer.h"
-#include "../network/filetransferin.h"
+
 
 namespace Ui {
     class AppWindow;
@@ -70,10 +67,6 @@ private:
     ConnectionControl* connectionControl_;
     ServerControl *serverControl_;
     ChatWriteThread* chatInThread_;
-    AudioReadThread* audioOutThread_;
-    AudioWriteThread* audioInThread_;
-    FileReadThread* fileOutThread_;
-    FileWriteThread* fileInThread_;
 
 };
 

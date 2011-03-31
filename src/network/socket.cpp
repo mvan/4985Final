@@ -241,9 +241,7 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 }
 
 int sock::TCPSend() {
-
     return send(sock_, packet_, PACKETSIZE, 0);
-
 }
 
 int sock::UDPSend_Multicast() {
@@ -276,7 +274,6 @@ int sock::TCPRecv() {
         toRead -= nRead;
         total += nRead;
     }
-
     return total;
 
 }
