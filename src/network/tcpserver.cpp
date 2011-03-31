@@ -41,7 +41,11 @@ void tcpserver::run(int portNo) {
                     removeSelectSock(s);
                 }
                 if(nRead > 0) {
-                    ProcessTCPPacket(find_sock(s).packet_);
+                    char pack[PACKETSIZE];
+                    strcpy(pack, find_sock(s).packet_);
+                    if(ProcessTCPPacket(pack) == -1) {
+                        emit(connectionRequest(pack+4));
+                    }
                 }
             }
             if(--numReady_ <= 0) {

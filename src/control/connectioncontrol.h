@@ -21,7 +21,7 @@ public:
     virtual ~ConnectionControl();
 
     bool startServer(int tcpPort, int udpPort);
-    bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
+    bool connectToServer(QString tcpIp, int tcpPort);
     TCPServerThread* getTCPServerThread();
     UDPServerThread* getUDPServerThread();
     sock getTCPSocket();
@@ -36,8 +36,11 @@ public slots:
     void incomingStream();
     void startStream();
     void endStream();
+    void connectionSlot(char* ipaddr);
 
 private:
+    int tcpPort_;
+    int udpPort_;
     sock TCPSocket_;
     sock UDPSocket_;
     UDPServerThread *udpServerThread_;

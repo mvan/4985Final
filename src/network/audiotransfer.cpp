@@ -15,8 +15,8 @@ void AudioReadThread::run(){
     char* tempBuf;
     QMutex mutex;
 
-    tempPacket = (char *)malloc(PACKETSIZE * sizeof(char *));
-    tempBuf = (char *)malloc(DATA_SIZE * sizeof(char *));
+    tempPacket = (char *)malloc(PACKETSIZE);
+    tempBuf = (char *)malloc(DATA_SIZE);
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
     sizeOfFile = GetFileSize(file_, NULL);
@@ -85,8 +85,7 @@ AudioSendThread::AudioSendThread(){}
 void AudioSendThread::run(){
 
     QMutex mutex;
-    DWORD bytesWritten;
-    char* packet = (char *)malloc(PACKETSIZE * sizeof(char*));
+    char* packet = (char *)malloc(PACKETSIZE);
 
 
     while(1){

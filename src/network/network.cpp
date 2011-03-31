@@ -71,6 +71,8 @@ void ProcessUDPPacket(char* packet) {
 }
 int ProcessTCPPacket(char* packet) {
     switch(packet[0]) {
+        case MSG_CONN:
+            return -1;
         case MSG_ACK:
             //acknowledge a request...any request.
             break;

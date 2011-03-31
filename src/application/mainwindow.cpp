@@ -36,8 +36,7 @@ void MainWindow::openApp() {
                     QMessageBox::Ok);
     }
     if(!connectionControl_->connectToServer(ui->tcpIpValue->text(),
-                                            ui->clientTCPPortValue->text().toInt(),
-                                            ui->clientUDPPortValue->text().toInt())) {
+                                            ui->clientTCPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to connect to server"),
                      QString("No server available. This will only run as a server."),
                      QMessageBox::Ok);
