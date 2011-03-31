@@ -71,6 +71,7 @@ void AudioReadThread::run(){
                 audiooutBuffer.queueMutex.unlock();
             }
             audiooutBuffer.bufferPacket(tempPacket);
+            emit(endStream());
             CloseHandle(file_);
             break;
         }

@@ -23,14 +23,16 @@ void FileWriteThread::run(){
             fileinBuffer.queueMutex.unlock();
         }
         fileinBuffer.grabPacket(packet);
-        if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
+         //If packet type is end of transmission, close handle, end thread
+        if(packet[0] == MSG_FTCOMPLETE){
             CloseHandle(file_);
-            msg.exec();
             free(packet);
             emit(endFT());
+            msg.exec();
             return;
         }
-        WriteFile(file_, (packet+4), dataLength(packet), &bytesWritten, NULL); //length of packet
+         //length of packet
+        WriteFile(file_, (packet+4), dataLength(packet), &bytesWritten, NULL);
 
     }
 }
