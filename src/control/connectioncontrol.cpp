@@ -16,9 +16,8 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
 
 bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort) {
     UDPSocket_.UDPSocket_Init();
-    UDPSocket_.UDPSend_Multicast();
     TCPSocket_.TCPSocket_Init();
-    TCPSocket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort); //<< if this fail return false to notify the gui
+    TCPSocket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort);
     return true;
 }
 

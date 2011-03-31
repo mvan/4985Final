@@ -2,18 +2,20 @@
 #define BUFFER_H
 #include <QQueue>
 #include <QMutex>
+#include <QObject>
 #include "network.h"
 #include <QWaitCondition>
 #include <QByteArray>
 
 #define DEFAULT_BUFFER_SIZE 10
 #define DATA_SIZE 4092
-class Buffer
+
+class Buffer:public QObject
 {
+    Q_OBJECT
 public:
-    Buffer();
-    Buffer(int size);
-    ~Buffer();
+    explicit Buffer(int size = DEFAULT_BUFFER_SIZE):bufferSize(size){}
+    virtual ~Buffer(){}
     int bufferSize;
     QQueue<QByteArray> queue; //QQueue<QByteArray*>
     QMutex queueMutex;

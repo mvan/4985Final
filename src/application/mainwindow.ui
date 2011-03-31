@@ -118,7 +118,7 @@ p, li { white-space: pre-wrap; }
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
-     <string>7000</string>
+     <string>7235</string>
     </property>
    </widget>
    <widget class="QLabel" name="port">
@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
-     <string>7000</string>
+     <string>7235</string>
     </property>
    </widget>
    <widget class="QLabel" name="port_3">
@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
-     <string>8000</string>
+     <string>8235</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="clientUDPPortValue">
@@ -218,7 +218,7 @@ p, li { white-space: pre-wrap; }
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
-     <string>8000</string>
+     <string>8235</string>
     </property>
    </widget>
   </widget>

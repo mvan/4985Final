@@ -18,8 +18,8 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     serverControl_ = new ServerControl(connectionControl);
     connectionControl_ = connectionControl;
 
-    chatInThread_ = new ChatWriteThread();
-    chatInThread_->start();
+   // chatInThread_ = new ChatWriteThread();
+    //chatInThread_->start();
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -31,7 +31,7 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 
     mediaObject->setTickInterval(1000);
 
-    Phonon::createPath(mediaObject, audioOutput);
+    //Phonon::createPath(mediaObject, audioOutput);
 
     setupGui();
     fd = new QFileDialog(this, Qt::Dialog);
@@ -107,7 +107,7 @@ void AppWindow::setupGui() {
     ui->volumeSlider->setAudioOutput(audioOutput);
 
     //connect chat signals
-    connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
+    //connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
 
     //connect lots of other signals
