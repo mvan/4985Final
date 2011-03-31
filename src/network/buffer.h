@@ -8,13 +8,14 @@
 #include <QByteArray>
 
 #define DEFAULT_BUFFER_SIZE 10
-#define DATA_SIZE 4095
+#define DATA_SIZE 4092
+
 class Buffer:public QObject
 {
     Q_OBJECT
 public:
-    explicit Buffer(int size = DEFAULT_BUFFER_SIZE):bufferSize(size){}
-    virtual ~Buffer(){}
+    explicit Buffer(int size = DEFAULT_BUFFER_SIZE);
+    virtual ~Buffer();
     int bufferSize;
     QQueue<QByteArray> queue; //QQueue<QByteArray*>
     QMutex queueMutex;
@@ -22,7 +23,7 @@ public:
     QWaitCondition bufferNotEmpty;
 
     void bufferPacket(char* packet);
-    char* grabPacket();
+    void grabPacket(char* buf);
 };
 
 #endif // BUFFER_H

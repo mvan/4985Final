@@ -8,24 +8,30 @@ Buffer chatinBuffer;
 
 void ChatWriteThread::run(){
 
+    QMutex mutex;
     char* packet;
     packet = (char *)malloc(PACKETSIZE);
+    char* tempPacket;
+    tempPacket = (char *)malloc(PACKETSIZE);
 
     while(1){
-        chatinBuffer.queueMutex.lock();
-        if(chatinBuffer.queue.size() != 0){
 
-            strcpy(packet, chatinBuffer.grabPacket());
+        if(chatinBuffer.queue.size() == 0){
+            chatinBuffer.queueMutex.lock();
+            chatinBuffer.bufferNotEmpty.wait(&chatinBuffer.queueMutex);
             chatinBuffer.queueMutex.unlock();
-
-            emit(addChatToDisplay(packet));
-            ZeroMemory(packet, PACKETSIZE);
-
         }
-        chatinBuffer.queueMutex.unlock();
+        chatinBuffer.grabPacket(tempPacket);
+        strcpy(packet, tempPacket);
+        emit(addChatToDisplay(packet));
+        ZeroMemory(packet, PACKETSIZE);
+
+
+
     }
 
     free(packet);
+    free(tempPacket);
 }
 
 
