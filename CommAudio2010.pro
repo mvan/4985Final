@@ -33,7 +33,6 @@ SOURCES += src/main.cpp\
         src/control/clientcontrol.cpp \
         src/control/servercontrol.cpp \
         src/network/chattransferin.cpp \
-        src/network/chattransfer.cpp \
         src/network/audiotransferin.cpp \
         src/network/audiotransfer.cpp
 
