@@ -13,7 +13,6 @@ void AudioReadThread::run(){
     DWORD bytesRead;
     char* tempPacket;
     char* tempBuf;
-    QMutex mutex;
 
     tempPacket = (char *)malloc(PACKETSIZE);
     tempBuf = (char *)malloc(DATA_SIZE);
@@ -84,9 +83,7 @@ AudioSendThread::AudioSendThread(){}
 
 void AudioSendThread::run(){
 
-    QMutex mutex;
     char* packet = (char *)malloc(PACKETSIZE);
-
 
     while(1){
         if(audiooutBuffer.queue.size() == 0){

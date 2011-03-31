@@ -10,9 +10,9 @@ FileWriteThread::FileWriteThread(HANDLE handle):file_(handle){
 void FileWriteThread::run(){
 
     char* packet;
-    QMutex mutex;
     DWORD bytesWritten;
     QMessageBox msg;
+
     msg.setText("File transfer complete");
     packet = (char *)malloc(PACKETSIZE * sizeof(char *));
 
