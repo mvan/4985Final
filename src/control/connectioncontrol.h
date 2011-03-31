@@ -35,7 +35,8 @@ public slots:
     void endFTIn();
     void incomingStream();
     void startStream();
-    void endStream();
+    void endStreamIn();
+    void endStreamOut();
     void connectionSlot(char* ipaddr);
 
 private:

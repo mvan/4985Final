@@ -63,13 +63,13 @@ QString ConnectionControl::getFileName() {
  *these will be used later (maybe)
  */
 void ConnectionControl::incomingFT() {
-    HANDLE h;
+    HANDLE h = 0;
     fileInThread_ = new FileWriteThread(h);
     connect(fileInThread_, SIGNAL(endFT()), this, SLOT(endFTIn()));
 }
 
 void ConnectionControl::startFT(QString fName) {
-    HANDLE h;
+    HANDLE h = 0;
     fileOutThread_ = new FileReadThread(h);
     connect(fileOutThread_, SIGNAL(endFT()), this, SLOT(endFTOut()));
 }
@@ -83,13 +83,21 @@ void ConnectionControl::endFTIn() {
 }
 
 void ConnectionControl::incomingStream() {
-
+    audioInThread_ = new AudioWriteThread(QByteArray());
+    connect(audioInThread_, SIGNAL(endStream()), this, SLOT(endStreamIn()));
 }
 
 void ConnectionControl::startStream() {
-
+    HANDLE h = 0;
+    audioOutThread_ = new AudioReadThread(h);
+    connect(audioOutThread_, SIGNAL(endStream()), this, SLOT(endStreamOut()));
 }
 
-void ConnectionControl::endStream() {
-
+void ConnectionControl::endStreamOut() {
+    delete audioOutThread_;
 }
+
+void ConnectionControl::endStreamIn() {
+    delete audioInThread_;
+}
+

@@ -81,6 +81,7 @@ void FileReadThread::run(){
             CloseHandle(file_);
             free(tempPacket);
             free(tempBuf);
+            emit(endFT());
             break;
         }
         thread->wait(1);

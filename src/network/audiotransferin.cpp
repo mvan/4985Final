@@ -14,7 +14,7 @@ void AudioWriteThread::run(){
     char* packet;
     QMessageBox msg;
     msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
         if(audioinBuffer.queue.size() == 0){

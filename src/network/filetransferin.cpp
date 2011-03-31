@@ -14,7 +14,7 @@ void FileWriteThread::run(){
     QMessageBox msg;
 
     msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
         if(fileinBuffer.queue.size() == 0){
@@ -27,6 +27,7 @@ void FileWriteThread::run(){
             CloseHandle(file_);
             msg.exec();
             free(packet);
+            emit(endFT());
             return;
         }
         WriteFile(file_, (packet+4), dataLength(packet), &bytesWritten, NULL); //length of packet
