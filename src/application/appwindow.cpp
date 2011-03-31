@@ -18,8 +18,8 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     serverControl_ = new ServerControl(connectionControl);
     connectionControl_ = connectionControl;
 
-   // chatInThread_ = new ChatWriteThread();
-    //chatInThread_->start();
+    chatInThread_ = new ChatWriteThread();
+    chatInThread_->start();
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));

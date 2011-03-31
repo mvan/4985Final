@@ -32,3 +32,21 @@ sock ConnectionControl::getTCPSocket() {
 sock ConnectionControl::getUDPSocket() {
     return UDPSocket_;
 }
+/*
+ *these will be used later (maybe)
+ */
+void ConnectionControl::startFT() {
+
+}
+
+void ConnectionControl::endFT() {
+
+}
+
+void ConnectionControl::startStream() {
+
+}
+
+void ConnectionControl::endStream() {
+
+}
