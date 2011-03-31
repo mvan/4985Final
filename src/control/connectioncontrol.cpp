@@ -1,7 +1,7 @@
 #include "connectioncontrol.h"
 #include <winsock2.h>
 #include <QFileDialog>
-#include <QStringList>
+#include <QMessageBox>
 #include <QList>
 ConnectionControl::ConnectionControl() {
 
@@ -37,7 +37,14 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
 }
 
 void ConnectionControl::connectionSlot(char* ipaddr) {
+    QMessageBox notification;
+    QString msg;
+    msg.append("Remote client connected at: ");
+    msg.append(ipaddr);
+    msg.append(", establishing connection to their server.");
+    notification.setText(msg);
     TCPSocket_.TCPSocket_Connect(ipaddr, tcpPort_);
+    notification.exec();
 }
 
 TCPServerThread* ConnectionControl::getTCPServerThread() {
