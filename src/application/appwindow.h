@@ -76,6 +76,9 @@ private:
     FileReadThread* fileOutThread_;
     FileWriteThread* fileInThread_;
 
+
+private slots:
+    void on_transfer_clicked();
 };
 
 #endif // APPWINDOW_H

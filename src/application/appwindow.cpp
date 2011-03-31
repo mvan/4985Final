@@ -240,3 +240,16 @@ void AppWindow::updateOtherPlaylist(char *filename) {
     //Add file to any cleint connected to this server
     serverControl_->addAudioFile(QString(filename));
 }
+
+void AppWindow::on_transfer_clicked()
+{
+    HANDLE file;
+    file = CreateFile(TEXT("C:\\Users\\Daniel\\Desktop\\test.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    FileReadThread *thread;
+    thread = new FileReadThread(file);
+    thread->start();
+    thread->wait();
+}
+
+

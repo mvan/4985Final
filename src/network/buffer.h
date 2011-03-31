@@ -14,8 +14,8 @@ class Buffer:public QObject
 {
     Q_OBJECT
 public:
-    explicit Buffer(int size = DEFAULT_BUFFER_SIZE):bufferSize(size){}
-    virtual ~Buffer(){}
+    explicit Buffer(int size = DEFAULT_BUFFER_SIZE);
+    virtual ~Buffer();
     int bufferSize;
     QQueue<QByteArray> queue; //QQueue<QByteArray*>
     QMutex queueMutex;
