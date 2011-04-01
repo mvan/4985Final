@@ -37,13 +37,14 @@ void tcpserver::run(int portNo) {
                 continue;
             }
             if(FD_ISSET(s, &readySet_)) {
-                nRead = find_sock(s).TCPRecv();
+                sock so(s);
+                nRead = so.TCPRecv();
                 if(nRead == 0) {
                     removeSelectSock(s);
                 }
                 if(nRead > 0) {
                     char pack[PACKETSIZE];
-                    strcpy(pack, find_sock(s).packet_);
+                    strcpy(pack, so.packet_);
                     if(ProcessTCPPacket(pack) == -1) {
                         emit(connectionRequest(pack+4));
                     }
@@ -107,8 +108,8 @@ QList<sock> tcpserver::getAllClients() {
 }
 
 sock tcpserver::find_sock(SOCKET s) {
-    for(int i = 0; i < currentClients_.size(); ++i) {
-        if(currentClients_[i].getSock() == s) {
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] == s) {
             return currentClients_[i];
         }
     }

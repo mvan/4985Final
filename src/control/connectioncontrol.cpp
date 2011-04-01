@@ -12,12 +12,12 @@ ConnectionControl::~ConnectionControl() {
 }
 
 bool ConnectionControl::startServer(int tcpPort, int udpPort) {
-
     udpServerThread_ = new UDPServerThread(udpPort);
     udpServerThread_->start();
     tcpServerThread_ = new TCPServerThread(tcpPort);
+    tcpserver* t = tcpServerThread_->getTCPServer();
     tcpServerThread_->start();
-    connect(tcpServerThread_->getTCPServer(), SIGNAL(connectionRequest(char*)), this, SLOT(connectionSlot(char*)));
+    connect(t, SIGNAL(connectionRequest(char*)), this, SLOT(connectionSlot(char*)));
     return true;
 }
 
@@ -31,6 +31,7 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
         mkPacket(connectionPacket, MSG_CONN, PACKETSIZE, 0, TCPSocket_.getLocalAddr());
         TCPSocket_.setPacket(connectionPacket);
         TCPSocket_.TCPSend();
+        TCPSocket_.clrPacket();
         return true;
     }
     return false;
