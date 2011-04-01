@@ -58,12 +58,12 @@ void WinsockCleanup() {
 
 //SERIOUSLY, THIS IS A SKETCHY FUNCTION, DON'T PASS ANY NULL PARAMETERS OR A BUFFER THAT ISN'T PACKETSIZE
 void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClient, char* data) {
-    ZeroMemory(buf, PACKETSIZE);
+    memset(buf,0,PACKETSIZE);
     buf[0] = msgtype;
     buf[1] = LOBYTE(packetSize);
     buf[2] = HIBYTE(packetSize);
     buf[3] = destClient;
-    memmove((buf+4), data, PACKETSIZE-4);
+    memcpy((buf+4), data, PACKETSIZE-4);
 }
 
 void ProcessUDPPacket(char* packet) {
@@ -71,6 +71,8 @@ void ProcessUDPPacket(char* packet) {
 }
 int ProcessTCPPacket(char* packet) {
     switch(packet[0]) {
+        case MSG_CONN:
+            return -1;
         case MSG_ACK:
             //acknowledge a request...any request.
             break;

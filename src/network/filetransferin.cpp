@@ -10,26 +10,29 @@ FileWriteThread::FileWriteThread(HANDLE handle):file_(handle){
 void FileWriteThread::run(){
 
     char* packet;
-    QMutex mutex;
     DWORD bytesWritten;
     QMessageBox msg;
+
     msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
-        fileinBuffer.queueMutex.lock();
-        if(fileinBuffer.queue.size() != 0){
-
-            packet = fileinBuffer.grabPacket();
+        if(fileinBuffer.queue.size() == 0){
+            fileinBuffer.queueMutex.lock();
+            fileinBuffer.bufferNotEmpty.wait(&fileinBuffer.queueMutex);
             fileinBuffer.queueMutex.unlock();
-            if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
-                CloseHandle(file_);
-                msg.exec();
-                return;
-            }
-            WriteFile(file_, (packet+1), PACKETSIZE - 1, &bytesWritten, NULL); //length of packet
-
         }
-        fileinBuffer.queueMutex.unlock();
+        fileinBuffer.grabPacket(packet);
+         //If packet type is end of transmission, close handle, end thread
+        if(packet[0] == MSG_FTCOMPLETE){
+            CloseHandle(file_);
+            free(packet);
+            emit(endFT());
+            msg.exec();
+            return;
+        }
+         //length of packet
+        WriteFile(file_, (packet+4), dataLength(packet), &bytesWritten, NULL);
+
     }
 }

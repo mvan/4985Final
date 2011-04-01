@@ -17,15 +17,14 @@ class sock {
         size_t bSend_;
         size_t bRecv_;
         struct sockaddr_in addr_;
+        char localaddr_[16];
 
     public:
 
         explicit sock():sock_(0), bSend_(0), bRecv_(0){}
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
+        virtual ~sock() {}
 
-        virtual ~sock() {
-            closesocket(sock_);
-        }
 
         void TCPSocket_Init();
         void TCPSocket_Bind(int portNo);
@@ -41,7 +40,15 @@ class sock {
         int TCPRecv();
         int UDPRecv_Multicast();
 
-        sock operator=(sock right);
+        void setLocalAddr() {
+            struct sockaddr_in s;
+            socklen_t size;
+            getsockname(sock_, (struct sockaddr*)&s, &size);
+            strcpy(localaddr_, inet_ntoa(s.sin_addr));
+        }
+        char* getLocalAddr() {
+            return localaddr_;
+        }
 
         //inline functions
         void clrPacket() {
@@ -78,7 +85,10 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
-            strcpy(packet_, packet);
+            memcpy(packet_, packet, PACKETSIZE);
+        }
+        void socket_close() {
+            closesocket(sock_);
         }
 };
 

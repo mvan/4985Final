@@ -8,7 +8,7 @@
 #include "errors.h"
 #define MAX_CLIENTS 16
 class tcpserver: public server {
-
+    Q_OBJECT
     private:
         sock* listenSock_;
         sock socks_[FD_SETSIZE];
@@ -23,13 +23,17 @@ class tcpserver: public server {
             listenSock_ = new sock();
         }
         virtual ~tcpserver(){
+            listenSock_->socket_close();
             delete listenSock_;
         }
         virtual void initSelect();
         SOCKET addSelectSock();
+        void removeSelectSock(SOCKET s);
         virtual void run(int portNo = TCPPORT);
         QList<sock> getAllClients();
         sock find_sock(SOCKET s);
+    signals:
+        void connectionRequest(char* hostaddr);
 
 };
 #endif // TCPSERVER_H

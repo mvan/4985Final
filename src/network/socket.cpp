@@ -241,9 +241,7 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 }
 
 int sock::TCPSend() {
-
     return send(sock_, packet_, PACKETSIZE, 0);
-
 }
 
 int sock::UDPSend_Multicast() {
@@ -276,7 +274,6 @@ int sock::TCPRecv() {
         toRead -= nRead;
         total += nRead;
     }
-
     return total;
 
 }
@@ -295,18 +292,6 @@ int sock::UDPRecv_Multicast() {
         return 0;
     }
     return 1;
-}
-
-sock sock::operator=(sock right) {
-    if(this == &right) {
-        return *this;
-    }
-    addr_ = right.getAddr();
-    bRecv_ = right.getRecv();
-    bSend_ = right.getSent();
-    sock_ = right.getSock();
-
-    return *this;
 }
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,

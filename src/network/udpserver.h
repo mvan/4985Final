@@ -13,6 +13,7 @@ class udpserver: public server {
             rdSock_ = new sock();
         }
         virtual ~udpserver() {
+            rdSock_->socket_close();
             delete rdSock_;
         }
         
