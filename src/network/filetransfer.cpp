@@ -2,6 +2,7 @@
 #include "network.h"
 #include "buffer.h"
 #include <stdio.h>
+#include <QFile>
 
 Buffer fileoutBuffer;
 
@@ -15,30 +16,29 @@ void FileReadThread::run(){
     DWORD bytesWritten = 0;
     char* tempPacket;
     char* tempBuf;
-    QMutex mutex;
-    wchar_t *wfilename = new wchar_t[file_.size() +1];
-    wfilename[file_.size()] = '\0';
 
     tempPacket = (char *)malloc(PACKETSIZE);
     tempBuf = (char *)malloc(DATA_SIZE);
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
+    QFile file(file_);
 
+    if(!file.open(QIODevice::ReadOnly)){
+        //error
+    }
 
-    HANDLE file;
-
-    file_.toWCharArray(wfilename);
-    file = CreateFile(wfilename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-    sizeOfFile = GetFileSize(file, NULL);
+    QFile file2("C:/Users/Daniel/Desktop/temp.txt");
+    if(!file2.open(QIODevice::WriteOnly)){
+        //error
+    }
+    sizeOfFile = file.size();
 
     FileSendThread *thread = new FileSendThread();
     thread->start();
 
     while((numOfReads * DATA_SIZE) < sizeOfFile){
         if((sizeOfFile - (numOfReads * DATA_SIZE)) > DATA_SIZE){ //More than a packet left
-            if(!ReadFile(file, tempBuf, DATA_SIZE, &bytesRead, NULL)){
+            if(bytesRead = file.read(tempBuf, DATA_SIZE) == -1){
                 //error reading file
             }
             mkPacket(tempPacket, MSG_FT, (unsigned short) bytesRead, 0, tempBuf); //change with src and dest, msg type
@@ -48,7 +48,8 @@ void FileReadThread::run(){
                 fileoutBuffer.queueMutex.unlock();
             }
             fileoutBuffer.bufferPacket(tempPacket);
-            WriteFile(file, (tempPacket+4), dataLength(tempPacket), &bytesWritten, NULL);
+            file2.write((tempPacket+4), dataLength(tempPacket));
+            //WriteFile(file, (tempPacket+4), dataLength(tempPacket), &bytesWritten, NULL);
             ++numOfReads;
         } else if((sizeOfFile - (numOfReads * DATA_SIZE)) == 0) { // finished exactly
             memset(tempBuf, 0, sizeof(tempBuf));
@@ -59,13 +60,13 @@ void FileReadThread::run(){
                 fileoutBuffer.queueMutex.unlock();
             }
             fileoutBuffer.bufferPacket(tempPacket);
-            CloseHandle(file);
+            file.close();
             free(tempPacket);
             free(tempBuf);
             break;
         } else { //less than a full packet left
-            if(!ReadFile(file, tempBuf, sizeOfFile - (numOfReads * DATA_SIZE), &bytesRead, NULL)){
-                //error reading file
+            if(file.read(tempBuf, sizeOfFile - (numOfReads * DATA_SIZE)) == -1){
+                //error
             }
             mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead,0 ,tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
@@ -74,7 +75,7 @@ void FileReadThread::run(){
                 fileoutBuffer.queueMutex.unlock();
             }
             fileoutBuffer.bufferPacket(tempPacket);
-            WriteFile(file, (tempPacket+4), dataLength(tempPacket), &bytesWritten, NULL);
+            file2.write((tempPacket+4), dataLength(tempPacket));
             //make EOT packet
             memset(tempBuf, 0, sizeof(tempBuf));
             mkPacket(tempPacket, MSG_FTCOMPLETE, 0, 0,tempBuf);
@@ -84,7 +85,7 @@ void FileReadThread::run(){
                 fileoutBuffer.queueMutex.unlock();
             }
             fileoutBuffer.bufferPacket(tempPacket);
-            CloseHandle(file);
+            file.close();
             free(tempPacket);
             free(tempBuf);
             break;
@@ -97,10 +98,12 @@ void FileReadThread::run(){
 FileSendThread::FileSendThread(){}
 
 void FileSendThread::run(){
-    HANDLE file;
-    file = CreateFile(TEXT("C:\\Users\\Admin\\Desktop\\temp.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
     QMutex mutex;
+    QFile file("C:/Users/Daniel/Desktop/temp2.txt");
+    if(!file.open(QIODevice::WriteOnly)){
+        //error
+    }
     DWORD bytesWritten;
     char* packet;
     packet = (char *)malloc(PACKETSIZE * sizeof(char*));
@@ -119,7 +122,8 @@ void FileSendThread::run(){
             printf("file complete");
             break;
         }
-        WriteFile(file, (packet+4), dataLength(packet), &bytesWritten, NULL);
+        //WriteFile(file, (packet+4), dataLength(packet), &bytesWritten, NULL);
+        file.write((packet+4), dataLength(packet));
         printf("packet written");
     }
 }
