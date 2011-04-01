@@ -1,8 +1,7 @@
 #include "servercontrol.h"
 
 ServerControl::ServerControl(ConnectionControl *connectionControl):
-    connectionControl_(connectionControl){
-}
+    connectionControl_(connectionControl){}
 
 ServerControl::~ServerControl() {
 }

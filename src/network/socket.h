@@ -1,37 +1,36 @@
 #ifndef SOCKET_H
 #define SOCKET_H
-
 #include <winsock2.h>
 #include "network.h"
 #include <ws2tcpip.h>
 #include "errors.h"
 #define BUFSIZE 40960
 
-struct sock {
+class sock {
 
-    WSAOVERLAPPED ol_;
-    char packet_[PACKETSIZE];
+    public:
+        WSAOVERLAPPED ol_;
+        char packet_[PACKETSIZE];
 
     private:
         SOCKET sock_;
         size_t bSend_;
         size_t bRecv_;
         struct sockaddr_in addr_;
+        char localaddr_[16];
 
     public:
 
         explicit sock():sock_(0), bSend_(0), bRecv_(0){}
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
+        virtual ~sock() {}
 
-        virtual ~sock() {
-            closesocket(sock_);
-        }
 
         void TCPSocket_Init();
-        BOOL TCPSocket_Bind(int portNo);
+        void TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();
         BOOL TCPSocket_Connect(char* servAddr, int portNo);
-        sock TCPSocket_Accept();
+        SOCKET TCPSocket_Accept();
 
         void UDPSocket_Init();
         BOOL UDPSocket_Bind_Multicast(int portNo);
@@ -41,7 +40,15 @@ struct sock {
         int TCPRecv();
         int UDPRecv_Multicast();
 
-        sock operator=(sock right);
+        void setLocalAddr() {
+            struct sockaddr_in s;
+            socklen_t size;
+            getsockname(sock_, (struct sockaddr*)&s, &size);
+            strcpy(localaddr_, inet_ntoa(s.sin_addr));
+        }
+        char* getLocalAddr() {
+            return localaddr_;
+        }
 
         //inline functions
         void clrPacket() {
@@ -77,15 +84,19 @@ struct sock {
         void createOLEvent() {
             ol_.hEvent = WSACreateEvent();
         }
+        void setPacket(char* packet) {
+            strcpy(packet_, packet);
+        }
+        void socket_close() {
+            closesocket(sock_);
+        }
 };
 
 //completion routines.
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
-void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags);
 #endif

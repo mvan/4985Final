@@ -11,7 +11,8 @@ public:
 
 protected:
     void run();
-
+signals:
+    void endFT();
 private:
     HANDLE file_;
 };

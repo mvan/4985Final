@@ -17,6 +17,7 @@
 #define MSG_LISTREQ 0x09
 #define MSG_LIST 0x0A
 #define MSG_ACK  0x0B
+#define MSG_CONN 0x0C
 void WinsockInit();
 void WinsockCleanup();
 void ProcessUDPPacket(char* packet);

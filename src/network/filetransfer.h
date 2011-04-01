@@ -11,6 +11,9 @@ class FileReadThread : public QThread{
 public:
     FileReadThread(HANDLE handle);
 
+signals:
+    void endFT();
+
 protected:
     void run();
 

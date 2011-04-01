@@ -42,7 +42,11 @@ void tcpserver::run(int portNo) {
                     removeSelectSock(s);
                 }
                 if(nRead > 0) {
-                    ProcessTCPPacket(find_sock(s).packet_);
+                    char pack[PACKETSIZE];
+                    strcpy(pack, find_sock(s).packet_);
+                    if(ProcessTCPPacket(pack) == -1) {
+                        emit(connectionRequest(pack+4));
+                    }
                 }
             }
             if(--numReady_ <= 0) {
@@ -57,26 +61,31 @@ void tcpserver::initSelect() {
     for(int i = 0; i < FD_SETSIZE; ++i) {
         selectSocks_[i] = -1;
     }
+
     memset(&(selectSocks_[0]), 0, FD_SETSIZE);
+
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
 
 }
 
 SOCKET tcpserver::addSelectSock() {
-    size_t i = 0;
+
+    int i;
+
     SOCKET s = listenSock_->TCPSocket_Accept();
     if(s <= 0) {
         WSAError(SOCK_ERROR);
     }
-    for(i; i < FD_SETSIZE; ++i) {
+
+    for(i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == 0) {
+            FD_SET(s, &allSet_);
             selectSocks_[i] = s;
             currentClients_.push_back(sock(s));
             break;
         }
     }
-    FD_SET(s, &allSet_);
     return s;
 }
 
@@ -84,16 +93,13 @@ void tcpserver::removeSelectSock(SOCKET s) {
 
     for(int i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == s) {
-
             FD_CLR(s, &allSet_);
-            selectSocks_[i] = -1;
+            selectSocks_[i] = 0;
             currentClients_.removeAt(i);
             closesocket(s);
             return;
-
         }
     }
-
 }
 
 QList<sock> tcpserver::getAllClients() {

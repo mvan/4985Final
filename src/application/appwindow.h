@@ -11,6 +11,9 @@
 #include <phonon/volumeslider.h>
 #include <phonon/backendcapabilities.h>
 #include <QList>
+#include "../control/connectioncontrol.h"
+#include "../network/chattransferin.h"
+
 
 namespace Ui {
     class AppWindow;
@@ -39,6 +42,8 @@ public slots:
     void metaStateChanged(Phonon::State newState, Phonon::State oldState);
     void fileSelection();
     void aboutToFinish();
+    void addChat(char* packet);
+    void sendChat();
 
 signals:
     void playFile();
@@ -52,7 +57,6 @@ private:
     QTreeWidgetItem *lstItem;
     QStringList filenames;
     QStringList treename;
-
     Phonon::SeekSlider *seekSlider;
     Phonon::MediaObject *mediaObject;
     Phonon::MediaObject *metaInfoResolver;
@@ -60,7 +64,9 @@ private:
     Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
 
+    ConnectionControl* connectionControl_;
     ServerControl *serverControl_;
+    ChatWriteThread* chatInThread_;
 
 };
 
