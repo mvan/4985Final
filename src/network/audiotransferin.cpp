@@ -10,26 +10,29 @@ AudioWriteThread::AudioWriteThread(QByteArray array):audioArray_(array){
 
 void AudioWriteThread::run(){
 
+    QMutex mutex;
     char* packet;
     QMessageBox msg;
     msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
-        audioinBuffer.queueMutex.lock();
-        if(audioinBuffer.queue.size() != 0){
-
-            packet = audioinBuffer.grabPacket();
+        if(audioinBuffer.queue.size() == 0){
+            audioinBuffer.queueMutex.lock();
+            audioinBuffer.bufferNotEmpty.wait(&audioinBuffer.queueMutex);
             audioinBuffer.queueMutex.unlock();
-            if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
-                //CloseHandle(file_);
-                msg.exec();
-                return;
-            }
-            //WriteFile(file_, packet, DATA_SIZE, &bytesWritten, NULL); //length of packet
-            audioArray_.append(packet+1);
         }
-        audioinBuffer.queueMutex.unlock();
+        audioinBuffer.grabPacket(packet);
+        //If packet type is end of transmission, end thread
+        if(packet[0] == MSG_STREAMCOMPLETE){
+            msg.exec();
+            free(packet);
+            emit(endStream());
+            return;
+        }
+        audioArray_.append(packet+1);
+
+
     }
 }
 
