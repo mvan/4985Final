@@ -1,5 +1,6 @@
 #include "tcpserver.h"
 #include "socket.h"
+#include <QDebug>
 void tcpserver::run(int portNo) {
 
     TIMEVAL tv;
@@ -20,12 +21,14 @@ void tcpserver::run(int portNo) {
         if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
+
         if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
             addSelectSock();
             if(--numReady_ <= 0) {
                 continue;
             }
         }
+
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
             SOCKET s;
@@ -58,19 +61,23 @@ void tcpserver::initSelect() {
     for(int i = 0; i < FD_SETSIZE; ++i) {
         selectSocks_[i] = -1;
     }
-    memset(selectSocks_, 0, FD_SETSIZE);
+
+    memset(&(selectSocks_[0]), 0, FD_SETSIZE);
+
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
 
 }
 
 SOCKET tcpserver::addSelectSock() {
+
     int i;
 
     SOCKET s = listenSock_->TCPSocket_Accept();
     if(s <= 0) {
         WSAError(SOCK_ERROR);
     }
+
     for(i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == 0) {
             FD_SET(s, &allSet_);
@@ -93,7 +100,6 @@ void tcpserver::removeSelectSock(SOCKET s) {
             return;
         }
     }
-
 }
 
 QList<sock> tcpserver::getAllClients() {
