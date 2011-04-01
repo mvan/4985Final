@@ -15,9 +15,8 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     udpServerThread_ = new UDPServerThread(udpPort);
     udpServerThread_->start();
     tcpServerThread_ = new TCPServerThread(tcpPort);
-    tcpserver* t = tcpServerThread_->getTCPServer();
     tcpServerThread_->start();
-    connect(t, SIGNAL(connectionRequest(char*)), this, SLOT(connectionSlot(char*)));
+    connect(tcpServerThread_->getTCPServer(), SIGNAL(connectionRequest(char*)), this, SLOT(connectionSlot(char*)));
     return true;
 }
 
