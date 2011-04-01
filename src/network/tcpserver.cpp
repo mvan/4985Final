@@ -20,14 +20,12 @@ void tcpserver::run(int portNo) {
         if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
-
         if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
             addSelectSock();
             if(--numReady_ <= 0) {
                 continue;
             }
         }
-
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
             SOCKET s;
@@ -41,7 +39,11 @@ void tcpserver::run(int portNo) {
                     removeSelectSock(s);
                 }
                 if(nRead > 0) {
-                    ProcessTCPPacket(find_sock(s).packet_);
+                    char pack[PACKETSIZE];
+                    strcpy(pack, find_sock(s).packet_);
+                    if(ProcessTCPPacket(pack) == -1) {
+                        emit(connectionRequest(pack+4));
+                    }
                 }
             }
             if(--numReady_ <= 0) {
@@ -56,14 +58,13 @@ void tcpserver::initSelect() {
     for(int i = 0; i < FD_SETSIZE; ++i) {
         selectSocks_[i] = -1;
     }
-
+    memset(selectSocks_, 0, FD_SETSIZE);
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
 
 }
 
 SOCKET tcpserver::addSelectSock() {
-
     int i;
 
     SOCKET s = listenSock_->TCPSocket_Accept();
@@ -71,13 +72,13 @@ SOCKET tcpserver::addSelectSock() {
         WSAError(SOCK_ERROR);
     }
     for(i = 0; i < FD_SETSIZE; ++i) {
-        if(selectSocks_[i] < 0) {
+        if(selectSocks_[i] == 0) {
+            FD_SET(s, &allSet_);
             selectSocks_[i] = s;
             currentClients_.push_back(sock(s));
             break;
         }
     }
-    FD_SET(s, &allSet_);
     return s;
 }
 
@@ -85,13 +86,11 @@ void tcpserver::removeSelectSock(SOCKET s) {
 
     for(int i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == s) {
-
             FD_CLR(s, &allSet_);
-            selectSocks_[i] = -1;
+            selectSocks_[i] = 0;
             currentClients_.removeAt(i);
             closesocket(s);
             return;
-
         }
     }
 

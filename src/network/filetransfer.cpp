@@ -15,15 +15,15 @@ void FileReadThread::run(){
     DWORD bytesWritten;
     char* tempPacket;
     char* tempBuf;
-    QMutex mutex;
+    HANDLE file;
 
-    tempPacket = (char *)malloc(PACKETSIZE * sizeof(char *));
-    tempBuf = (char *)malloc(DATA_SIZE * sizeof(char *));
+    tempPacket = (char *)malloc(PACKETSIZE);
+    tempBuf = (char *)malloc(DATA_SIZE);
+
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
     sizeOfFile = GetFileSize(file_, NULL);
 
-    HANDLE file;
     file = CreateFile(TEXT("C:\\Users\\Daniel\\Desktop\\temp2.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -81,6 +81,7 @@ void FileReadThread::run(){
             CloseHandle(file_);
             free(tempPacket);
             free(tempBuf);
+            emit(endFT());
             break;
         }
         thread->wait(1);
@@ -92,15 +93,14 @@ FileSendThread::FileSendThread(){}
 
 void FileSendThread::run(){
     HANDLE file;
-    file = CreateFile(TEXT("C:\\Users\\Daniel\\Desktop\\temp.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    QMutex mutex;
     DWORD bytesWritten;
     char* packet;
-    packet = (char *)malloc(PACKETSIZE * sizeof(char*));
 
+    file = CreateFile(TEXT("C:\\Users\\Daniel\\Desktop\\temp.txt"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    packet = (char *)malloc(PACKETSIZE);
 
-   while(1){
+    while(1){
         if(fileoutBuffer.queue.size() == 0){
             fileoutBuffer.queueMutex.lock();
             fileoutBuffer.bufferNotEmpty.wait(&fileoutBuffer.queueMutex);
@@ -115,7 +115,6 @@ void FileSendThread::run(){
         }
         WriteFile(file, (packet+4), dataLength(packet), &bytesWritten, NULL);
         printf("packet written");
-
     }
 }
 

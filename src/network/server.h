@@ -3,7 +3,9 @@
 #include "network.h"
 #include "errors.h"
 #include "socket.h"
-class server {
+#include <QObject>
+class server: public QObject {
+    Q_OBJECT
     public :
         explicit server() {
             WinsockInit();

@@ -13,10 +13,9 @@ void AudioReadThread::run(){
     DWORD bytesRead;
     char* tempPacket;
     char* tempBuf;
-    QMutex mutex;
 
-    tempPacket = (char *)malloc(PACKETSIZE * sizeof(char *));
-    tempBuf = (char *)malloc(DATA_SIZE * sizeof(char *));
+    tempPacket = (char *)malloc(PACKETSIZE);
+    tempBuf = (char *)malloc(DATA_SIZE);
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
     sizeOfFile = GetFileSize(file_, NULL);
@@ -72,6 +71,7 @@ void AudioReadThread::run(){
                 audiooutBuffer.queueMutex.unlock();
             }
             audiooutBuffer.bufferPacket(tempPacket);
+            emit(endStream());
             CloseHandle(file_);
             break;
         }
@@ -84,10 +84,7 @@ AudioSendThread::AudioSendThread(){}
 
 void AudioSendThread::run(){
 
-    QMutex mutex;
-    DWORD bytesWritten;
-    char* packet = (char *)malloc(PACKETSIZE * sizeof(char*));
-
+    char* packet = (char *)malloc(PACKETSIZE);
 
     while(1){
         if(audiooutBuffer.queue.size() == 0){
