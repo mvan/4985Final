@@ -3,15 +3,10 @@
 #include <QDebug>
 void tcpserver::run(int portNo) {
 
-    TIMEVAL tv;
-
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
     initSelect();
-
-    tv.tv_sec = INFINITE;
-    tv.tv_usec = 0;
 
     while(1) {
 
@@ -44,7 +39,7 @@ void tcpserver::run(int portNo) {
                 }
                 if(nRead > 0) {
                     char pack[PACKETSIZE];
-                    strcpy(pack, so.packet_);
+                    memcpy(pack, so.packet_, PACKETSIZE);
                     if(ProcessTCPPacket(pack) == -1) {
                         emit(connectionRequest(pack+4));
                     }
