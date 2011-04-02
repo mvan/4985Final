@@ -1,16 +1,12 @@
 #include "tcpserver.h"
 #include "socket.h"
+#include <QDebug>
 void tcpserver::run(int portNo) {
-
-    TIMEVAL tv;
 
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
     initSelect();
-
-    tv.tv_sec = INFINITE;
-    tv.tv_usec = 0;
 
     while(1) {
 
@@ -20,12 +16,14 @@ void tcpserver::run(int portNo) {
         if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
+
         if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
             addSelectSock();
             if(--numReady_ <= 0) {
                 continue;
             }
         }
+
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
             SOCKET s;
@@ -34,13 +32,14 @@ void tcpserver::run(int portNo) {
                 continue;
             }
             if(FD_ISSET(s, &readySet_)) {
-                nRead = find_sock(s).TCPRecv();
+                sock so(s);
+                nRead = so.TCPRecv();
                 if(nRead == 0) {
                     removeSelectSock(s);
                 }
                 if(nRead > 0) {
                     char pack[PACKETSIZE];
-                    strcpy(pack, find_sock(s).packet_);
+                    memcpy(pack, so.packet_, PACKETSIZE);
                     if(ProcessTCPPacket(pack) == -1) {
                         emit(connectionRequest(pack+4));
                     }
@@ -58,19 +57,23 @@ void tcpserver::initSelect() {
     for(int i = 0; i < FD_SETSIZE; ++i) {
         selectSocks_[i] = -1;
     }
-    memset(selectSocks_, 0, FD_SETSIZE);
+
+    memset(&(selectSocks_[0]), 0, FD_SETSIZE);
+
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
 
 }
 
 SOCKET tcpserver::addSelectSock() {
+
     int i;
 
     SOCKET s = listenSock_->TCPSocket_Accept();
     if(s <= 0) {
         WSAError(SOCK_ERROR);
     }
+
     for(i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == 0) {
             FD_SET(s, &allSet_);
@@ -93,7 +96,6 @@ void tcpserver::removeSelectSock(SOCKET s) {
             return;
         }
     }
-
 }
 
 QList<sock> tcpserver::getAllClients() {
@@ -101,8 +103,8 @@ QList<sock> tcpserver::getAllClients() {
 }
 
 sock tcpserver::find_sock(SOCKET s) {
-    for(int i = 0; i < currentClients_.size(); ++i) {
-        if(currentClients_[i].getSock() == s) {
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] == s) {
             return currentClients_[i];
         }
     }

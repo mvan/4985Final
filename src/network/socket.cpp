@@ -129,7 +129,7 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
     memmove((char *)&addr_.sin_addr, host -> h_addr, host -> h_length);
 
-    if (connect (sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
+    if (connect (sock_, (struct sockaddr *)&addr_, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
         return FALSE;
     }
     return TRUE;

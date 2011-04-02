@@ -12,7 +12,6 @@ ConnectionControl::~ConnectionControl() {
 }
 
 bool ConnectionControl::startServer(int tcpPort, int udpPort) {
-
     udpServerThread_ = new UDPServerThread(udpPort);
     udpServerThread_->start();
     tcpServerThread_ = new TCPServerThread(tcpPort);
@@ -31,6 +30,7 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
         mkPacket(connectionPacket, MSG_CONN, PACKETSIZE, 0, TCPSocket_.getLocalAddr());
         TCPSocket_.setPacket(connectionPacket);
         TCPSocket_.TCPSend();
+        TCPSocket_.clrPacket();
         return true;
     }
     return false;

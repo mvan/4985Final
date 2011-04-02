@@ -85,7 +85,7 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
-            strcpy(packet_, packet);
+            memcpy(packet_, packet, PACKETSIZE);
         }
         void socket_close() {
             closesocket(sock_);
