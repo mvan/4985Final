@@ -9,13 +9,13 @@ class AudioReadThread : public QThread{
     Q_OBJECT
 
 public:
-    AudioReadThread(HANDLE handle);
+    AudioReadThread(QString file);
 
 protected:
     void run();
 
 private:
-    HANDLE file_;
+    QString file_;
 };
 
 class AudioSendThread : public QThread{
