@@ -77,22 +77,18 @@ int ProcessTCPPacket(char* packet) {
             //acknowledge a request...any request.
             break;
         case MSG_STREAMREQ:
-            //begin stream.
+            //open a new incoming stream.
             break;
         case MSG_STREAMPAUSE:
-            //pause
-            break;
         case MSG_STREAMCOMPLETE:
-            //end stream.
+            audioinBuffer.bufferPacket(packet);
             break;
         case MSG_FTREQ:
             //notify the start of a file transfer.
             break;
+        case MSG_FTCOMPLETE:
         case MSG_FT:
             fileinBuffer.bufferPacket(packet);
-            break;
-        case MSG_FTCOMPLETE:
-            //send message to close file
             break;
         case MSG_CHAT:
             chatinBuffer.bufferPacket(packet);
