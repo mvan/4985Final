@@ -111,6 +111,7 @@ void AppWindow::setupGui() {
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
 
     //connect lots of other signals
+    connect(ui->transfer, SIGNAL(clicked()), connectionControl_, SLOT(startFT()));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
@@ -215,6 +216,7 @@ void AppWindow::addChat(char* packet) {
 void AppWindow::sendChat() {
     char packet[PACKETSIZE], buf[PACKETSIZE];
     ZeroMemory(packet, PACKETSIZE);
+    ZeroMemory(buf, PACKETSIZE);
     strcpy(buf, ui->message->toPlainText().toAscii().data());
     mkPacket(packet,MSG_CHAT,strlen(buf), 0, buf);
     connectionControl_->getTCPSocket().setPacket(packet);

@@ -32,6 +32,7 @@ void FileReadThread::run(){
     sizeOfFile = file.size();
 
     FileSendThread *thread = new FileSendThread();
+    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     thread->start();
 
     while((numOfReads * DATA_SIZE) < sizeOfFile){
@@ -94,7 +95,7 @@ void FileReadThread::run(){
 }
 
 void FileReadThread::send(char* packet){
-    emit send(packet);
+    emit sendTCPPacket(packet);
 }
 
 FileSendThread::FileSendThread(){}
@@ -112,6 +113,7 @@ void FileSendThread::run(){
         }
         fileoutBuffer.grabPacket(packet);
 
+        emit(sendPacket(packet));
         if(packet[0] == MSG_FTCOMPLETE){
             free(packet);
             break;
