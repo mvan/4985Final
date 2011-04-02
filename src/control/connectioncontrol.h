@@ -30,7 +30,7 @@ public:
     HANDLE openFile(QString fName);
 public slots:
     void incomingFT();
-    void startFT(QString fName);
+    void startFT();
     void endFTOut();
     void endFTIn();
     void incomingStream();
@@ -38,6 +38,7 @@ public slots:
     void endStreamIn();
     void endStreamOut();
     void connectionSlot(char* ipaddr);
+    void sendFilePacket(char*);
 
 private:
     int tcpPort_;

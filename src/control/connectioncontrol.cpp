@@ -69,17 +69,24 @@ QString ConnectionControl::getFileName() {
  *these will be used later (maybe)
  */
 void ConnectionControl::incomingFT() {
-    HANDLE h = 0;
-    fileInThread_ = new FileWriteThread(h);
+    //fileInThread_ = new FileWriteThread(h);
     connect(fileInThread_, SIGNAL(endFT()), this, SLOT(endFTIn()));
 }
 
-void ConnectionControl::startFT(QString fName) {
-    fileOutThread_ = new FileReadThread(fName);
-    connect(fileOutThread_, SIGNAL(endFT()), this, SLOT(endFTOut()));
+void ConnectionControl::startFT() {
+    fileOutThread_ = new FileReadThread(getFileName());
+    connect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
+            SLOT(sendFilePacket(char*)), Qt::QueuedConnection);
+    connect(fileOutThread_, SIGNAL(endFT()), this,
+            SLOT(endFTOut()), Qt::QueuedConnection);
+    fileOutThread_->start();
 }
 
 void ConnectionControl::endFTOut() {
+    disconnect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
+            SLOT(sendFilePacket(char*)));
+    disconnect(fileOutThread_, SIGNAL(endFT()), this,
+            SLOT(endFTOut()));
     delete fileOutThread_;
 }
 
@@ -105,3 +112,9 @@ void ConnectionControl::endStreamIn() {
     delete audioInThread_;
 }
 
+void ConnectionControl::sendFilePacket(char* packet) {
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
+    TCPSocket_.clrPacket();
+}
