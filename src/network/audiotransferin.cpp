@@ -14,7 +14,7 @@ void AudioWriteThread::run(){
     char* packet;
     QMessageBox msg;
     msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
         if(audioinBuffer.queue.size() == 0){
@@ -23,14 +23,13 @@ void AudioWriteThread::run(){
             audioinBuffer.queueMutex.unlock();
         }
         audioinBuffer.grabPacket(packet);
-
-        if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
-            //CloseHandle(file_);
+        //If packet type is end of transmission, end thread
+        if(packet[0] == MSG_STREAMCOMPLETE){
             msg.exec();
             free(packet);
+            emit(endStream());
             return;
         }
-        //WriteFile(file_, packet, DATA_SIZE, &bytesWritten, NULL); //length of packet
         audioArray_.append(packet+1);
 
 

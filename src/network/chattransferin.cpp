@@ -8,13 +8,13 @@ Buffer chatinBuffer;
 
 void ChatWriteThread::run(){
 
-    QMutex mutex;
     char* packet;
-    packet = (char *)malloc(PACKETSIZE);
     char* tempPacket;
+    packet = (char *)malloc(PACKETSIZE);
     tempPacket = (char *)malloc(PACKETSIZE);
 
     while(1){
+
         if(chatinBuffer.queue.size() == 0){
             chatinBuffer.queueMutex.lock();
             chatinBuffer.bufferNotEmpty.wait(&chatinBuffer.queueMutex);
@@ -24,8 +24,6 @@ void ChatWriteThread::run(){
         strcpy(packet, tempPacket);
         emit(addChatToDisplay(packet));
         ZeroMemory(packet, PACKETSIZE);
-
-
 
     }
 

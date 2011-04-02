@@ -17,6 +17,7 @@ class sock {
         size_t bSend_;
         size_t bRecv_;
         struct sockaddr_in addr_;
+        char localaddr_[16];
 
     public:
 
@@ -38,6 +39,16 @@ class sock {
         int UDPSend_Multicast();
         int TCPRecv();
         int UDPRecv_Multicast();
+
+        void setLocalAddr() {
+            struct sockaddr_in s;
+            socklen_t size;
+            getsockname(sock_, (struct sockaddr*)&s, &size);
+            strcpy(localaddr_, inet_ntoa(s.sin_addr));
+        }
+        char* getLocalAddr() {
+            return localaddr_;
+        }
 
         //inline functions
         void clrPacket() {
@@ -74,7 +85,7 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
-            strcpy(packet_, packet);
+            memcpy(packet_, packet, PACKETSIZE);
         }
         void socket_close() {
             closesocket(sock_);

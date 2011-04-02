@@ -16,9 +16,9 @@ void FileReadThread::run(){
 
     char* tempPacket;
     char* tempBuf;
-
     tempPacket = (char *)malloc(PACKETSIZE);
     tempBuf = (char *)malloc(DATA_SIZE);
+
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
 
@@ -83,6 +83,7 @@ void FileReadThread::run(){
             file.close();
             free(tempPacket);
             free(tempBuf);
+            emit(endFT());
             break;
         }
         thread->wait(10);
@@ -102,8 +103,7 @@ void FileSendThread::run(){
     char* packet;
     packet = (char *)malloc(PACKETSIZE);
 
-
-   while(1){
+    while(1){
         if(fileoutBuffer.queue.size() == 0){
             fileoutBuffer.queueMutex.lock();
             fileoutBuffer.bufferNotEmpty.wait(&fileoutBuffer.queueMutex);
@@ -113,7 +113,8 @@ void FileSendThread::run(){
         if(packet[0] == MSG_FTCOMPLETE){
             free(packet);
             break;
-        };
+        }
+
     }
 }
 

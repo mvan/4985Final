@@ -3,7 +3,10 @@
 #include "network.h"
 #include "errors.h"
 #include "socket.h"
-class server {
+#include <QObject>
+#include <QThread>
+class server: public QThread {
+    Q_OBJECT
     public :
         explicit server() {
             WinsockInit();
@@ -11,6 +14,6 @@ class server {
         virtual ~server() {
             WinsockCleanup();
         }
-        virtual void run(int portNo) = 0;
+        virtual void run(){}
 };
 #endif

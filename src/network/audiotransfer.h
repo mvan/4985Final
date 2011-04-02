@@ -14,6 +14,9 @@ public:
 protected:
     void run();
 
+signals:
+    void endStream();
+
 private:
     QString file_;
 };

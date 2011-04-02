@@ -5,7 +5,7 @@
 
 Buffer audiooutBuffer;
 
-AudioReadThread::AudioReadThread(HANDLE handle):file_(handle){}
+AudioReadThread::AudioReadThread(QString file):file_(file){}
 
 void AudioReadThread::run(){
 
@@ -78,9 +78,11 @@ void AudioReadThread::run(){
                 audiooutBuffer.queueMutex.unlock();
             }
             audiooutBuffer.bufferPacket(tempPacket);
+
             file.close();
             free(tempPacket);
             free(tempBuf);
+            emit(endStream());
             break;
         }
         thread->wait(10);
@@ -94,7 +96,6 @@ void AudioSendThread::run(){
 
     char* packet;
     packet = (char *)malloc(PACKETSIZE);
-
 
     while(1){
         if(audiooutBuffer.queue.size() == 0){

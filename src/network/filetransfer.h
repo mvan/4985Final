@@ -17,6 +17,9 @@ signals:
 public slots:
     void send(char*);
 
+signals:
+    void endFT();
+
 protected:
     void run();
 

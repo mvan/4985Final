@@ -2,13 +2,14 @@
 #define TCPSERVER_H
 #include <QMap>
 #include <QList>
+#include <QThread>
 #include "socket.h"
 #include "server.h"
 #include "network.h"
 #include "errors.h"
 #define MAX_CLIENTS 16
 class tcpserver: public server {
-
+    Q_OBJECT
     private:
         sock* listenSock_;
         sock socks_[FD_SETSIZE];
@@ -17,9 +18,10 @@ class tcpserver: public server {
         fd_set allSet_;
         int numReady_;
         QList<sock> currentClients_;
+        int portNo;
 
     public:
-        explicit tcpserver (): numReady_(0){
+        explicit tcpserver (int port = TCPPORT): numReady_(0), portNo(port){
             listenSock_ = new sock();
         }
         virtual ~tcpserver(){
@@ -29,9 +31,11 @@ class tcpserver: public server {
         virtual void initSelect();
         SOCKET addSelectSock();
         void removeSelectSock(SOCKET s);
-        virtual void run(int portNo = TCPPORT);
+        virtual void run();
         QList<sock> getAllClients();
         sock find_sock(SOCKET s);
+    signals:
+        void connectionRequest(char* hostaddr);
 
 };
 #endif // TCPSERVER_H

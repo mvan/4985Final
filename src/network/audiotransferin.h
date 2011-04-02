@@ -13,6 +13,9 @@ public:
 protected:
     void run();
 
+signals:
+    void endStream();
+
 private:
     QByteArray audioArray_;
 };
