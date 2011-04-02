@@ -48,6 +48,7 @@ public slots:
 signals:
     void playFile();
     void pauseFile();
+    void chatSignal(char*);
 
 private:
     void setupGui();

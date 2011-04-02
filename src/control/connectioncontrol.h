@@ -39,6 +39,7 @@ public slots:
     void endStreamOut();
     void connectionSlot(char* ipaddr);
     void sendFilePacket(char*);
+    void sendChatPacket(char* packet);
 
 private:
     int tcpPort_;

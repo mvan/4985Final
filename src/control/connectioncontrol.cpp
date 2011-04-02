@@ -118,3 +118,10 @@ void ConnectionControl::sendFilePacket(char* packet) {
     TCPSocket_.TCPSend();
     TCPSocket_.clrPacket();
 }
+
+void ConnectionControl::sendChatPacket(char* packet) {
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
+    TCPSocket_.clrPacket();
+}

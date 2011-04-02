@@ -107,8 +107,11 @@ void AppWindow::setupGui() {
     ui->volumeSlider->setAudioOutput(audioOutput);
 
     //connect chat signals
-    //connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
+    connect(chatInThread_, SIGNAL(addChatToDisplay(char*)),
+                this, SLOT(addChat(char*)), Qt::QueuedConnection);
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
+    connect(this, SIGNAL(chatSignal(char*)), connectionControl_,
+            SLOT(sendChatPacket(char*)));
 
     //connect lots of other signals
     connect(ui->transfer, SIGNAL(clicked()), connectionControl_, SLOT(startFT()));
@@ -214,16 +217,17 @@ void AppWindow::addChat(char* packet) {
 }
 
 void AppWindow::sendChat() {
+
     char packet[PACKETSIZE], buf[PACKETSIZE];
+
     ZeroMemory(packet, PACKETSIZE);
     ZeroMemory(buf, PACKETSIZE);
     strcpy(buf, ui->message->toPlainText().toAscii().data());
-    mkPacket(packet,MSG_CHAT,strlen(buf), 0, buf);
-    connectionControl_->getTCPSocket().setPacket(packet);
-    connectionControl_->getTCPSocket().TCPSend();
-    connectionControl_->getTCPSocket().clrPacket();
+    mkPacket(packet, MSG_CHAT, strlen(buf), 0, buf);
+    emit chatSignal(packet);
     ui->chatLog->append(ui->message->toPlainText());
     ui->message->clear();
+
 }
 
 void AppWindow::aboutToFinish() {
