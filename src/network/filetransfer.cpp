@@ -59,6 +59,7 @@ void FileReadThread::run(){
             file.close();
             free(tempPacket);
             free(tempBuf);
+            emit endFT();
             break;
         } else { //less than a full packet left
             if((bytesRead = file.read(tempBuf, sizeOfFile - (numOfReads * DATA_SIZE))) == -1){
@@ -110,6 +111,7 @@ void FileSendThread::run(){
             fileoutBuffer.queueMutex.unlock();
         }
         fileoutBuffer.grabPacket(packet);
+
         if(packet[0] == MSG_FTCOMPLETE){
             free(packet);
             break;
