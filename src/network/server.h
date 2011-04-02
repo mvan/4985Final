@@ -4,7 +4,8 @@
 #include "errors.h"
 #include "socket.h"
 #include <QObject>
-class server: public QObject {
+#include <QThread>
+class server: public QThread {
     Q_OBJECT
     public :
         explicit server() {
@@ -13,6 +14,6 @@ class server: public QObject {
         virtual ~server() {
             WinsockCleanup();
         }
-        virtual void run(int portNo) = 0;
+        virtual void run(){}
 };
 #endif

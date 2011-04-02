@@ -5,14 +5,14 @@
 #include <QObject>
 #include <QStringList>
 #include <winsock2.h>
-#include "udpserverthread.h"
-#include "tcpserverthread.h"
 #include "../network/network.h"
 #include "../network/socket.h"
 #include "../network/audiotransfer.h"
 #include "../network/audiotransferin.h"
 #include "../network/filetransfer.h"
 #include "../network/filetransferin.h"
+#include "../network/tcpserver.h"
+#include "../network/udpserver.h"
 
 class ConnectionControl: public QObject {
     Q_OBJECT
@@ -22,10 +22,10 @@ public:
 
     bool startServer(int tcpPort, int udpPort);
     bool connectToServer(QString tcpIp, int tcpPort);
-    TCPServerThread* getTCPServerThread();
-    UDPServerThread* getUDPServerThread();
     sock getTCPSocket();
     sock getUDPSocket();
+    tcpserver* getTCPServer();
+    udpserver* getUDPServer();
     QString getFileName();
     HANDLE openFile(QString fName);
 public slots:
@@ -44,8 +44,8 @@ private:
     int udpPort_;
     sock TCPSocket_;
     sock UDPSocket_;
-    UDPServerThread *udpServerThread_;
-    TCPServerThread *tcpServerThread_;
+    tcpserver* tcpServer_;
+    udpserver* udpServer_;
     AudioReadThread* audioOutThread_;
     AudioWriteThread* audioInThread_;
     FileReadThread* fileOutThread_;

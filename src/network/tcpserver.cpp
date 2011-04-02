@@ -1,7 +1,7 @@
 #include "tcpserver.h"
 #include "socket.h"
 #include <QDebug>
-void tcpserver::run(int portNo) {
+void tcpserver::run() {
 
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
@@ -19,6 +19,7 @@ void tcpserver::run(int portNo) {
 
         if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
             addSelectSock();
+            Sleep(100);
             if(--numReady_ <= 0) {
                 continue;
             }

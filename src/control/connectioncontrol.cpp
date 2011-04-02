@@ -12,11 +12,12 @@ ConnectionControl::~ConnectionControl() {
 }
 
 bool ConnectionControl::startServer(int tcpPort, int udpPort) {
-    udpServerThread_ = new UDPServerThread(udpPort);
-    udpServerThread_->start();
-    tcpServerThread_ = new TCPServerThread(tcpPort);
-    connect(tcpServerThread_->getTCPServer(), SIGNAL(connectionRequest(char*)), this, SLOT(connectionSlot(char*)));
-    tcpServerThread_->start();
+    udpServer_ = new udpserver(udpPort);
+    udpServer_->start();
+    tcpServer_ = new tcpserver(tcpPort);
+    tcpServer_->start();
+    connect(tcpServer_, SIGNAL(connectionRequest(char*)), this,
+            SLOT(connectionSlot(char*)), Qt::QueuedConnection);
     return true;
 }
 
@@ -47,14 +48,12 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
     notification.exec();
 }
 
-TCPServerThread* ConnectionControl::getTCPServerThread() {
-    return tcpServerThread_;
+tcpserver* ConnectionControl::getTCPServer() {
+    return tcpServer_;
 }
-
-UDPServerThread* ConnectionControl::getUDPServerThread() {
-    return udpServerThread_;
+udpserver* ConnectionControl::getUDPServer() {
+    return udpServer_;
 }
-
 sock ConnectionControl::getTCPSocket() {
     return TCPSocket_;
 }
