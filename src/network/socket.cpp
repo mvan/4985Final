@@ -331,38 +331,3 @@ void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
     }
     s->clrPacket();
 }
-
-void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    sock* s = (sock*)lpOverlapped;
-    if(cbTransferred == 0 || error != 0) {
-        WSAError(WR_ERROR);
-    }
-    s->clrPacket();
-}
-
-void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    sock* s = (sock*)lpOverlapped;
-    static char buf[PACKETSIZE];
-
-    if(cbTransferred == 0 || error != 0) {
-        WSAError(RD_ERROR);
-    } else if(s->getRecv() == PACKETSIZE) {
-        ProcessTCPPacket(buf);
-        s->clrPacket();
-        ZeroMemory(buf, PACKETSIZE);
-        return;
-    } else if(cbTransferred == PACKETSIZE){
-        strncpy(buf, s->packet_, PACKETSIZE);
-        ProcessTCPPacket(buf);
-        s->clrPacket();
-        ZeroMemory(buf, PACKETSIZE);
-        return;
-    } else if(cbTransferred < PACKETSIZE) {
-        strncpy(buf+s->getRecv(), s->packet_, PACKETSIZE-s->getRecv());
-        s->clrPacket();
-        s->TCPRecv();
-        return;
-    }
-}

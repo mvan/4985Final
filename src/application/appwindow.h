@@ -44,11 +44,13 @@ public slots:
     void aboutToFinish();
     void addChat(char* packet);
     void sendChat();
+    void ftReq();
 
 signals:
     void playFile();
     void pauseFile();
     void chatSignal(char*);
+    void requestFT(char* fName);
 
 private:
     void setupGui();

@@ -29,12 +29,11 @@ public:
     QString getFileName();
     HANDLE openFile(QString fName);
 public slots:
-    void incomingFT();
-    void startFT();
+    void requestFT(char* fileName);
+    void startFTFromReq(char* fileName);
     void endFTOut();
     void endFTIn();
-    void incomingStream();
-    void startStream();
+    void startStreamFromReq(char* fileName);
     void endStreamIn();
     void endStreamOut();
     void connectionSlot(char* ipaddr);

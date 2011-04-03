@@ -33,8 +33,10 @@ class tcpserver: public server {
         void removeSelectSock(SOCKET s);
         virtual void run();
         QList<sock> getAllClients();
+        int ProcessTCPPacket(char* packet);
 
     signals:
+        void FTReq(char*);
         void connectionRequest(char* hostaddr);
 
 };

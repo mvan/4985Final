@@ -9,7 +9,8 @@ extern Buffer audioinBuffer;
 extern Buffer audiooutBuffer;
 extern Buffer chatinBuffer;
 extern Buffer chatoutBuffer;
-
 extern AppWindow *externAppWindow;
+extern bool transferringOut;
+extern bool streaming;
 
 #endif // EXTERNS_H

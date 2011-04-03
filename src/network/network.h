@@ -21,7 +21,6 @@
 void WinsockInit();
 void WinsockCleanup();
 void ProcessUDPPacket(char* packet);
-int ProcessTCPPacket(char* packet);
 void mkPacket(char* buf, char msgtype, unsigned short packetSize,
                                         char destClient, char* data);
 unsigned short dataLength(char* buf);

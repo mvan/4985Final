@@ -40,6 +40,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 AppWindow::~AppWindow() {
     delete ui;
 }
+void AppWindow::ftReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestFT(q.toAscii().data()));
+}
 
 void AppWindow::addFiles() {
     fd->setFileMode(QFileDialog::ExistingFiles);
@@ -114,7 +118,8 @@ void AppWindow::setupGui() {
             SLOT(sendChatPacket(char*)));
 
     //connect lots of other signals
-    connect(ui->transfer, SIGNAL(clicked()), connectionControl_, SLOT(startFT()));
+    connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
+    connect(this, SIGNAL(requestFT(char*)), connectionControl_, SLOT(requestFT(char*)));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));

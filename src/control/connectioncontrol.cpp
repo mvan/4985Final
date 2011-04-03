@@ -3,6 +3,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QList>
+
+bool transferringOut = false;
+bool streaming = false;
+
 ConnectionControl::ConnectionControl() {
 
 }
@@ -16,6 +20,8 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     udpServer_->start();
     tcpServer_ = new tcpserver(tcpPort);
     tcpServer_->start();
+    connect(tcpServer_, SIGNAL(FTReq(char*)), this,
+            SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
     connect(tcpServer_, SIGNAL(connectionRequest(char*)), this,
             SLOT(connectionSlot(char*)), Qt::QueuedConnection);
     return true;
@@ -51,9 +57,11 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
 tcpserver* ConnectionControl::getTCPServer() {
     return tcpServer_;
 }
+
 udpserver* ConnectionControl::getUDPServer() {
     return udpServer_;
 }
+
 sock ConnectionControl::getTCPSocket() {
     return TCPSocket_;
 }
@@ -61,24 +69,35 @@ sock ConnectionControl::getTCPSocket() {
 sock ConnectionControl::getUDPSocket() {
     return UDPSocket_;
 }
+
 QString ConnectionControl::getFileName() {
     return QFileDialog::getOpenFileName(0, "Select a File");
 }
 
-/*
- *these will be used later (maybe)
- */
-void ConnectionControl::incomingFT() {
-    //fileInThread_ = new FileWriteThread(h);
-    connect(fileInThread_, SIGNAL(endFT()), this, SLOT(endFTIn()));
+void ConnectionControl::requestFT(char* fileName) {
+    char* packet = (char*)malloc(PACKETSIZE);
+    //mkPacket(packet, MSG_FTREQ, strlen(fileName), 0, fileName);
+    mkPacket(packet, MSG_FTREQ, PACKETSIZE, 0, "C:/Users/Public/Music/Sample Music/Sleep Away.mp3");
+    TCPSocket_.setPacket(packet);
+
+    FileWriteThread *thread = new FileWriteThread(getFileName());
+    thread->start();
+
+    TCPSocket_.TCPSend();
+    TCPSocket_.clrPacket();
+    free(packet);
 }
 
-void ConnectionControl::startFT() {
-    fileOutThread_ = new FileReadThread(getFileName());
+void ConnectionControl::startFTFromReq(char* fileName) {
+    if(transferringOut == true) {
+        return;
+    }
+    fileOutThread_ = new FileReadThread(QString(fileName));
     connect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
             SLOT(sendFilePacket(char*)), Qt::QueuedConnection);
     connect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()), Qt::QueuedConnection);
+    transferringOut = true;
     fileOutThread_->start();
 }
 
@@ -87,6 +106,7 @@ void ConnectionControl::endFTOut() {
             SLOT(sendFilePacket(char*)));
     disconnect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()));
+    transferringOut = false;
     delete fileOutThread_;
 }
 
@@ -94,14 +114,9 @@ void ConnectionControl::endFTIn() {
     delete fileInThread_;
 }
 
-void ConnectionControl::incomingStream() {
-    audioInThread_ = new AudioWriteThread(QByteArray());
-    connect(audioInThread_, SIGNAL(endStream()), this, SLOT(endStreamIn()));
-}
-
-void ConnectionControl::startStream() {
-    //audioOutThread_ = new AudioReadThread(h);
-   // connect(audioOutThread_, SIGNAL(endStream()), this, SLOT(endStreamOut()));
+void ConnectionControl::startStreamFromReq(char* fName) {
+   audioOutThread_ = new AudioReadThread(QString(fName));
+   connect(audioOutThread_, SIGNAL(endStream()), this, SLOT(endStreamOut()));
 }
 
 void ConnectionControl::endStreamOut() {

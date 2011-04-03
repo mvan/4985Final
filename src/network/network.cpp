@@ -69,41 +69,6 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
 void ProcessUDPPacket(char* packet) {
     audioinBuffer.bufferPacket(packet);
 }
-int ProcessTCPPacket(char* packet) {
-    switch(packet[0]) {
-        case MSG_CONN:
-            return -1;
-        case MSG_ACK:
-            //acknowledge a request...any request.
-            break;
-        case MSG_STREAMREQ:
-            //open a new incoming stream.
-            break;
-        case MSG_STREAMPAUSE:
-        case MSG_STREAMCOMPLETE:
-            audioinBuffer.bufferPacket(packet);
-            break;
-        case MSG_FTREQ:
-            //notify the start of a file transfer.
-            break;
-        case MSG_FTCOMPLETE:
-        case MSG_FT:
-            fileinBuffer.bufferPacket(packet);
-            break;
-        case MSG_CHAT:
-            chatinBuffer.bufferPacket(packet);
-            break;
-        case MSG_LISTREQ:
-            //request a file list.
-            break;
-        case MSG_LIST: //recv a playlist item
-            externAppWindow->updateOtherPlaylist(packet+4);
-            break;
-        default:
-            return 0;
-    }
-    return 0;
-}
 
 unsigned short dataLength(char* buf) {
     return MAKEWORD(buf[1], buf[2]);
