@@ -222,12 +222,11 @@ void AppWindow::sendChat() {
 
     ZeroMemory(packet, PACKETSIZE);
     ZeroMemory(buf, PACKETSIZE);
-    strcpy(buf, ui->message->toPlainText().toAscii().data());
-    mkPacket(packet, MSG_CHAT, strlen(buf), 0, buf);
+    memcpy(buf, ui->message->toPlainText().toAscii().constData(), PACKETSIZE);
+    mkPacket(packet, MSG_CHAT, PACKETSIZE, 0, buf);
     emit chatSignal(packet);
-    ui->chatLog->append(ui->message->toPlainText());
+    ui->chatLog->append(buf);
     ui->message->clear();
-
 }
 
 void AppWindow::aboutToFinish() {
