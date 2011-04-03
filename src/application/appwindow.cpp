@@ -3,7 +3,6 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include "../network/filetransfer.h"
-#include "../control/servercontrol.h"
 #include "../network/externs.h"
 
 AppWindow *externAppWindow;
@@ -15,7 +14,6 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
-    serverControl_ = new ServerControl(connectionControl);
     connectionControl_ = connectionControl;
 
     chatInThread_ = new ChatWriteThread();
@@ -65,7 +63,7 @@ void AppWindow::addFiles() {
         Phonon::MediaSource mediaSource(name);
         mediaSources.append(mediaSource);
 
-        serverControl_->addAudioFile(name);
+        connectionControl_->addAudioFile(name);
     }
     if (!mediaSources.isEmpty()) {
         metaInfoResolver->setCurrentSource(mediaSources.at(index));
@@ -248,5 +246,5 @@ void AppWindow::updateOtherPlaylist(char *filename) {
     ui->otherLibrary->addTopLevelItem(item);
 
     //Add file to any cleint connected to this server
-    serverControl_->addAudioFile(QString(filename));
+    connectionControl_->addAudioFile(QString(filename));
 }

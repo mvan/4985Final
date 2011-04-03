@@ -28,6 +28,8 @@ public:
     udpserver* getUDPServer();
     QString getFileName();
     HANDLE openFile(QString fName);
+    bool addAudioFile(QString filename);
+
 public slots:
     void requestFT(char* fileName);
     void startFTFromReq(char* fileName);
@@ -40,6 +42,9 @@ public slots:
     void sendFilePacket(char*);
     void sendChatPacket(char* packet);
 
+signals:
+    void tcpSend(sock);
+
 private:
     int tcpPort_;
     int udpPort_;
@@ -51,6 +56,7 @@ private:
     AudioWriteThread* audioInThread_;
     FileReadThread* fileOutThread_;
     FileWriteThread* fileInThread_;
+    QList<sock> clientsSocket_;
 };
 
 #endif // CONNECTIONCONTROL_H

@@ -24,6 +24,7 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
             SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
     connect(tcpServer_, SIGNAL(connectionRequest(char*)), this,
             SLOT(connectionSlot(char*)), Qt::QueuedConnection);
+    connect(this, SIGNAL(tcpSend(sock)), tcpServer_, SLOT(sendPacket(sock)));
     return true;
 }
 
@@ -137,4 +138,13 @@ void ConnectionControl::sendChatPacket(char* packet) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
+}
+
+bool ConnectionControl::addAudioFile(QString filename) {
+    clientsSocket_ = tcpServer_->getAllClients();
+    foreach(sock socket, clientsSocket_) {
+        mkPacket(socket.packet_, MSG_LIST, filename.size(), 0x00, filename.toAscii().data()); //Change the client destination
+        emit tcpSend(socket);
+    }
+    return true;
 }

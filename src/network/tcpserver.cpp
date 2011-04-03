@@ -139,3 +139,7 @@ int tcpserver::ProcessTCPPacket(char* packet) {
     }
     return 0;
 }
+
+void tcpserver::sendPacket(sock socket) {
+    socket.TCPSend();
+}
