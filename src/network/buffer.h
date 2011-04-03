@@ -22,7 +22,7 @@ public:
     QWaitCondition bufferNotFull;
     QWaitCondition bufferNotEmpty;
 
-    void bufferPacket(char* &packet);
+    void bufferPacket(char* packet);
     void grabPacket(char* buf);
 };
 
