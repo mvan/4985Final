@@ -35,7 +35,7 @@ void FileReadThread::run(){
     connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     thread->start();
 
-    while(totalRead < sizeOfFile){
+    while(totalRead <= sizeOfFile){
         if((sizeOfFile - totalRead) > DATA_SIZE){ //More than a packet left
             if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
                 //error reading file
@@ -48,7 +48,7 @@ void FileReadThread::run(){
             }
             fileoutBuffer.bufferPacket(tempPacket);
             totalRead += bytesRead;
-        } else if((sizeOfFile - totalRead) == 0) { // finished exactly
+        } else if(sizeOfFile == totalRead) { // finished exactly
             memset(tempBuf, 0, sizeof(tempBuf));
             mkPacket(tempPacket, MSG_FTCOMPLETE, 0, 0,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
@@ -70,7 +70,7 @@ void FileReadThread::run(){
             }
             fileoutBuffer.bufferPacket(tempPacket);
             //make EOT packet
-            memset(tempBuf, 0, DATASIZE);
+            memset(tempBuf, 0, DATA_SIZE);
             mkPacket(endPack, MSG_FTCOMPLETE, 0, 0,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
@@ -89,6 +89,7 @@ void FileReadThread::run(){
     free(tempPacket);
     free(tempBuf);
     free(endPack);
+    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     emit(endFT());
     return;
 }
@@ -106,7 +107,7 @@ void FileSendThread::run(){
 
     while(1){
 
-        if(fileoutBuffer.queue.size() == 0){
+        if(fileoutBuffer.queue.empty()){
             fileoutBuffer.queueMutex.lock();
             fileoutBuffer.bufferNotEmpty.wait(&fileoutBuffer.queueMutex);
             fileoutBuffer.queueMutex.unlock();
@@ -114,7 +115,7 @@ void FileSendThread::run(){
 
         fileoutBuffer.grabPacket(packet);
         emit(sendPacket(packet));
-
+        Sleep(100);
         if(packet[0] == MSG_FTCOMPLETE) {
             break;
         }
