@@ -31,7 +31,7 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 
     mediaObject->setTickInterval(1000);
 
-    //Phonon::createPath(mediaObject, audioOutput);
+    Phonon::createPath(mediaObject, audioOutput);
 
     setupGui();
     fd = new QFileDialog(this, Qt::Dialog);
