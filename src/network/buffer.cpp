@@ -1,8 +1,6 @@
 #include "buffer.h"
+#include <winsock2.h>
 
-Buffer::Buffer():bufferSize(DEFAULT_BUFFER_SIZE)
-{
-}
 
 Buffer::Buffer(int size):bufferSize(size)
 {
@@ -10,17 +8,22 @@ Buffer::Buffer(int size):bufferSize(size)
 
 Buffer::~Buffer(){}
 
+
 void Buffer::bufferPacket(char* packet){
+    char* tempPacket;
+    tempPacket = (char*)malloc(PACKETSIZE);
+    memcpy(tempPacket, packet, PACKETSIZE);
     this->queueMutex.lock();
-    this->queue.enqueue(QByteArray::fromRawData(packet, PACKETSIZE));
+    this->queue.enqueue(QByteArray::fromRawData(tempPacket, PACKETSIZE));
+    this->bufferNotEmpty.wakeAll();
     this->queueMutex.unlock();
+    //free(tempPacket);
 }
 
-char* Buffer::grabPacket(){
-    char* temp;
+void Buffer::grabPacket(char* buf){
+    ZeroMemory(buf, PACKETSIZE);
     this->queueMutex.lock();
-    temp = this->queue.dequeue().data();
+    memcpy(buf, this->queue.dequeue().constData(), PACKETSIZE);
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
-    return temp;
 }

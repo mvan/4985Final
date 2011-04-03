@@ -1,35 +1,36 @@
 #include "filetransferin.h"
 #include "buffer.h"
 #include <QMessageBox>
+#include <QFile>
 
 Buffer fileinBuffer;
-FileWriteThread::FileWriteThread(HANDLE handle):file_(handle){
-
-}
+FileWriteThread::FileWriteThread(QString file):file_(file){}
 
 void FileWriteThread::run(){
 
     char* packet;
-    QMutex mutex;
-    DWORD bytesWritten;
-    QMessageBox msg;
-    msg.setText("File transfer complete");
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+
+    QFile file(file_);
+
+    if(!file.open(QIODevice::WriteOnly)){
+        //error
+    }
+    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
-        fileinBuffer.queueMutex.lock();
-        if(fileinBuffer.queue.size() != 0){
-
-            packet = fileinBuffer.grabPacket();
+        if(fileinBuffer.queue.size() == 0){
+            fileinBuffer.queueMutex.lock();
+            fileinBuffer.bufferNotEmpty.wait(&fileinBuffer.queueMutex);
             fileinBuffer.queueMutex.unlock();
-            if(packet[0] == MSG_FTCOMPLETE){   //If packet type is end of transmission, close handle, end thread
-                CloseHandle(file_);
-                msg.exec();
-                return;
-            }
-            WriteFile(file_, (packet+1), PACKETSIZE - 1, &bytesWritten, NULL); //length of packet
-
         }
-        fileinBuffer.queueMutex.unlock();
+        fileinBuffer.grabPacket(packet);
+         //If packet type is end of transmission, close handle, end thread
+        if(packet[0] == MSG_FTCOMPLETE){
+            file.close();
+            break;
+        }
+        file.write((packet+4), dataLength(packet));
     }
+    free(packet);
+    emit(endFT());
 }

@@ -1,5 +1,6 @@
 #include "chattransferin.h"
 #include "buffer.h"
+#include <winsock2.h>
 #include <QMessageBox>
 
 Buffer chatinBuffer;
@@ -7,19 +8,21 @@ Buffer chatinBuffer;
 
 void ChatWriteThread::run(){
 
-    char* packet;
-    packet = (char *)malloc(PACKETSIZE * sizeof(char *));
+    char* tempPacket;
+    tempPacket = (char *)malloc(PACKETSIZE);
 
     while(1){
-        chatinBuffer.queueMutex.lock();
-        if(chatinBuffer.queue.size() != 0){
 
-            packet = chatinBuffer.grabPacket();
+        if(chatinBuffer.queue.size() == 0){
+            chatinBuffer.queueMutex.lock();
+            chatinBuffer.bufferNotEmpty.wait(&chatinBuffer.queueMutex);
             chatinBuffer.queueMutex.unlock();
-            emit(addChatToDisplay(packet));
         }
-        chatinBuffer.queueMutex.unlock();
+        chatinBuffer.grabPacket(tempPacket);
+        emit(addChatToDisplay(tempPacket));
+
     }
+    free(tempPacket);
 }
 
 

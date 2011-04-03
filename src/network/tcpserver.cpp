@@ -1,6 +1,8 @@
 #include "tcpserver.h"
 #include "socket.h"
-void tcpserver::run(int portNo) {
+#include "externs.h"
+#include <QDebug>
+void tcpserver::run() {
 
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
@@ -9,31 +11,44 @@ void tcpserver::run(int portNo) {
 
     while(1) {
 
-        TIMEVAL tv;
-        tv.tv_sec = INFINITE;
-        tv.tv_usec = INFINITE;
-        readySet_ = allSet_;
+        FD_ZERO(&readySet_);
+        this->readySet_ = this->allSet_;
 
-        numReady_ = select(NULL, &readySet_, NULL, NULL, NULL);
+        if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
+            continue;
+        }
 
-        if(FD_ISSET(&listenSock_, &readySet_)) {
-            if(addSelectSock() <= 0) {
+        if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
+            addSelectSock();
+            Sleep(100);
+            if(--numReady_ <= 0) {
                 continue;
             }
         }
-        for(int i = 0; i < FD_SETSIZE; ++i) {
-            int s, nRead = 0;
-            sock so;
 
-            so = socks_[i];
+        for(int i = 0; i < FD_SETSIZE; ++i) {
+            int nRead = 0;
+            SOCKET s;
+
             if((s = selectSocks_[i]) < 0) {
                 continue;
             }
             if(FD_ISSET(s, &readySet_)) {
-                nRead = socks_[i].TCPRecv();
-                if(nRead > 0) {
-                    ProcessTCPPacket(socks_[i].packet_);
+                sock so(s);
+                nRead = so.TCPRecv();
+                if(nRead == 0) {
+                    removeSelectSock(s);
                 }
+                if(nRead > 0) {
+                    char pack[PACKETSIZE];
+                    memcpy(pack, so.packet_, PACKETSIZE);
+                    if(ProcessTCPPacket(pack) == -1) {
+                        emit(connectionRequest(pack+4));
+                    }
+                }
+            }
+            if(--numReady_ <= 0) {
+                break;
             }
         }
     }
@@ -41,45 +56,86 @@ void tcpserver::run(int portNo) {
 
 void tcpserver::initSelect() {
 
-    socks_[numSocks_++] = *listenSock_;
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        selectSocks_[i] = -1;
+    }
 
-    memset(&selectSocks_, -1, FD_SETSIZE);
+    memset(&(selectSocks_[0]), 0, FD_SETSIZE);
 
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
 
 }
 
-int tcpserver::addSelectSock() {
+SOCKET tcpserver::addSelectSock() {
 
     int i;
-    sock s = listenSock_->TCPSocket_Accept();
 
-    if(s.getSock() == 0) {
-        return 0;
+    SOCKET s = listenSock_->TCPSocket_Accept();
+    if(s <= 0) {
+        WSAError(SOCK_ERROR);
     }
 
-    currentClients_.push_back(s);
-
     for(i = 0; i < FD_SETSIZE; ++i) {
-        if(selectSocks_[i] < 0) {
-            socks_[i] = s;
-            selectSocks_[i] = s.getSock();
+        if(selectSocks_[i] == 0) {
+            FD_SET(s, &allSet_);
+            selectSocks_[i] = s;
+            currentClients_.push_back(sock(s));
             break;
         }
     }
-    FD_SET(s.getSock(), &allSet_);
-    if(s.getSock() > maxSock_) {
-        maxSock_ = s.getSock();
-    }
-    if(i > sockIndex_) {
-        sockIndex_ = i;
-    }
-    return --numReady_;
+    return s;
+}
 
+void tcpserver::removeSelectSock(SOCKET s) {
+
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] == s) {
+            FD_CLR(s, &allSet_);
+            selectSocks_[i] = 0;
+            currentClients_.removeAt(i);
+            closesocket(s);
+            return;
+        }
+    }
 }
 
 QList<sock> tcpserver::getAllClients() {
     return currentClients_;
 }
 
+int tcpserver::ProcessTCPPacket(char* packet) {
+    switch(packet[0]) {
+        case MSG_CONN:
+            return -1;
+        case MSG_ACK:
+            //acknowledge a request...any request.
+            break;
+        case MSG_STREAMREQ:
+            //open a new incoming stream.
+            break;
+        case MSG_STREAMPAUSE:
+        case MSG_STREAMCOMPLETE:
+            audioinBuffer.bufferPacket(packet);
+            break;
+        case MSG_FTREQ:
+            emit FTReq(packet+4);
+            break;
+        case MSG_FTCOMPLETE:
+        case MSG_FT:
+            fileinBuffer.bufferPacket(packet);
+            break;
+        case MSG_CHAT:
+            chatinBuffer.bufferPacket(packet);
+            break;
+        case MSG_LISTREQ:
+            //request a file list.
+            break;
+        case MSG_LIST: //recv a playlist item
+            externAppWindow->updateOtherPlaylist(packet+4);
+            break;
+        default:
+            return 0;
+    }
+    return 0;
+}

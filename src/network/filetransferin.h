@@ -7,13 +7,14 @@ class FileWriteThread : public QThread{
     Q_OBJECT
 
 public:
-    FileWriteThread(HANDLE handle);
+    FileWriteThread(QString file);
 
 protected:
     void run();
-
+signals:
+    void endFT();
 private:
-    HANDLE file_;
+    QString file_;
 };
 
 #endif // FILETRANSFERIN_H

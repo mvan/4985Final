@@ -1,6 +1,6 @@
 #include "udpserver.h"
 
-void udpserver::run(int portNo) {
+void udpserver::run() {
     
     this->rdSock_->UDPSocket_Init();
     this->rdSock_->UDPSocket_Bind_Multicast(portNo);

@@ -7,15 +7,17 @@
 class udpserver: public server {
     private:
         sock* rdSock_;
-        
+        int portNo;
+
     public:
-        explicit udpserver():server(){
+        explicit udpserver(int port):server(), portNo(port){
             rdSock_ = new sock();
         }
         virtual ~udpserver() {
+            rdSock_->socket_close();
             delete rdSock_;
         }
         
-        virtual void run(int portNo = UDPPORT);
+        virtual void run();
 };
 #endif

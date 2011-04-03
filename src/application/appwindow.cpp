@@ -16,8 +16,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
     serverControl_ = new ServerControl(connectionControl);
+    connectionControl_ = connectionControl;
+
     chatInThread_ = new ChatWriteThread();
-    //chatInThread_->start();
+    chatInThread_->start();
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -37,6 +39,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 
 AppWindow::~AppWindow() {
     delete ui;
+}
+void AppWindow::ftReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestFT(q.toAscii().data()));
 }
 
 void AppWindow::addFiles() {
@@ -104,8 +110,16 @@ void AppWindow::setupGui() {
     ui->seekSlider->setMediaObject(mediaObject);
     ui->volumeSlider->setAudioOutput(audioOutput);
 
-    connect(chatInThread_, SIGNAL(addChatToDisplay(char*)), this, SLOT(addChat(char*)));
+    //connect chat signals
+    connect(chatInThread_, SIGNAL(addChatToDisplay(char*)),
+                this, SLOT(addChat(char*)), Qt::QueuedConnection);
     connect(ui->sendButton, SIGNAL(clicked()), this, SLOT(sendChat()));
+    connect(this, SIGNAL(chatSignal(char*)), connectionControl_,
+            SLOT(sendChatPacket(char*)));
+
+    //connect lots of other signals
+    connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
+    connect(this, SIGNAL(requestFT(char*)), connectionControl_, SLOT(requestFT(char*)));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
@@ -204,12 +218,19 @@ void AppWindow::fileSelection() {
     }
 }
 void AppWindow::addChat(char* packet) {
-    ui->chatLog->append(QString(packet));
+    ui->chatLog->append(QString(packet+4));
 }
 
 void AppWindow::sendChat() {
-    chatoutBuffer.bufferPacket(ui->message->toPlainText().toAscii().data());
-    ui->chatLog->append(ui->message->toPlainText());
+
+    char packet[PACKETSIZE], buf[PACKETSIZE];
+
+    ZeroMemory(packet, PACKETSIZE);
+    ZeroMemory(buf, PACKETSIZE);
+    memcpy(buf, ui->message->toPlainText().toAscii().constData(), PACKETSIZE);
+    mkPacket(packet, MSG_CHAT, PACKETSIZE, 0, buf);
+    emit chatSignal(packet);
+    ui->chatLog->append(buf);
     ui->message->clear();
 }
 

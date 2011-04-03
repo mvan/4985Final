@@ -24,15 +24,23 @@
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::TCPSocket_Init() {
     int sizebuf = BUFSIZE;
+    bool reuseaddr = true;
 
-    if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
+    if ((sock_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
-    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR){
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR){
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR){
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: TCPSocket_Listen
+-- FUNCTION: TCPSocket_Bind
 --
 -- DATE: Feb 19, 2011
 --
@@ -42,8 +50,7 @@ void sock::TCPSocket_Init() {
 --
 -- PROGRAMMER: Duncan Donaldson
 --
--- INTERFACE: void TCPSocket_Listen(SOCKET* socket, int PortNo)
---				socket - pointer to the socket to be initialized
+-- INTERFACE: void TCPSocket_Bind(int portNo)
 --				PortNo - the port number to bind to.
 --
 -- RETURNS: void
@@ -51,17 +58,16 @@ void sock::TCPSocket_Init() {
 -- NOTES:
 -- binds a TCP socket to a port, and sets it to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::TCPSocket_Bind(int portNo) {
+void sock::TCPSocket_Bind(int portNo) {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(portNo);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == -1) {
-        return FALSE;
+    if (bind(sock_, (struct sockaddr *)&addr_, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
     }
-    return TRUE;
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Listen
@@ -84,11 +90,9 @@ BOOL sock::TCPSocket_Bind(int portNo) {
 -- Sets a TCP socket to the listen state.
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::TCPSocket_Listen() {
-
     if(listen(sock_, 5)) {
         WSAError(SOCK_ERROR);
     }
-
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: TCPSocket_Connect
@@ -125,22 +129,21 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
     memmove((char *)&addr_.sin_addr, host -> h_addr, host -> h_length);
 
-    if (connect (sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
+    if (connect (sock_, (struct sockaddr *)&addr_, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
         return FALSE;
     }
     return TRUE;
 
 }
 
-sock sock::TCPSocket_Accept() {
+SOCKET sock::TCPSocket_Accept() {
 
-    int addrsize;
     SOCKET s;
 
-    if((s = accept(sock_, (struct sockaddr*)&addr_, &addrsize)) == INVALID_SOCKET) {
-        WSAError(SOCK_ERROR);
+    if((s = accept(sock_, NULL, NULL)) == INVALID_SOCKET) {
+        return 0;
     }
-    return sock(s);
+    return s;
 
 }
 
@@ -165,15 +168,22 @@ sock sock::TCPSocket_Accept() {
 ----------------------------------------------------------------------------------------------------------------------*/
 void sock::UDPSocket_Init() {
     int sizebuf = BUFSIZE;
+    bool reuseaddr = true;
 
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
 
     createOLEvent();
-
-    setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int));
-    setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int));
+    if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_RCVBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
+    if(setsockopt(sock_, SOL_SOCKET, SO_SNDBUF, (char*)&sizebuf, sizeof(int)) == SOCKET_ERROR) {
+        WSAError(SOCK_ERROR);
+    }
 }
 /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: UDPSocket_Bind
@@ -231,65 +241,70 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 }
 
 int sock::TCPSend() {
-
-    return send(sock_, packet_, PACKETSIZE, 0);
-
+    DWORD nRead;
+    mut_->lock();
+    nRead = send(sock_, packet_, PACKETSIZE, 0);
+    mut_->unlock();
+    return nRead;
 }
 
 int sock::UDPSend_Multicast() {
     WSABUF buf;
     DWORD wait;
+
+    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
-                        sizeof(addr_), &(this->ol_), UDPSendCompRoutine);
+                        sizeof(addr_), &(this->ol_), sendCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
+        mut_->unlock();
         return 0;
     }
+    mut_->unlock();
     return 1;
 }
 
 int sock::TCPRecv() {
     int nRead;
+    int total = 0, toRead = PACKETSIZE;
 
-    nRead = recv(sock_, packet_, PACKETSIZE, 0);
+    mut_->lock();
+    while(toRead > 0) {
+        if((nRead = recv(sock_, packet_+total, toRead, 0)) == 0) {
+            return 0;
+        }
+        toRead -= nRead;
+        total += nRead;
+    }
+    mut_->unlock();
 
-    return nRead;
-
+    return total;
 }
 
 int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
     WSABUF buf;
+
+    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
-
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
+        mut_->unlock();
         return 0;
     }
+    mut_->unlock();
     return 1;
-}
-
-sock sock::operator=(sock right) {
-    if(this == &right) {
-        return *this;
-    }
-    addr_ = right.getAddr();
-    bRecv_ = right.getRecv();
-    bSend_ = right.getSent();
-    sock_ = right.getSock();
-
-    return *this;
 }
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
@@ -308,46 +323,11 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
 
 }
 
-void CALLBACK UDPSendCompRoutine(DWORD error, DWORD cbTransferred,
+void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
     if(cbTransferred == 0 || error != 0) {
         WSAError(WR_ERROR);
     }
     s->clrPacket();
-}
-
-void CALLBACK TCPSendCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    sock* s = (sock*)lpOverlapped;
-    if(cbTransferred == 0 || error != 0) {
-        WSAError(WR_ERROR);
-    }
-    s->clrPacket();
-}
-
-void CALLBACK TCPCompRoutine(DWORD error, DWORD cbTransferred,
-                        LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    sock* s = (sock*)lpOverlapped;
-    static char buf[PACKETSIZE];
-
-    if(cbTransferred == 0 || error != 0) {
-        WSAError(RD_ERROR);
-    } else if(s->getRecv() == PACKETSIZE) {
-        ProcessTCPPacket(buf);
-        s->clrPacket();
-        ZeroMemory(buf, PACKETSIZE);
-        return;
-    } else if(cbTransferred == PACKETSIZE){
-        strncpy(buf, s->packet_, PACKETSIZE);
-        ProcessTCPPacket(buf);
-        s->clrPacket();
-        ZeroMemory(buf, PACKETSIZE);
-        return;
-    } else if(cbTransferred < PACKETSIZE) {
-        strncpy(buf+s->getRecv(), s->packet_, PACKETSIZE-s->getRecv());
-        s->clrPacket();
-        s->TCPRecv();
-        return;
-    }
 }

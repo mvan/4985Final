@@ -11,12 +11,9 @@
 #include <phonon/volumeslider.h>
 #include <phonon/backendcapabilities.h>
 #include <QList>
-#include "../network/chattransfer.h"
+#include "../control/connectioncontrol.h"
 #include "../network/chattransferin.h"
-#include "../network/audiotransfer.h"
-#include "../network/audiotransferin.h"
-#include "../network/filetransfer.h"
-#include "../network/filetransferin.h"
+
 
 namespace Ui {
     class AppWindow;
@@ -47,10 +44,13 @@ public slots:
     void aboutToFinish();
     void addChat(char* packet);
     void sendChat();
+    void ftReq();
 
 signals:
     void playFile();
     void pauseFile();
+    void chatSignal(char*);
+    void requestFT(char* fName);
 
 private:
     void setupGui();
@@ -67,13 +67,11 @@ private:
     Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
 
+    ConnectionControl* connectionControl_;
     ServerControl *serverControl_;
     ChatWriteThread* chatInThread_;
-    ChatSendThread* chatOutThread_;
-    AudioReadThread* audioOutThread_;
-    AudioWriteThread* audioInThread_;
-    FileReadThread* fileOutThread_;
-    FileWriteThread* fileInThread_;
+
+
 
 };
 
