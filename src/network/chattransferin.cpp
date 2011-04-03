@@ -8,9 +8,7 @@ Buffer chatinBuffer;
 
 void ChatWriteThread::run(){
 
-    char* packet;
     char* tempPacket;
-    packet = (char *)malloc(PACKETSIZE);
     tempPacket = (char *)malloc(PACKETSIZE);
 
     while(1){
@@ -21,13 +19,9 @@ void ChatWriteThread::run(){
             chatinBuffer.queueMutex.unlock();
         }
         chatinBuffer.grabPacket(tempPacket);
-        strcpy(packet, tempPacket);
-        emit(addChatToDisplay(packet));
-        ZeroMemory(packet, PACKETSIZE);
-
+        emit(addChatToDisplay(tempPacket));
+        ZeroMemory(tempPacket, PACKETSIZE);
     }
-
-    free(packet);
     free(tempPacket);
 }
 

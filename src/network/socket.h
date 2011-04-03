@@ -1,8 +1,9 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 #include <winsock2.h>
-#include "network.h"
 #include <ws2tcpip.h>
+#include <QMutex>
+#include "network.h"
 #include "errors.h"
 #define BUFSIZE 40960
 
@@ -11,6 +12,7 @@ class sock {
     public:
         WSAOVERLAPPED ol_;
         char packet_[PACKETSIZE];
+        QMutex* mut_;
 
     private:
         SOCKET sock_;
@@ -21,9 +23,15 @@ class sock {
 
     public:
 
-        explicit sock():sock_(0), bSend_(0), bRecv_(0){}
-        explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {}
-        virtual ~sock() {}
+        explicit sock():sock_(0), bSend_(0), bRecv_(0){
+            mut_ = new QMutex();
+        }
+        explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {
+            mut_ = new QMutex();
+        }
+        virtual ~sock() {
+            delete mut_;
+        }
 
 
         void TCPSocket_Init();
@@ -52,7 +60,9 @@ class sock {
 
         //inline functions
         void clrPacket() {
+            mut_->lock();
             ZeroMemory(packet_, PACKETSIZE);
+            mut_->unlock();
         }
         SOCKET getSock() {
             return sock_;
@@ -85,7 +95,9 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
+            mut_->lock();
             memcpy(packet_, packet, PACKETSIZE);
+            mut_->unlock();
         }
         void socket_close() {
             closesocket(sock_);

@@ -241,12 +241,18 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 }
 
 int sock::TCPSend() {
-    return send(sock_, packet_, PACKETSIZE, 0);
+    DWORD nRead;
+    mut_->lock();
+    nRead = send(sock_, packet_, PACKETSIZE, 0);
+    mut_->unlock();
+    return nRead;
 }
 
 int sock::UDPSend_Multicast() {
     WSABUF buf;
     DWORD wait;
+
+    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
@@ -258,15 +264,17 @@ int sock::UDPSend_Multicast() {
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
+        mut_->unlock();
         return 0;
     }
+    mut_->unlock();
     return 1;
 }
 
 int sock::TCPRecv() {
     int nRead;
     int total = 0, toRead = PACKETSIZE;
-
+    mut_->lock();
     while(toRead > 0) {
         if((nRead = recv(sock_, packet_, toRead, 0)) == 0) {
             return 0;
@@ -274,6 +282,7 @@ int sock::TCPRecv() {
         toRead -= nRead;
         total += nRead;
     }
+    mut_->unlock();
     return total;
 
 }
@@ -281,16 +290,19 @@ int sock::TCPRecv() {
 int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
     WSABUF buf;
+
+    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
-
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
+        mut_->unlock();
         return 0;
     }
+    mut_->unlock();
     return 1;
 }
 

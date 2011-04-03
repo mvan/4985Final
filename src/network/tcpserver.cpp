@@ -102,12 +102,3 @@ void tcpserver::removeSelectSock(SOCKET s) {
 QList<sock> tcpserver::getAllClients() {
     return currentClients_;
 }
-
-sock tcpserver::find_sock(SOCKET s) {
-    for(int i = 0; i < FD_SETSIZE; ++i) {
-        if(selectSocks_[i] == s) {
-            return currentClients_[i];
-        }
-    }
-    return sock();
-}
