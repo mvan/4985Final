@@ -9,10 +9,10 @@ Buffer::Buffer(int size):bufferSize(size)
 Buffer::~Buffer(){}
 
 
-void Buffer::bufferPacket(char* &packet){
+void Buffer::bufferPacket(char* packet){
     char* tempPacket;
     tempPacket = (char*)malloc(PACKETSIZE);
-    memmove(tempPacket, packet, PACKETSIZE);
+    memcpy(tempPacket, packet, PACKETSIZE);
     this->queueMutex.lock();
     this->queue.enqueue(QByteArray::fromRawData(tempPacket, PACKETSIZE));
     this->bufferNotEmpty.wakeAll();
@@ -23,7 +23,7 @@ void Buffer::bufferPacket(char* &packet){
 void Buffer::grabPacket(char* buf){
     ZeroMemory(buf, PACKETSIZE);
     this->queueMutex.lock();
-    memmove(buf, this->queue.dequeue().data(), PACKETSIZE);
+    memcpy(buf, this->queue.dequeue().constData(), PACKETSIZE);
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
 }

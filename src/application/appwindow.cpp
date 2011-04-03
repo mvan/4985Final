@@ -213,7 +213,7 @@ void AppWindow::fileSelection() {
     }
 }
 void AppWindow::addChat(char* packet) {
-    ui->chatLog->append(QString(packet));
+    ui->chatLog->append(QString(packet+4));
 }
 
 void AppWindow::sendChat() {
