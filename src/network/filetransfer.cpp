@@ -14,20 +14,20 @@ void FileReadThread::run(){
     int numOfReads = 0;
     int bytesRead = 0;
 
-    char* tempPacket;
-    char* tempBuf;
+    char* tempPacket, * tempBuf, *endPack;
     tempPacket = (char *)malloc(PACKETSIZE);
     tempBuf = (char *)malloc(DATA_SIZE);
+    endPack = (char*)malloc(PACKETSIZE);
 
     ZeroMemory(tempPacket, PACKETSIZE);
     ZeroMemory(tempBuf, DATA_SIZE);
+    ZeroMemory(endPack, PACKETSIZE);
 
     QFile file(file_);
 
     if(!file.open(QIODevice::ReadOnly)){
         //error
     }
-
 
     sizeOfFile = file.size();
 
@@ -57,15 +57,12 @@ void FileReadThread::run(){
                 fileoutBuffer.queueMutex.unlock();
             }
             fileoutBuffer.bufferPacket(tempPacket);
-            file.close();
-            free(tempPacket);
-            free(tempBuf);
             break;
         } else { //less than a full packet left
             if((bytesRead = file.read(tempBuf, sizeOfFile - (numOfReads * DATA_SIZE))) == -1){
                 //error
             }
-            mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead,0 ,tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead, 0 ,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
@@ -73,24 +70,27 @@ void FileReadThread::run(){
             }
             fileoutBuffer.bufferPacket(tempPacket);
             //make EOT packet
-            memset(tempBuf, 0, sizeof(tempBuf));
-            mkPacket(tempPacket, MSG_FTCOMPLETE, 0, 0,tempBuf);
+            memset(tempBuf, 0, DATASIZE);
+            mkPacket(endPack, MSG_FTCOMPLETE, 0, 0,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
                 fileoutBuffer.queueMutex.unlock();
             }
-            fileoutBuffer.bufferPacket(tempPacket);
-            file.close();
-            free(tempPacket);
-            free(tempBuf);
+            fileoutBuffer.bufferPacket(endPack);
             break;
         }
         thread->wait(10);
     }
 
     thread->wait();
+
+    file.close();
+    free(tempPacket);
+    free(tempBuf);
+    free(endPack);
     emit(endFT());
+    return;
 }
 
 void FileReadThread::send(char* packet){
@@ -105,19 +105,19 @@ void FileSendThread::run(){
     packet = (char *)malloc(PACKETSIZE);
 
     while(1){
+
         if(fileoutBuffer.queue.size() == 0){
             fileoutBuffer.queueMutex.lock();
             fileoutBuffer.bufferNotEmpty.wait(&fileoutBuffer.queueMutex);
             fileoutBuffer.queueMutex.unlock();
         }
+
         fileoutBuffer.grabPacket(packet);
-
         emit(sendPacket(packet));
-        if(packet[0] == MSG_FTCOMPLETE){
 
+        if(packet[0] == MSG_FTCOMPLETE) {
             break;
         }
-
     }
     Sleep(100);
     free(packet);
