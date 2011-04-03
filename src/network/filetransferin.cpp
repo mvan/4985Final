@@ -29,11 +29,8 @@ void FileWriteThread::run(){
             file.close();
             break;
         }
-         //length of packet
-        //WriteFile(file_, (packet+4), dataLength(packet), &bytesWritten, NULL);
         file.write((packet+4), dataLength(packet));
     }
-
     free(packet);
     emit(endFT());
 }

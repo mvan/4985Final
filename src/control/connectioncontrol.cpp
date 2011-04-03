@@ -77,7 +77,7 @@ QString ConnectionControl::getFileName() {
 void ConnectionControl::requestFT(char* fileName) {
     char* packet = (char*)malloc(PACKETSIZE);
     //mkPacket(packet, MSG_FTREQ, strlen(fileName), 0, fileName);
-    mkPacket(packet, MSG_FTREQ, PACKETSIZE, 0, "C:/Users/Public/Music/Sample Music/Sleep Away.mp3");
+    mkPacket(packet, MSG_FTREQ, PACKETSIZE, 0, "C:/Users/Admin/Desktop/temp.txt");
     TCPSocket_.setPacket(packet);
 
     FileWriteThread *thread = new FileWriteThread(getFileName());
