@@ -9,9 +9,9 @@ AudioReadThread::AudioReadThread(QString file):file_(file){}
 
 void AudioReadThread::run(){
 
-    DWORD sizeOfFile = 0;
-    DWORD numOfReads = 0;
-    DWORD bytesRead = 0;
+    int sizeOfFile = 0;
+    int numOfReads = 0;
+    int bytesRead = 0;
     char* tempPacket;
     char* tempBuf;
 
