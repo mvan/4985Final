@@ -60,7 +60,6 @@ void FileReadThread::run(){
             file.close();
             free(tempPacket);
             free(tempBuf);
-            emit endFT();
             break;
         } else { //less than a full packet left
             if((bytesRead = file.read(tempBuf, sizeOfFile - (numOfReads * DATA_SIZE))) == -1){
@@ -85,13 +84,13 @@ void FileReadThread::run(){
             file.close();
             free(tempPacket);
             free(tempBuf);
-            emit(endFT());
             break;
         }
         thread->wait(10);
     }
 
     thread->wait();
+    emit(endFT());
 }
 
 void FileReadThread::send(char* packet){
@@ -115,10 +114,12 @@ void FileSendThread::run(){
 
         emit(sendPacket(packet));
         if(packet[0] == MSG_FTCOMPLETE){
-            free(packet);
+
             break;
         }
 
     }
+    Sleep(100);
+    free(packet);
 }
 
