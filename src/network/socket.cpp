@@ -274,17 +274,18 @@ int sock::UDPSend_Multicast() {
 int sock::TCPRecv() {
     int nRead;
     int total = 0, toRead = PACKETSIZE;
+
     mut_->lock();
     while(toRead > 0) {
-        if((nRead = recv(sock_, packet_, toRead, 0)) == 0) {
+        if((nRead = recv(sock_, packet_+total, toRead, 0)) == 0) {
             return 0;
         }
         toRead -= nRead;
         total += nRead;
     }
     mut_->unlock();
-    return total;
 
+    return total;
 }
 
 int sock::UDPRecv_Multicast() {
