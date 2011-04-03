@@ -20,7 +20,6 @@ void ChatWriteThread::run(){
         }
         chatinBuffer.grabPacket(tempPacket);
         emit(addChatToDisplay(tempPacket));
-        ZeroMemory(tempPacket, PACKETSIZE);
 
     }
     free(tempPacket);
