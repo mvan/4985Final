@@ -60,7 +60,7 @@ void tcpserver::initSelect() {
         selectSocks_[i] = -1;
     }
 
-    memset(&(selectSocks_[0]), 0, FD_SETSIZE);
+    memset(&(selectSocks_[0]), 0, FD_SETSIZE * sizeof(SOCKET));
 
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
