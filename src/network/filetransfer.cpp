@@ -36,7 +36,7 @@ void FileReadThread::run(){
     thread->start();
 
     while(totalRead <= sizeOfFile){
-        if((sizeOfFile - totalRead) > DATA_SIZE){ //More than a packet left
+        if((sizeOfFile - totalRead) >= DATA_SIZE){ //More than a packet left
             if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
                 //error reading file
             }

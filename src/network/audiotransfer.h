@@ -15,7 +15,11 @@ protected:
     void run();
 
 signals:
+    void sendUDPPacket(char*);
     void endStream();
+
+public slots:
+    void send(char*);
 
 private:
     QString file_;
@@ -26,6 +30,9 @@ class AudioSendThread : public QThread{
 
 public:
     AudioSendThread();
+
+signals:
+    void sendPacket(char*);
 
 protected:
     void run();
