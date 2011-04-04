@@ -154,9 +154,9 @@ bool tcpserver::addAudioFile(QString filename) {
 
             mkPacket(buf, MSG_LIST, filename.size(),
                                 0x00, filename.toAscii().data());
+            socket.clrPacket();
             socket.setPacket(buf);
             socket.TCPSend();
-            socket.clrPacket();
         }
     }
     return true;
