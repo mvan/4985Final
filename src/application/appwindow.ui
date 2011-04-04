@@ -10,8 +10,17 @@
     <height>499</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Tahoma</family>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Comm Audio</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(0, 0, 0);</string>
   </property>
   <property name="tabPosition">
    <enum>QTabWidget::North</enum>
@@ -35,6 +44,16 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -52,11 +71,17 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>360</x>
       <y>420</y>
       <width>48</width>
       <height>48</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="toolTip">
      <string>Play</string>
@@ -84,11 +109,17 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>420</x>
       <y>420</y>
       <width>48</width>
       <height>48</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="toolTip">
      <string>Stop</string>
@@ -116,11 +147,21 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="nowPlaying">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>60</x>
       <y>397</y>
       <width>471</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>Current file:</string>
@@ -132,11 +173,17 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>480</x>
       <y>420</y>
       <width>48</width>
       <height>48</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="toolTip">
      <string>Forward</string>
@@ -164,14 +211,23 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>300</x>
       <y>420</y>
       <width>48</width>
       <height>48</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="toolTip">
      <string>Reverse</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
      <string/>
@@ -204,6 +260,15 @@ p, li { white-space: pre-wrap; }
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="dragEnabled">
      <bool>false</bool>
@@ -251,6 +316,16 @@ p, li { white-space: pre-wrap; }
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>Stream File</string>
     </property>
@@ -264,6 +339,16 @@ p, li { white-space: pre-wrap; }
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>Transfer File</string>
     </property>
@@ -276,6 +361,16 @@ p, li { white-space: pre-wrap; }
       <width>91</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>Add Files</string>
@@ -295,6 +390,15 @@ p, li { white-space: pre-wrap; }
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="dragEnabled">
      <bool>false</bool>
@@ -336,11 +440,20 @@ p, li { white-space: pre-wrap; }
    <widget class="Phonon::SeekSlider" name="seekSlider">
     <property name="geometry">
      <rect>
-      <x>9</x>
+      <x>59</x>
       <y>430</y>
       <width>231</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;</string>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -349,16 +462,38 @@ p, li { white-space: pre-wrap; }
    <widget class="Phonon::VolumeSlider" name="volumeSlider">
     <property name="geometry">
      <rect>
-      <x>500</x>
+      <x>550</x>
       <y>380</y>
       <width>20</width>
       <height>81</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;</string>
+    </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
+   <zorder>nowPlaying</zorder>
+   <zorder>audioHdr</zorder>
+   <zorder>forward</zorder>
+   <zorder>reverse</zorder>
+   <zorder>myLibrary</zorder>
+   <zorder>stream</zorder>
+   <zorder>transfer</zorder>
+   <zorder>addFiles</zorder>
+   <zorder>otherLibrary</zorder>
+   <zorder>seekSlider</zorder>
+   <zorder>volumeSlider</zorder>
+   <zorder>stop</zorder>
+   <zorder>play</zorder>
   </widget>
   <widget class="QWidget" name="microphone">
    <attribute name="title">
@@ -372,6 +507,15 @@ p, li { white-space: pre-wrap; }
       <width>151</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -390,6 +534,16 @@ p, li { white-space: pre-wrap; }
       <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>Turn on</string>
     </property>
@@ -403,6 +557,16 @@ p, li { white-space: pre-wrap; }
       <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>Turn on</string>
     </property>
@@ -415,6 +579,15 @@ p, li { white-space: pre-wrap; }
       <width>151</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -458,6 +631,16 @@ p, li { white-space: pre-wrap; }
       <height>51</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Tahoma</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(36, 36, 36);
+color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>Send</string>
     </property>
@@ -486,6 +669,9 @@ p, li { white-space: pre-wrap; }
       <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
+    </property>
     <property name="text">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -502,6 +688,9 @@ p, li { white-space: pre-wrap; }
       <width>331</width>
       <height>401</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
    </widget>
   </widget>
