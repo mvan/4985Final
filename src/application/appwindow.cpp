@@ -63,7 +63,7 @@ void AppWindow::addFiles() {
         Phonon::MediaSource mediaSource(name);
         mediaSources.append(mediaSource);
 
-        connectionControl_->addAudioFile(name);
+        emit addAudioFile(name);
     }
     if (!mediaSources.isEmpty()) {
         metaInfoResolver->setCurrentSource(mediaSources.at(index));
@@ -116,9 +116,12 @@ void AppWindow::setupGui() {
             SLOT(sendChatPacket(char*)));
 
     //connect lots of other signals
+    connect(connectionControl_, SIGNAL(listUpdate(char*)), this,
+            SLOT(updateOtherPlaylist(char*)));
     connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
     connect(this, SIGNAL(requestFT(char*)), connectionControl_, SLOT(requestFT(char*)));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
+    connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addFile(QString)));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
@@ -244,7 +247,4 @@ void AppWindow::updateOtherPlaylist(char *filename) {
     QStringList filenames = QStringList(QString(filename));
     QTreeWidgetItem *item = new QTreeWidgetItem(filenames, 0);
     ui->otherLibrary->addTopLevelItem(item);
-
-    //Add file to any cleint connected to this server
-    connectionControl_->addAudioFile(QString(filename));
 }

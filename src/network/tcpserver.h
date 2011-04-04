@@ -3,6 +3,7 @@
 #include <QMap>
 #include <QList>
 #include <QThread>
+#include <QString>
 #include "socket.h"
 #include "server.h"
 #include "network.h"
@@ -37,10 +38,13 @@ class tcpserver: public server {
 
     public slots:
         void sendPacket(sock socket);
+        bool addAudioFile(QString filename);
+
 
     signals:
         void FTReq(char*);
         void connectionRequest(char* hostaddr);
+        void updateList(char* fname);
 
 };
 #endif // TCPSERVER_H
