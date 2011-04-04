@@ -145,14 +145,19 @@ void tcpserver::sendPacket(sock socket) {
 }
 
 bool tcpserver::addAudioFile(QString filename) {
-    char buf[PACKETSIZE];
 
-    foreach(sock socket, currentClients_) {
-        mkPacket(buf, MSG_LIST, filename.size(),
-                            0x00, filename.toAscii().data());
-        socket.setPacket(buf);
-        socket.TCPSend();
-        socket.clrPacket();
+    for(int i = 0; i < FD_SETSIZE; ++i) {
+        if(selectSocks_[i] != 0) {
+
+            char buf[PACKETSIZE];
+            sock socket(selectSocks_[i]);
+
+            mkPacket(buf, MSG_LIST, filename.size(),
+                                0x00, filename.toAscii().data());
+            socket.setPacket(buf);
+            socket.TCPSend();
+            socket.clrPacket();
+        }
     }
     return true;
 }

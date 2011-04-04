@@ -67,7 +67,6 @@ private:
     QList<Phonon::MediaSource> mediaSources;
 
     ConnectionControl* connectionControl_;
-    ServerControl *serverControl_;
     ChatWriteThread* chatInThread_;
 
 };
