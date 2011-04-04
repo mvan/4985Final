@@ -160,7 +160,9 @@ void ConnectionControl::addAudioFile(QString filename) {
 
     mkPacket(buf, MSG_LIST, filename.size(),
                         0, filename.toAscii().data());
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(buf);
-    TCPSocket_.TCPSend();
+    for(int i = 0; i < numConnections_; ++i) {
+        connections_[i].clrPacket();
+        connections_[i].setPacket(buf);
+        connections_[i].TCPSend();
+    }
 }
