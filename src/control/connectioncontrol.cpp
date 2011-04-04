@@ -153,7 +153,7 @@ void ConnectionControl::endStreamIn() {
 }
 
 void ConnectionControl::sendFilePacket(char* packet, char req) {
-    if(numConnections_ == 0) {
+    if(TCPSocket_.getSock() != 0) {
         TCPSocket_.clrPacket();
         TCPSocket_.setPacket(packet);
         TCPSocket_.TCPSend();
@@ -170,9 +170,11 @@ void ConnectionControl::sendAudioPacket(char* packet){
 }
 
 void ConnectionControl::sendChatPacket(char* packet) {
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(packet);
-    TCPSocket_.TCPSend();
+    if(TCPSocket_.getSock() != 0) {
+        TCPSocket_.clrPacket();
+        TCPSocket_.setPacket(packet);
+        TCPSocket_.TCPSend();
+    }
     for(int i = 0; i < numConnections_; ++i) {
         connections_[i].clrPacket();
         connections_[i].setPacket(packet);
@@ -190,9 +192,11 @@ void ConnectionControl::addAudioFile(QString filename) {
 
     mkPacket(buf, MSG_LIST, filename.size(),
                         0, filename.toAscii().data());
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(buf);
-    TCPSocket_.TCPSend();
+    if(TCPSocket_.getSock() != 0) {
+        TCPSocket_.clrPacket();
+        TCPSocket_.setPacket(buf);
+        TCPSocket_.TCPSend();
+    }
     for(int i = 0; i < numConnections_; ++i) {
         connections_[i].clrPacket();
         connections_[i].setPacket(buf);
