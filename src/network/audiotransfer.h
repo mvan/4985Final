@@ -2,7 +2,8 @@
 #define AUDIOTRANSFER_H
 #include <QThread>
 #include <winsock2.h>
-
+#define HDR_SIZE 44
+#define AUDIO_DATA_SIZE (DATA_SIZE-HDR_SIZE)
 
 
 class AudioReadThread : public QThread{
