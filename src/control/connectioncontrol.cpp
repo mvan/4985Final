@@ -130,7 +130,11 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    audioOutThread_ = new AudioReadThread(QString(fName));
-   connect(audioOutThread_, SIGNAL(endStream()), this, SLOT(endStreamOut()));
+   //Audio transfer signals and slots
+   connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
+           SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
+   connect(audioOutThread_, SIGNAL(endStream()), this,
+           SLOT(endStreamOut()), Qt::QueuedConnection);
 }
 
 void ConnectionControl::endStreamOut() {
@@ -145,6 +149,12 @@ void ConnectionControl::sendFilePacket(char* packet) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
+}
+
+void ConnectionControl::sendAudioPacket(char* packet){
+    UDPSocket_.clrPacket();
+    UDPSocket_.setPacket(packet);
+    UDPSocket_.UDPSend_Multicast();
 }
 
 void ConnectionControl::sendChatPacket(char* packet) {

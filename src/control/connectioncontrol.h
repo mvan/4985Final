@@ -43,6 +43,7 @@ public slots:
     void endStreamOut();
     void connectionSlot(char* ipaddr);
     void sendFilePacket(char*);
+    void sendAudioPacket(char*);
     void sendChatPacket(char* packet);
     void addFile(QString fileName);
     void updateList(char* fname);
