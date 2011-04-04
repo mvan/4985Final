@@ -78,13 +78,15 @@ QString ConnectionControl::getFileName() {
 void ConnectionControl::requestFT(char* fileName) {
     char* packet = (char*)malloc(PACKETSIZE);
     mkPacket(packet, MSG_FTREQ, strlen(fileName), ClientNum, fileName);
-    TCPSocket_.setPacket(packet);
 
     FileWriteThread *thread = new FileWriteThread(getFileName());
     thread->start();
 
-    TCPSocket_.TCPSend();
-    TCPSocket_.clrPacket();
+    connections_[numConnections_].clrPacket();
+    connections_[numConnections_].setPacket(packet);
+    connections_[numConnections_].TCPSend();
+   // TCPSocket_.TCPSend();
+   // TCPSocket_.clrPacket();
     free(packet);
 }
 
@@ -170,6 +172,9 @@ void ConnectionControl::addAudioFile(QString filename) {
 
     mkPacket(buf, MSG_LIST, filename.size(),
                         0, filename.toAscii().data());
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(buf);
+    TCPSocket_.TCPSend();
     for(int i = 0; i < numConnections_; ++i) {
         connections_[i].clrPacket();
         connections_[i].setPacket(buf);
