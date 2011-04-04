@@ -60,7 +60,7 @@ void tcpserver::initSelect() {
         selectSocks_[i] = -1;
     }
 
-    memset(&(selectSocks_[0]), 0, FD_SETSIZE);
+    memset(&(selectSocks_[0]), 0, FD_SETSIZE * sizeof(SOCKET));
 
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
@@ -154,9 +154,9 @@ bool tcpserver::addAudioFile(QString filename) {
 
             mkPacket(buf, MSG_LIST, filename.size(),
                                 0x00, filename.toAscii().data());
+            socket.clrPacket();
             socket.setPacket(buf);
             socket.TCPSend();
-            socket.clrPacket();
         }
     }
     return true;
