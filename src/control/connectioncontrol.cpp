@@ -133,6 +133,11 @@ void ConnectionControl::endStreamIn() {
 }
 
 void ConnectionControl::sendFilePacket(char* packet, char req) {
+    if(numConnections_ == 0) {
+        TCPSocket_.clrPacket();
+        TCPSocket_.setPacket(packet);
+        TCPSocket_.TCPSend();
+    }
     connections_[(int)req].clrPacket();
     connections_[(int)req].setPacket(packet);
     connections_[(int)req].TCPSend();
