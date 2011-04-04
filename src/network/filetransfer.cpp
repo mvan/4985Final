@@ -32,7 +32,7 @@ void FileReadThread::run(){
     sizeOfFile = file.size();
 
     FileSendThread *thread = new FileSendThread();
-    connect(thread, SIGNAL(sendPacket(char*, char)), this, SLOT(send(char*)), Qt::QueuedConnection);
+    connect(thread, SIGNAL(sendPacket(char*, char)), this, SLOT(send(char*, char)), Qt::QueuedConnection);
     thread->start();
 
     while(totalRead <= sizeOfFile){
