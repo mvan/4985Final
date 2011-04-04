@@ -3,7 +3,6 @@
 #include "externs.h"
 #include "buffer.h"
 #include <QFile>
-
 Buffer audiooutBuffer;
 
 AudioReadThread::AudioReadThread(QString file):file_(file){}
@@ -12,8 +11,9 @@ void AudioReadThread::run(){
 
     int sizeOfFile = 0;
     int bytesRead = 0;
-    int totalRead = 0;
+    int totalRead = HDR_SIZE;
     char* tempPacket, * tempBuf, *endPack;
+    char buf[44];
 
     tempPacket = (char *)malloc(PACKETSIZE);
     tempBuf = (char *)malloc(DATA_SIZE);
@@ -31,14 +31,16 @@ void AudioReadThread::run(){
 
     sizeOfFile = file.size();
 
-
     AudioSendThread *thread = new AudioSendThread();
     connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     thread->start();
 
+    file.read(buf, HDR_SIZE);
+
     while((totalRead <= sizeOfFile)){
-        if((sizeOfFile - totalRead) >= DATA_SIZE){ //More than a packet left
-            if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
+        if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){ //More than a packet left
+            memcpy(tempBuf, buf, HDR_SIZE);
+            if((bytesRead = file.read(tempBuf + HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
                 //error reading file
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf); //change with src and dest, msg type
@@ -60,7 +62,8 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             break;
         } else { //less than a full packet left
-            if((bytesRead = file.read(tempBuf, sizeOfFile - totalRead)) == -1){
+            memcpy(tempBuf, buf, HDR_SIZE);
+            if((bytesRead = file.read(tempBuf + HDR_SIZE, sizeOfFile - totalRead)) == -1){
                 //error
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0, tempBuf);
