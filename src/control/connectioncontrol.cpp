@@ -95,6 +95,7 @@ void ConnectionControl::requestFT(char* fileName) {
         QMessageBox m;
         m.setText(QString("No save file selected, aborting transfer."));
         m.exec();
+        free(packet);
         return;
     }
     FileWriteThread *thread = new FileWriteThread(fname);
