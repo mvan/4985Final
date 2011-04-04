@@ -30,8 +30,6 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
             SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
 
     //LIST SIGNALS AND SLOTS
-    connect(this, SIGNAL(addAudioFile(QString)), tcpServer_,
-            SLOT(addAudioFile(QString)), Qt::QueuedConnection);
     connect(tcpServer_, SIGNAL(updateList(char*)), this,
             SLOT(updateList(char*)), Qt::QueuedConnection);
     return true;
@@ -51,9 +49,6 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
         return true;
     }
     return false;
-}
-void ConnectionControl::addFile(QString fileName) {
-    emit addAudioFile(fileName);
 }
 
 void ConnectionControl::connectionSlot(char* ipaddr) {
@@ -165,4 +160,15 @@ void ConnectionControl::sendChatPacket(char* packet) {
 
 void ConnectionControl::updateList(char* fname) {
     emit listUpdate(fname);
+}
+
+void ConnectionControl::addAudioFile(QString filename) {
+
+    char buf[PACKETSIZE];
+
+    mkPacket(buf, MSG_LIST, filename.size(),
+                        0x00, filename.toAscii().data());
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(buf);
+    TCPSocket_.TCPSend();
 }

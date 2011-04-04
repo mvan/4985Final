@@ -143,21 +143,3 @@ int tcpserver::ProcessTCPPacket(char* packet) {
 void tcpserver::sendPacket(sock socket) {
     socket.TCPSend();
 }
-
-bool tcpserver::addAudioFile(QString filename) {
-
-    for(int i = 0; i < FD_SETSIZE; ++i) {
-        if(selectSocks_[i] != 0) {
-
-            char buf[PACKETSIZE];
-            sock socket(selectSocks_[i]);
-
-            mkPacket(buf, MSG_LIST, filename.size(),
-                                0x00, filename.toAscii().data());
-            socket.clrPacket();
-            socket.setPacket(buf);
-            socket.TCPSend();
-        }
-    }
-    return true;
-}

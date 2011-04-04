@@ -27,10 +27,8 @@ public:
     tcpserver* getTCPServer();
     udpserver* getUDPServer();
     QString getFileName();
-    HANDLE openFile(QString fName);
 
 signals:
-    void addAudioFile(QString filename);
     void listUpdate(char* fname);
 
 public slots:
@@ -45,8 +43,8 @@ public slots:
     void sendFilePacket(char*);
     void sendAudioPacket(char*);
     void sendChatPacket(char* packet);
-    void addFile(QString fileName);
     void updateList(char* fname);
+    void addAudioFile(QString filename);
 
 private:
     int tcpPort_;

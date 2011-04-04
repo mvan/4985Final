@@ -121,7 +121,7 @@ void AppWindow::setupGui() {
     connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
     connect(this, SIGNAL(requestFT(char*)), connectionControl_, SLOT(requestFT(char*)));
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
-    connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addFile(QString)));
+    connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addAudioFile(QString)));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));

@@ -38,8 +38,6 @@ class tcpserver: public server {
 
     public slots:
         void sendPacket(sock socket);
-        bool addAudioFile(QString filename);
-
 
     signals:
         void FTReq(char*);
