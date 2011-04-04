@@ -89,7 +89,7 @@ void FileReadThread::run(){
     free(tempPacket);
     free(tempBuf);
     free(endPack);
-    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
+    disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
     emit(endFT());
     return;
 }
@@ -115,12 +115,12 @@ void FileSendThread::run(){
 
         fileoutBuffer.grabPacket(packet);
         emit(sendPacket(packet));
-        Sleep(100);
+        Sleep(1);
         if(packet[0] == MSG_FTCOMPLETE) {
             break;
         }
     }
-    Sleep(100);
+    Sleep(10);
     free(packet);
 }
 
