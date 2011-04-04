@@ -49,6 +49,8 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
         TCPSocket_.clrPacket();
         return true;
     }
+    TCPSocket_.socket_close();
+    TCPSocket_.setSock(0);
     return false;
 }
 
@@ -76,17 +78,32 @@ QString ConnectionControl::getFileName() {
 }
 
 void ConnectionControl::requestFT(char* fileName) {
-    char* packet = (char*)malloc(PACKETSIZE);
+    char* packet;
+    QString fname;
+    if(TCPSocket_.getSock() == 0) {
+        QMessageBox m;
+        m.setText(QString("You are not connected to a server."));
+        m.exec();
+        return;
+    }
+
+    packet = (char*)malloc(PACKETSIZE);
     mkPacket(packet, MSG_FTREQ, strlen(fileName), ClientNum, fileName);
 
-    FileWriteThread *thread = new FileWriteThread(getFileName());
+    fname = getFileName();
+    if(fname.size() == 0) {
+        QMessageBox m;
+        m.setText(QString("No save file selected, aborting transfer."));
+        m.exec();
+        return;
+    }
+    FileWriteThread *thread = new FileWriteThread(fname);
     thread->start();
 
-    connections_[numConnections_].clrPacket();
-    connections_[numConnections_].setPacket(packet);
-    connections_[numConnections_].TCPSend();
-   // TCPSocket_.TCPSend();
-   // TCPSocket_.clrPacket();
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
+
     free(packet);
 }
 
