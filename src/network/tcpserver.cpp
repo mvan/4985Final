@@ -122,7 +122,7 @@ int tcpserver::ProcessTCPPacket(char* packet) {
             audioinBuffer.bufferPacket(packet);
             break;
         case MSG_FTREQ:
-            emit FTReq(packet+4);
+            emit FTReq(packet+4, packet[3]);
             break;
         case MSG_FTCOMPLETE:
         case MSG_FT:

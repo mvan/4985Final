@@ -27,8 +27,8 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
             SLOT(connectionSlot(char*)), Qt::QueuedConnection);
 
     //FILE TRANSFER SIGNALS AND SLOTS
-    connect(tcpServer_, SIGNAL(FTReq(char*)), this,
-            SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
+    connect(tcpServer_, SIGNAL(FTReq(char*, char)), this,
+            SLOT(startFTFromReq(char*, char)), Qt::QueuedConnection);
 
     //LIST SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(updateList(char*)), this,

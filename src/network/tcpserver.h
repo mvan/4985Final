@@ -37,7 +37,7 @@ class tcpserver: public server {
         int ProcessTCPPacket(char* packet);
 
     signals:
-        void FTReq(char*);
+        void FTReq(char*, char);
         void connectionRequest(char* hostaddr);
         void updateList(char* fname);
 
