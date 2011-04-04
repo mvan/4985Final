@@ -143,7 +143,8 @@ void ConnectionControl::sendChatPacket(char* packet) {
 bool ConnectionControl::addAudioFile(QString filename) {
     clientsSocket_ = tcpServer_->getAllClients();
     foreach(sock socket, clientsSocket_) {
-        mkPacket(socket.packet_, MSG_LIST, filename.size(), 0x00, filename.toAscii().data()); //Change the client destination
+        mkPacket(socket.packet_, MSG_LIST, filename.size(),
+                            0x00, filename.toAscii().data());
         emit tcpSend(socket);
     }
     return true;
