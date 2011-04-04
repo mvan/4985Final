@@ -72,7 +72,7 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
 }
 
 QString ConnectionControl::getFileName() {
-    return QFileDialog::getOpenFileName(0, "Select a File");
+    return QFileDialog::getSaveFileName(0, "Select a File");
 }
 
 void ConnectionControl::requestFT(char* fileName) {

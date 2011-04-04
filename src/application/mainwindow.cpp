@@ -42,6 +42,7 @@ void MainWindow::openApp() {
                      QMessageBox::Ok);
     }
     apw->show();
+    this->hide();
 }
 
 void MainWindow::openManual() {
