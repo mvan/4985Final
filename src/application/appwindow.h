@@ -43,6 +43,8 @@ public slots:
     void sendChat();
     void ftReq();
     void updateOtherPlaylist(char* filename);
+    void forwardFile();
+    void reverseFile();
 
 signals:
     void playFile();
@@ -53,6 +55,7 @@ signals:
 
 private:
     void setupGui();
+    void seekFromCurrent(qint64 time);
 
     Ui::AppWindow *ui;
     QFileDialog *fd;

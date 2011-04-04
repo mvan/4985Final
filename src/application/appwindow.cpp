@@ -130,6 +130,8 @@ void AppWindow::setupGui() {
     connect(ui->stop, SIGNAL(clicked()), mediaObject, SLOT(stop()));
     connect(ui->myLibrary, SIGNAL(itemSelectionChanged()),
             this, SLOT(fileSelection()));
+    connect(ui->forward, SIGNAL(clicked()), this, SLOT(forwardFile()));
+    connect(ui->reverse, SIGNAL(clicked()), this, SLOT(reverseFile()));
 }
 
 void AppWindow::stateChanged(Phonon::State newState, Phonon::State) {
@@ -250,4 +252,16 @@ void AppWindow::updateOtherPlaylist(char *filename) {
     QStringList filenames = QStringList(QString(filename));
     QTreeWidgetItem *item = new QTreeWidgetItem(filenames, 0);
     ui->otherLibrary->addTopLevelItem(item);
+}
+
+void AppWindow::seekFromCurrent(qint64 time) {
+    mediaObject->seek(mediaObject->currentTime()+time);
+}
+
+void AppWindow::forwardFile() {
+    this->seekFromCurrent(3000);
+}
+
+void AppWindow::reverseFile() {
+    this->seekFromCurrent(-3000);
 }
