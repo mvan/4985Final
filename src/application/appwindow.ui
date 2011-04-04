@@ -315,19 +315,6 @@ p, li { white-space: pre-wrap; }
      <string>Turn on</string>
     </property>
    </widget>
-   <widget class="QDial" name="volSelf">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>100</y>
-      <width>50</width>
-      <height>64</height>
-     </rect>
-    </property>
-    <property name="notchesVisible">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="txMicroOther">
     <property name="geometry">
      <rect>
@@ -356,19 +343,6 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Other Microphone&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-   <widget class="QDial" name="volOther">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>230</y>
-      <width>50</width>
-      <height>64</height>
-     </rect>
-    </property>
-    <property name="notchesVisible">
-     <bool>true</bool>
     </property>
    </widget>
   </widget>
