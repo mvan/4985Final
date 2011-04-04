@@ -33,7 +33,7 @@ public:
     FileSendThread();
 
 signals:
-   void sendPacket(char*, int);
+   void sendPacket(char*, char);
 protected:
     void run();
 };
