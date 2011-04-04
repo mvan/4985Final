@@ -132,7 +132,7 @@ int tcpserver::ProcessTCPPacket(char* packet) {
             //request a file list.
             break;
         case MSG_LIST: //recv a playlist item
-            externAppWindow->updateOtherPlaylist(packet+4);
+            emit updateList(packet+4);
             break;
         default:
             return 0;
@@ -142,4 +142,17 @@ int tcpserver::ProcessTCPPacket(char* packet) {
 
 void tcpserver::sendPacket(sock socket) {
     socket.TCPSend();
+}
+
+bool tcpserver::addAudioFile(QString filename) {
+    char buf[PACKETSIZE];
+
+    foreach(sock socket, currentClients_) {
+        mkPacket(buf, MSG_LIST, filename.size(),
+                            0x00, filename.toAscii().data());
+        socket.setPacket(buf);
+        socket.TCPSend();
+        socket.clrPacket();
+    }
+    return true;
 }

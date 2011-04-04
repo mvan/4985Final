@@ -19,7 +19,6 @@ namespace Ui {
     class AppWindow;
 }
 
-class ServerControl;
 class ConnectionControl;
 
 class AppWindow : public QTabWidget
@@ -28,9 +27,7 @@ class AppWindow : public QTabWidget
 
 public:
     explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
-    ~AppWindow();
-
-    void updateOtherPlaylist(char *filename);
+    virtual ~AppWindow();
 
 public slots:
     void addFiles();
@@ -45,12 +42,14 @@ public slots:
     void addChat(char* packet);
     void sendChat();
     void ftReq();
+    void updateOtherPlaylist(char* filename);
 
 signals:
     void playFile();
     void pauseFile();
     void chatSignal(char*);
     void requestFT(char* fName);
+    void addAudioFile(QString fName);
 
 private:
     void setupGui();
@@ -68,10 +67,7 @@ private:
     QList<Phonon::MediaSource> mediaSources;
 
     ConnectionControl* connectionControl_;
-    ServerControl *serverControl_;
     ChatWriteThread* chatInThread_;
-
-
 
 };
 

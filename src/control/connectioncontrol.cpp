@@ -20,11 +20,20 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     udpServer_->start();
     tcpServer_ = new tcpserver(tcpPort);
     tcpServer_->start();
-    connect(tcpServer_, SIGNAL(FTReq(char*)), this,
-            SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
+
+    //CONNECTION SIGNAL AND SLOT
     connect(tcpServer_, SIGNAL(connectionRequest(char*)), this,
             SLOT(connectionSlot(char*)), Qt::QueuedConnection);
-    connect(this, SIGNAL(tcpSend(sock)), tcpServer_, SLOT(sendPacket(sock)));
+
+    //FILE TRANSFER SIGNALS AND SLOTS
+    connect(tcpServer_, SIGNAL(FTReq(char*)), this,
+            SLOT(startFTFromReq(char*)), Qt::QueuedConnection);
+
+    //LIST SIGNALS AND SLOTS
+    connect(this, SIGNAL(addAudioFile(QString)), tcpServer_,
+            SLOT(addAudioFile(QString)), Qt::QueuedConnection);
+    connect(tcpServer_, SIGNAL(updateList(char*)), this,
+            SLOT(updateList(char*)), Qt::QueuedConnection);
     return true;
 }
 
@@ -42,6 +51,9 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
         return true;
     }
     return false;
+}
+void ConnectionControl::addFile(QString fileName) {
+    emit addAudioFile(fileName);
 }
 
 void ConnectionControl::connectionSlot(char* ipaddr) {
@@ -94,6 +106,7 @@ void ConnectionControl::startFTFromReq(char* fileName) {
         return;
     }
     fileOutThread_ = new FileReadThread(QString(fileName));
+    //FILE TRANSFER SIGNALS AND SLOTS
     connect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
             SLOT(sendFilePacket(char*)), Qt::QueuedConnection);
     connect(fileOutThread_, SIGNAL(endFT()), this,
@@ -117,7 +130,11 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    audioOutThread_ = new AudioReadThread(QString(fName));
-   connect(audioOutThread_, SIGNAL(endStream()), this, SLOT(endStreamOut()));
+   //Audio transfer signals and slots
+   connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
+           SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
+   connect(audioOutThread_, SIGNAL(endStream()), this,
+           SLOT(endStreamOut()), Qt::QueuedConnection);
 }
 
 void ConnectionControl::endStreamOut() {
@@ -134,17 +151,18 @@ void ConnectionControl::sendFilePacket(char* packet) {
     TCPSocket_.TCPSend();
 }
 
+void ConnectionControl::sendAudioPacket(char* packet){
+    UDPSocket_.clrPacket();
+    UDPSocket_.setPacket(packet);
+    UDPSocket_.UDPSend_Multicast();
+}
+
 void ConnectionControl::sendChatPacket(char* packet) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
 }
 
-bool ConnectionControl::addAudioFile(QString filename) {
-    clientsSocket_ = tcpServer_->getAllClients();
-    foreach(sock socket, clientsSocket_) {
-        mkPacket(socket.packet_, MSG_LIST, filename.size(), 0x00, filename.toAscii().data()); //Change the client destination
-        emit tcpSend(socket);
-    }
-    return true;
+void ConnectionControl::updateList(char* fname) {
+    emit listUpdate(fname);
 }
