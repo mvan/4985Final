@@ -36,9 +36,6 @@ class tcpserver: public server {
         QList<sock> getAllClients();
         int ProcessTCPPacket(char* packet);
 
-    public slots:
-        void sendPacket(sock socket);
-
     signals:
         void FTReq(char*);
         void connectionRequest(char* hostaddr);

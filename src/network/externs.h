@@ -12,5 +12,6 @@ extern Buffer chatoutBuffer;
 extern AppWindow *externAppWindow;
 extern bool transferringOut;
 extern bool streaming;
+extern char ClientNum;
 
 #endif // EXTERNS_H

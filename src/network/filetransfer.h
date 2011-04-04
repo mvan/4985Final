@@ -9,20 +9,21 @@ class FileReadThread : public QThread{
     Q_OBJECT
 
 public:
-    FileReadThread(QString file);
+    FileReadThread(QString file, char reqNum);
 
 signals:
-    void sendTCPPacket(char*);
+    void sendTCPPacket(char*, char);
     void endFT();
 
 public slots:
-    void send(char*);
+    void send(char*, char);
 
 protected:
     void run();
 
 private:
     QString file_;
+    char reqNum_;
 };
 
 class FileSendThread : public QThread{
@@ -32,7 +33,7 @@ public:
     FileSendThread();
 
 signals:
-   void sendPacket(char*);
+   void sendPacket(char*, int);
 protected:
     void run();
 };

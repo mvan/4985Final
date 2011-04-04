@@ -108,6 +108,9 @@ int tcpserver::ProcessTCPPacket(char* packet) {
     switch(packet[0]) {
         case MSG_CONN:
             return -1;
+        case MSG_CONNBACK:
+            ClientNum = packet[3];
+            break;
         case MSG_ACK:
             //acknowledge a request...any request.
             break;
@@ -138,8 +141,4 @@ int tcpserver::ProcessTCPPacket(char* packet) {
             return 0;
     }
     return 0;
-}
-
-void tcpserver::sendPacket(sock socket) {
-    socket.TCPSend();
 }

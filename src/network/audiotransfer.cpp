@@ -1,5 +1,6 @@
 #include "audiotransfer.h"
 #include "network.h"
+#include "externs.h"
 #include "buffer.h"
 #include <QFile>
 

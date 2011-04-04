@@ -6,7 +6,7 @@
 
 Buffer fileoutBuffer;
 
-FileReadThread::FileReadThread(QString file):file_(file){}
+FileReadThread::FileReadThread(QString file, char reqNum):file_(file), reqNum_(reqNum){}
 
 void FileReadThread::run(){
 
@@ -32,7 +32,7 @@ void FileReadThread::run(){
     sizeOfFile = file.size();
 
     FileSendThread *thread = new FileSendThread();
-    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
+    connect(thread, SIGNAL(sendPacket(char*, char)), this, SLOT(send(char*)), Qt::QueuedConnection);
     thread->start();
 
     while(totalRead <= sizeOfFile){
@@ -40,7 +40,7 @@ void FileReadThread::run(){
             if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_FT, (unsigned short) bytesRead, 0, tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, MSG_FT, (unsigned short) bytesRead, reqNum_, tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
@@ -50,7 +50,7 @@ void FileReadThread::run(){
             totalRead += bytesRead;
         } else if(sizeOfFile == totalRead) { // finished exactly
             memset(tempBuf, 0, sizeof(tempBuf));
-            mkPacket(tempPacket, MSG_FTCOMPLETE, 0, 0,tempBuf);
+            mkPacket(tempPacket, MSG_FTCOMPLETE, 0, reqNum_,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
@@ -62,7 +62,7 @@ void FileReadThread::run(){
             if((bytesRead = file.read(tempBuf, sizeOfFile - totalRead)) == -1){
                 //error
             }
-            mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead, 0 ,tempBuf);
+            mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead, reqNum_,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
@@ -71,7 +71,7 @@ void FileReadThread::run(){
             fileoutBuffer.bufferPacket(tempPacket);
             //make EOT packet
             memset(tempBuf, 0, DATA_SIZE);
-            mkPacket(endPack, MSG_FTCOMPLETE, 0, 0,tempBuf);
+            mkPacket(endPack, MSG_FTCOMPLETE, 0, reqNum_,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
                 fileoutBuffer.queueMutex.lock();
                 fileoutBuffer.bufferNotFull.wait(&fileoutBuffer.queueMutex);
@@ -89,13 +89,13 @@ void FileReadThread::run(){
     free(tempPacket);
     free(tempBuf);
     free(endPack);
-    disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
+    disconnect(thread, SIGNAL(sendPacket(char*, char)), this, SLOT(send(char*, char)));
     emit(endFT());
     return;
 }
 
-void FileReadThread::send(char* packet){
-    emit sendTCPPacket(packet);
+void FileReadThread::send(char* packet, char req){
+    emit sendTCPPacket(packet, req);
 }
 
 FileSendThread::FileSendThread(){}
@@ -114,7 +114,7 @@ void FileSendThread::run(){
         }
 
         fileoutBuffer.grabPacket(packet);
-        emit(sendPacket(packet));
+        emit(sendPacket(packet, packet[3]));
         Sleep(1);
         if(packet[0] == MSG_FTCOMPLETE) {
             break;

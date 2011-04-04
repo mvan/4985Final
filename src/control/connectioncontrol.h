@@ -22,10 +22,6 @@ public:
 
     bool startServer(int tcpPort, int udpPort);
     bool connectToServer(QString tcpIp, int tcpPort);
-    sock getTCPSocket();
-    sock getUDPSocket();
-    tcpserver* getTCPServer();
-    udpserver* getUDPServer();
     QString getFileName();
 
 signals:
@@ -33,14 +29,14 @@ signals:
 
 public slots:
     void requestFT(char* fileName);
-    void startFTFromReq(char* fileName);
+    void startFTFromReq(char* fileName, char clientNo);
     void endFTOut();
     void endFTIn();
     void startStreamFromReq(char* fileName);
     void endStreamIn();
     void endStreamOut();
     void connectionSlot(char* ipaddr);
-    void sendFilePacket(char*);
+    void sendFilePacket(char*, char);
     void sendAudioPacket(char*);
     void sendChatPacket(char* packet);
     void updateList(char* fname);
@@ -49,6 +45,8 @@ public slots:
 private:
     int tcpPort_;
     int udpPort_;
+    int numConnections_;
+    sock connections_[64];
     sock TCPSocket_;
     sock UDPSocket_;
     tcpserver* tcpServer_;

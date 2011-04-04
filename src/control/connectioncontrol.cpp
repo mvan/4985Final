@@ -1,4 +1,5 @@
 #include "connectioncontrol.h"
+#include "../network/externs.h"
 #include <winsock2.h>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -6,8 +7,8 @@
 
 bool transferringOut = false;
 bool streaming = false;
-
-ConnectionControl::ConnectionControl() {
+char ClientNum = 0;
+ConnectionControl::ConnectionControl(): numConnections_(0){
 
 }
 
@@ -54,28 +55,20 @@ bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
 void ConnectionControl::connectionSlot(char* ipaddr) {
     QMessageBox notification;
     QString msg;
+    char buf[PACKETSIZE];
+
     msg.append("Remote client connected at: ");
     msg.append(ipaddr);
     msg.append(", establishing connection to their server.");
     notification.setText(msg);
-    TCPSocket_.TCPSocket_Connect(ipaddr, tcpPort_);
+    connections_[numConnections_].TCPSocket_Init();
+    connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
+    connections_[numConnections_].clrPacket();
+    mkPacket(buf, MSG_CONNBACK, PACKETSIZE, numConnections_, (char*)"");
+    connections_[numConnections_].setPacket(buf);
+    connections_[numConnections_].TCPSend();
+    numConnections_++;
     notification.exec();
-}
-
-tcpserver* ConnectionControl::getTCPServer() {
-    return tcpServer_;
-}
-
-udpserver* ConnectionControl::getUDPServer() {
-    return udpServer_;
-}
-
-sock ConnectionControl::getTCPSocket() {
-    return TCPSocket_;
-}
-
-sock ConnectionControl::getUDPSocket() {
-    return UDPSocket_;
 }
 
 QString ConnectionControl::getFileName() {
@@ -84,7 +77,7 @@ QString ConnectionControl::getFileName() {
 
 void ConnectionControl::requestFT(char* fileName) {
     char* packet = (char*)malloc(PACKETSIZE);
-    mkPacket(packet, MSG_FTREQ, strlen(fileName), 0, fileName);
+    mkPacket(packet, MSG_FTREQ, strlen(fileName), ClientNum, fileName);
     TCPSocket_.setPacket(packet);
 
     FileWriteThread *thread = new FileWriteThread(getFileName());
@@ -95,14 +88,14 @@ void ConnectionControl::requestFT(char* fileName) {
     free(packet);
 }
 
-void ConnectionControl::startFTFromReq(char* fileName) {
+void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
     if(transferringOut == true) {
         return;
     }
-    fileOutThread_ = new FileReadThread(QString(fileName));
+    fileOutThread_ = new FileReadThread(QString(fileName), clientNo);
     //FILE TRANSFER SIGNALS AND SLOTS
-    connect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
-            SLOT(sendFilePacket(char*)), Qt::QueuedConnection);
+    connect(fileOutThread_, SIGNAL(sendTCPPacket(char*, char)), this,
+            SLOT(sendFilePacket(char*, char)), Qt::QueuedConnection);
     connect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()), Qt::QueuedConnection);
     transferringOut = true;
@@ -110,8 +103,8 @@ void ConnectionControl::startFTFromReq(char* fileName) {
 }
 
 void ConnectionControl::endFTOut() {
-    disconnect(fileOutThread_, SIGNAL(sendTCPPacket(char*)), this,
-            SLOT(sendFilePacket(char*)));
+    disconnect(fileOutThread_, SIGNAL(sendTCPPacket(char*, char)), this,
+            SLOT(sendFilePacket(char*, char)));
     disconnect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()));
     transferringOut = false;
@@ -139,10 +132,10 @@ void ConnectionControl::endStreamIn() {
     delete audioInThread_;
 }
 
-void ConnectionControl::sendFilePacket(char* packet) {
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(packet);
-    TCPSocket_.TCPSend();
+void ConnectionControl::sendFilePacket(char* packet, char req) {
+    connections_[(int)req].clrPacket();
+    connections_[(int)req].setPacket(packet);
+    connections_[(int)req].TCPSend();
 }
 
 void ConnectionControl::sendAudioPacket(char* packet){
@@ -166,7 +159,7 @@ void ConnectionControl::addAudioFile(QString filename) {
     char buf[PACKETSIZE];
 
     mkPacket(buf, MSG_LIST, filename.size(),
-                        0x00, filename.toAscii().data());
+                        0, filename.toAscii().data());
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(buf);
     TCPSocket_.TCPSend();
