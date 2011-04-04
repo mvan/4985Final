@@ -223,12 +223,15 @@ void AppWindow::addChat(char* packet) {
 }
 
 void AppWindow::sendChat() {
-
+    QString tmp;
     char packet[PACKETSIZE], buf[PACKETSIZE];
 
     ZeroMemory(packet, PACKETSIZE);
     ZeroMemory(buf, PACKETSIZE);
-    memcpy(buf, ui->message->toPlainText().toAscii().constData(), PACKETSIZE);
+    tmp.append(userName);
+    tmp.append(": ");
+    tmp.append(ui->message->toPlainText().toAscii().constData());
+    memcpy(buf, tmp.toAscii().constData(), PACKETSIZE);
     mkPacket(packet, MSG_CHAT, PACKETSIZE, 0, buf);
     emit chatSignal(packet);
     ui->chatLog->append(buf);

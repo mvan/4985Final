@@ -3,8 +3,9 @@
 #include "aboutwindow.h"
 #include "manwindow.h"
 #include "appwindow.h"
+#include <QString>
 #include "../control/connectioncontrol.h"
-
+QString userName;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,6 +30,7 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
+    userName = ui->userValue->text();
     if(!connectionControl_->startServer(ui->serverTCPPortValue->text().toInt(),
                                         ui->serverUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to start server"),

@@ -153,6 +153,11 @@ void ConnectionControl::sendChatPacket(char* packet) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
+    for(int i = 0; i < numConnections_; ++i) {
+        connections_[i].clrPacket();
+        connections_[i].setPacket(packet);
+        connections_[i].TCPSend();
+    }
 }
 
 void ConnectionControl::updateList(char* fname) {
