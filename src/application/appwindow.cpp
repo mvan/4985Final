@@ -67,17 +67,22 @@ void AppWindow::addFiles() {
     }
     if (!mediaSources.isEmpty()) {
         metaInfoResolver->setCurrentSource(mediaSources.at(index));
+        ui->play->setEnabled(true);
     }
 }
 
 void AppWindow::playPause() {
     QString str = QString("Play");
 
-    if (QString::compare(ui->play->text(), str) == 0) {
-        ui->play->setText("Pause");
+    if (QString::compare(ui->play->toolTip(), str) == 0) {
+        ui->play->setIcon(QIcon(":/files/pause.png"));
+        ui->play->setToolTip("Pause");
+        ui->forward->setEnabled(true);
+        ui->reverse->setEnabled(true);
         emit playFile();
     } else {
-        ui->play->setText("Play");
+        ui->play->setIcon(QIcon(":/files/play.png"));
+        ui->play->setToolTip("Play");
         emit pauseFile();
     }
 }
@@ -150,6 +155,11 @@ void AppWindow::stateChanged(Phonon::State newState, Phonon::State) {
             break;
         case Phonon::StoppedState:
             ui->stop->setEnabled(false);
+            ui->play->setIcon(QIcon(":/files/play.png"));
+            ui->play->setToolTip("Play");
+            ui->play->setEnabled(true);
+            ui->forward->setEnabled(false);
+            ui->reverse->setEnabled(false);
             break;
         case Phonon::PausedState:
             ui->stop->setEnabled(true);
