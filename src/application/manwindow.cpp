@@ -12,3 +12,10 @@ ManWindow::~ManWindow()
 {
     delete ui;
 }
+
+void ManWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
+}

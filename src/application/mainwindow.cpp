@@ -20,12 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->aboutMenu->setEnabled(TRUE);
     ui->connect->setEnabled(TRUE);
 
-    connect(ui->manMenu, SIGNAL(triggered()), this, SLOT(openManual()));
-    connect(ui->aboutMenu, SIGNAL(triggered()), this, SLOT(openAbout()));
+    connect(ui->manual, SIGNAL(clicked()), this, SLOT(openManual()));
+    connect(ui->about, SIGNAL(clicked()), this, SLOT(openAbout()));
     connect(ui->connect, SIGNAL(clicked()), this, SLOT(openApp()));
 }
 
 void MainWindow::openAbout() {
+    aw->applyStyleSheet(QString(":/files/styles.qss"));
     aw->show();
 }
 
@@ -44,12 +45,13 @@ void MainWindow::openApp() {
                      QString("No server available. This will only run as a server."),
                      QMessageBox::Ok);
     }
-    apw->applyStyleSheet(":/files/styles.qss");
+    apw->applyStyleSheet(QString(":/files/styles.qss"));
     apw->show();
     this->hide();
 }
 
 void MainWindow::openManual() {
+    mw->applyStyleSheet(QString(":/files/styles.qss"));
     mw->show();
 }
 

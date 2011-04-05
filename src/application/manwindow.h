@@ -2,6 +2,7 @@
 #define MANWINDOW_H
 
 #include <QDialog>
+#include <QFile>
 
 namespace Ui {
     class ManWindow;
@@ -14,6 +15,7 @@ class ManWindow : public QDialog
 public:
     explicit ManWindow(QWidget *parent = 0);
     ~ManWindow();
+    void applyStyleSheet(QString path);
 
 private:
     Ui::ManWindow *ui;
