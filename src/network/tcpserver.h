@@ -41,6 +41,6 @@ class tcpserver: public server {
         void StreamReq(char*);
         void connectionRequest(char* hostaddr);
         void updateList(char* fname);
-
+        void MicReq();
 };
 #endif // TCPSERVER_H

@@ -39,6 +39,10 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     connect(tcpServer_, SIGNAL(StreamReq(char*)), this,
             SLOT(startStreamFromReq(char*)), Qt::QueuedConnection);
 
+    //MIC SIGNALS AND SLOTS
+    connect(tcpServer_, SIGNAL(MicReq()), this,
+            SLOT(startMicFromReq()), Qt::QueuedConnection);
+
     return true;
 }
 
@@ -125,6 +129,13 @@ void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
             SLOT(endFTOut()), Qt::QueuedConnection);
     transferringOut = true;
     fileOutThread_->start();
+}
+
+void ConnectionControl::startMicFromReq() {
+    audioInThread_ = new AudioWriteThread();
+    connect(audioInThread_, SIGNAL(endStream()), this,
+            SLOT(endStreamIn()), Qt::QueuedConnection);
+    audioInThread_->start();
 }
 
 void ConnectionControl::endFTOut() {
