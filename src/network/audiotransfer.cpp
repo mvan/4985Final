@@ -95,6 +95,7 @@ AudioSendThread::AudioSendThread(){}
 void AudioSendThread::run(){
 
     char packet[PACKETSIZE];
+    ZeroMemory(packet, PACKETSIZE);
 
     while(1){
         if(audiooutBuffer.queue.empty()){
