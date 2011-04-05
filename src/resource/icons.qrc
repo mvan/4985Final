@@ -16,5 +16,8 @@
         <file>addFile.png</file>
         <file>transferFile.png</file>
         <file>streamFile.png</file>
+        <file>otherMicrophone.png</file>
+        <file>yourMicrophone.png</file>
+        <file>offMicrophone.png</file>
     </qresource>
 </RCC>
