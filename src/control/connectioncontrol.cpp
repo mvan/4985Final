@@ -83,7 +83,7 @@ QString ConnectionControl::getFileName() {
 }
 
 void ConnectionControl::requestFT(char* fileName) {
-    char* packet;
+    char packet[PACKETSIZE];
     QString fname;
     if(TCPSocket_.getSock() == 0) {
         QMessageBox m;
@@ -92,7 +92,6 @@ void ConnectionControl::requestFT(char* fileName) {
         return;
     }
 
-    packet = (char*)malloc(PACKETSIZE);
     mkPacket(packet, MSG_FTREQ, strlen(fileName), ClientNum, fileName);
 
     fname = getFileName();
@@ -100,7 +99,6 @@ void ConnectionControl::requestFT(char* fileName) {
         QMessageBox m;
         m.setText(QString("No save file selected, aborting transfer."));
         m.exec();
-        free(packet);
         return;
     }
     fileInThread_ = new FileWriteThread(fname);
@@ -112,8 +110,6 @@ void ConnectionControl::requestFT(char* fileName) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
-
-    free(packet);
 }
 
 void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
@@ -155,7 +151,7 @@ void ConnectionControl::startStreamFromReq(char* fName) {
 }
 
 void ConnectionControl::requestStream(char* fileName) {
-    char* packet;
+    char packet[PACKETSIZE];
     if(TCPSocket_.getSock() == 0) {
         QMessageBox m;
         m.setText(QString("You are not connected to a server."));
@@ -163,7 +159,6 @@ void ConnectionControl::requestStream(char* fileName) {
         return;
     }
 
-    packet = (char*)malloc(PACKETSIZE);
     mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
 
     audioInThread_ = new AudioWriteThread();
@@ -176,7 +171,6 @@ void ConnectionControl::requestStream(char* fileName) {
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
 
-    free(packet);
 }
 
 void ConnectionControl::endStreamOut() {

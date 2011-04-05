@@ -30,14 +30,18 @@ void AudioReadThread::run(){
     file.read(buf, HDR_SIZE);
 
     while((totalRead <= sizeOfFile)){
+
         ZeroMemory(tempPacket, DATA_SIZE);
         ZeroMemory(tempBuf, DATA_SIZE);
-        if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){ //More than a packet left
+
+        //More than a packet left
+        if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){
+
             memcpy(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read(tempBuf + HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
                 //error reading file
             }
-            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf); //change with src and dest, msg type
+            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
@@ -56,7 +60,7 @@ void AudioReadThread::run(){
             break;
         } else { //less than a full packet left
             memcpy(tempBuf, buf, HDR_SIZE);
-            if((bytesRead = file.read(tempBuf + HDR_SIZE, sizeOfFile - totalRead)) == -1){
+            if((bytesRead = file.read((tempBuf+HDR_SIZE), (sizeOfFile - totalRead))) == -1){
                 //error
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0, tempBuf);
@@ -98,7 +102,6 @@ void AudioSendThread::run(){
     char packet[PACKETSIZE];
 
     while(1){
-
         ZeroMemory(packet, PACKETSIZE);
         if(audiooutBuffer.queue.empty()){
             audiooutBuffer.queueMutex.lock();
@@ -107,12 +110,11 @@ void AudioSendThread::run(){
         }
 
         audiooutBuffer.grabPacket(packet);
-        emit(sendPacket(packet));
-        Sleep(1);
         if(packet[0] == MSG_FTCOMPLETE){
             break;
         }
-
+        emit(sendPacket(packet));
+        Sleep(1);
     }
     Sleep(10);
 }

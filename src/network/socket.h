@@ -34,7 +34,6 @@ class sock {
             delete mut_;
         }
 
-
         void TCPSocket_Init();
         void TCPSocket_Bind(int portNo);
         void TCPSocket_Listen();

@@ -295,7 +295,6 @@ int sock::UDPRecv_Multicast() {
 
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-
     sock* s = (sock*)lpOverlapped;
     char buf[PACKETSIZE];
 
@@ -310,7 +309,6 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
 
 void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
-    sock* s = (sock*)lpOverlapped;
     if(cbTransferred == 0 || error != 0) {
         WSAError(WR_ERROR);
     }
