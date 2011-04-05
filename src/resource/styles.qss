@@ -16,9 +16,18 @@ QMessageBox > QPushButton, QPushButton {
     background-color: #303030;
 }
 
-QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog, QFrame {
+QTreeView {
+    alternate-background-color: #161616;
+    color: white;
+}
+
+QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog {
     background-color: black;
     color: white;
+}
+
+QMainWindow {
+    border: none;
 }
 
 QTabWidget {
@@ -52,7 +61,7 @@ QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#trans
 }
 
 QPushButton#about {
-    background-image: url(:/files/aboutUs.png);
+    background-image: url(:/files/about.png);
 }
 
 QPushButton#manual {
@@ -91,7 +100,7 @@ QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed,
     background: transparent;
 }
 
-QTextBrowser, QTextEdit, QPlainTextEdit {
+QTextBrowser, QTextEdit, QPlainTextEdit, QFrame#myLibrary, QFrame#otherLibrary {
     color: white;
     border: 3px ridge #161616;
     background-color: #303030;
