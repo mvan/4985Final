@@ -32,6 +32,7 @@ public slots:
     void startFTFromReq(char* fileName, char clientNo);
     void endFTOut();
     void endFTIn();
+    void requestStream(char* fileName);
     void startStreamFromReq(char* fileName);
     void endStreamIn();
     void endStreamOut();
