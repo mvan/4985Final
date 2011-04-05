@@ -10,5 +10,6 @@
 #define THREAD_ERROR 5
 #define ALLOC_ERROR 6
 #define FILE_ERROR 7
+#define READ_ERROR 8
 void WSAError(int error);
 #endif

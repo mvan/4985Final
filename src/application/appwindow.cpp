@@ -34,6 +34,7 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 }
 
 AppWindow::~AppWindow() {
+    chatinBuffer.bufferNotEmpty.wakeAll();
     delete ui;
 }
 

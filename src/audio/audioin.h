@@ -1,7 +1,7 @@
 #ifndef AUDIOIN_H
 #define AUDIOIN_H
 #include <QObject>
-#include <QAudioOutput>
+#include <QAudioInput>
 #include <QAudioFormat>
 #include <QBuffer>
 #include "../network/audiotransfer.h"
@@ -9,7 +9,7 @@ class audioin: public QObject {
     Q_OBJECT
 
     private:
-        QAudioOutput* input_;
+        QAudioInput* input_;
         QAudioFormat format_;
         QIODevice* buffer_;
         QBuffer* inbuf_;

@@ -11,11 +11,11 @@ void audioin::setupParams() {
 }
 
 void audioin::createAudioDev() {
-    QAudioDeviceInfo i(QAudioDeviceInfo::defaultOutputDevice());
+    QAudioDeviceInfo i(QAudioDeviceInfo::defaultInputDevice());
     if(!i.isFormatSupported(format_)) {
         return;
     } else {
-        input_ = new QAudioOutput(format_);
+        input_ = new QAudioInput(format_);
         buffer_ = input_->start();
         inbuf_ = (QBuffer*)buffer_;
     }

@@ -1,5 +1,6 @@
 #include "filetransferin.h"
 #include "buffer.h"
+#include "errors.h"
 #include <QMessageBox>
 #include <QFile>
 
@@ -13,7 +14,7 @@ void FileWriteThread::run(){
     QFile file(file_);
 
     if(!file.open(QIODevice::WriteOnly)){
-        //error
+        WSAError(FILE_ERROR);
     }
 
     while(1){
@@ -29,7 +30,9 @@ void FileWriteThread::run(){
         if(packet[0] == MSG_FTCOMPLETE){
             break;
         }
-        file.write(packet+4, dataLength(packet));
+        if(file.write(packet+4, dataLength(packet)) == -1){
+            WSAError(READ_ERROR);
+        }
     }
     file.close();
     emit(endFT());

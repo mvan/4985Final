@@ -2,6 +2,7 @@
 #include "network.h"
 #include "buffer.h"
 #include <stdio.h>
+#include "errors.h"
 #include <QFile>
 
 Buffer fileoutBuffer;
@@ -19,7 +20,7 @@ void FileReadThread::run(){
     QFile file(file_);
 
     if(!file.open(QIODevice::ReadOnly)){
-        //error
+        WSAError(FILE_ERROR);
     }
 
     sizeOfFile = file.size();
@@ -35,7 +36,7 @@ void FileReadThread::run(){
 
         if((sizeOfFile - totalRead) >= DATA_SIZE){ //More than a packet left
             if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
-                //error reading file
+                WSAError(READ_ERROR);
             }
             mkPacket(tempPacket, MSG_FT, (unsigned short) bytesRead, reqNum_, tempBuf); //change with src and dest, msg type
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
@@ -57,7 +58,7 @@ void FileReadThread::run(){
             break;
         } else { //less than a full packet left
             if((bytesRead = file.read(tempBuf, sizeOfFile - totalRead)) == -1){
-                //error
+                WSAError(READ_ERROR);
             }
             mkPacket(tempPacket, MSG_FT, (unsigned short)bytesRead, reqNum_,tempBuf);
             if(fileoutBuffer.queue.size() == fileoutBuffer.bufferSize){
