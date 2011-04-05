@@ -12,7 +12,7 @@ OBJECTS_DIR = obj/
 DESTDIR = bin/
 MOC_DIR = moc/
 
-LIBS 	+= C:/Qt/mingw/lib/libws2_32.a
+LIBS 	+= C:/Qt/2010.05/mingw/lib/libws2_32.a
 
 SOURCES += src/main.cpp\
         src/application/mainwindow.cpp \
