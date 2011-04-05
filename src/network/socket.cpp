@@ -174,7 +174,6 @@ void sock::UDPSocket_Init() {
         WSAError(SOCK_ERROR);
     }
 
-    createOLEvent();
     if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);
     }
@@ -257,11 +256,12 @@ int sock::UDPSend_Multicast() {
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
+    createOLEvent();
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
                         sizeof(addr_), &(this->ol_), sendCompRoutine);
 
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
+    CloseHandle(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
         return 0;
     }
@@ -291,10 +291,10 @@ int sock::UDPRecv_Multicast() {
 
     buf.buf = packet_;
     buf.len = PACKETSIZE;
+    createOLEvent();
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
-
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
+    CloseHandle(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
         return 0;
     }
