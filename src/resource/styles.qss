@@ -57,6 +57,6 @@ QPushButton#play:hover, QPushButton#reverse:hover, QPushButton#stop:hover, QPush
     margin-top: 3px;
 }
 
-QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed, QPushButton#forward:pressed {
+QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed, QPushButton#forward:pressed, QPushButton:pressed {
     background: transparent;
 }

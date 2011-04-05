@@ -32,6 +32,9 @@
    <number>0</number>
   </property>
   <widget class="QWidget" name="audio">
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
    <attribute name="title">
     <string>Audio</string>
    </attribute>
@@ -82,6 +85,9 @@ p, li { white-space: pre-wrap; }
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
     <property name="toolTip">
      <string>Play</string>
     </property>
@@ -119,6 +125,9 @@ p, li { white-space: pre-wrap; }
       <family>Tahoma</family>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
     </property>
     <property name="toolTip">
      <string>Stop</string>
@@ -180,6 +189,9 @@ p, li { white-space: pre-wrap; }
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
     <property name="toolTip">
      <string>Forward</string>
     </property>
@@ -217,6 +229,9 @@ p, li { white-space: pre-wrap; }
       <family>Tahoma</family>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
     </property>
     <property name="toolTip">
      <string>Reverse</string>
@@ -516,6 +531,9 @@ p, li { white-space: pre-wrap; }
    <zorder>play</zorder>
   </widget>
   <widget class="QWidget" name="microphone">
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
    <attribute name="title">
     <string>Microphone</string>
    </attribute>
