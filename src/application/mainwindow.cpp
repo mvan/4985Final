@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     aw = new AboutWindow();
     mw = new ManWindow();
     apw = new AppWindow(connectionControl_);
-
+    this->applyStyleSheet(QString(":/files/styles.qss"));
     ui->setupUi(this);
     ui->manMenu->setEnabled(TRUE);
     ui->aboutMenu->setEnabled(TRUE);
@@ -43,6 +43,7 @@ void MainWindow::openApp() {
                      QString("No server available. This will only run as a server."),
                      QMessageBox::Ok);
     }
+    apw->applyStyleSheet(":/files/styles.qss");
     apw->show();
     this->hide();
 }
@@ -57,4 +58,11 @@ MainWindow::~MainWindow() {
 
 ConnectionControl* MainWindow::getConnectionControl() {
     return connectionControl_;
+}
+
+void MainWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
 }

@@ -2,20 +2,18 @@
 #include "ui_appwindow.h"
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QFile>
+#include <QString>
 #include "../network/filetransfer.h"
 #include "../network/externs.h"
-
-AppWindow *externAppWindow;
 
 AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
         QTabWidget(parent),
         ui(new Ui::AppWindow) {
-    externAppWindow = this;
     audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
     connectionControl_ = connectionControl;
-
     chatInThread_ = new ChatWriteThread();
     chatInThread_->start();
 
@@ -274,4 +272,11 @@ void AppWindow::forwardFile() {
 
 void AppWindow::reverseFile() {
     this->seekFromCurrent(-3000);
+}
+
+void AppWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
 }

@@ -45,6 +45,7 @@ public slots:
     void updateOtherPlaylist(char* filename);
     void forwardFile();
     void reverseFile();
+    void applyStyleSheet(QString path);
 
 signals:
     void playFile();
