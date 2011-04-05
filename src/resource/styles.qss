@@ -21,7 +21,7 @@ QTreeView {
     color: white;
 }
 
-QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog {
+QMenuBar, QMessageBox, QDialog {
     background-color: black;
     color: white;
 }
@@ -30,8 +30,20 @@ QMainWindow#MainWindow {
     background-image: url(:/files/mainWindowBg.png);
 }
 
+QTabBar {
+    background-image: url(:/files/appWindowBg.png);
+    color: white;
+    border: none;
+}
+
+QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo {
+    background-image: url(:/files/appWindowBg.png);
+    background-position: left bottom;
+}
+
 QTabWidget {
-    border-color: black;
+    border: none;
+    background-image: url(:/files/appWindowBg.png);
 }
 
 QTabBar::tab {
@@ -40,17 +52,12 @@ QTabBar::tab {
     background: transparent;
     width: 120px;
     color: white;
-    padding: 4px 2px;
-    margin-top: 5px;
-    margin-right: 40px;
+    margin-top: 15px;
+    margin-left: 15px;
 }
 
 QTabBar::tab:hover {
     margin-left: 3px;
-}
-
-QTabBar::tab#audio {
-    background-image: url(:/files/play.png);
 }
 
 QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer, QPushButton#sendButton
@@ -86,10 +93,6 @@ QPushButton#transfer {
 
 QPushButton#sendButton {
     background-image: url(:/files/send.png);
-}
-
-QTabWidget::pane {
-    border-color: black;
 }
 
 QPushButton#play:hover, QPushButton#reverse:hover, QPushButton#stop:hover, QPushButton#forward:hover, QPushButton:hover {
