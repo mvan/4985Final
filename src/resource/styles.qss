@@ -59,7 +59,7 @@ QPushButton#addFiles {
 }
 
 QPushButton#stream {
-    background-image: url(:/files/connect.png);
+    background-image: url(:/files/streamFile.png);
 }
 
 QPushButton#transfer {
