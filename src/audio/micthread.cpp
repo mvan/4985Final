@@ -9,6 +9,8 @@ void MicThread::run(){
     AudioSendThread *thread;
     audioin in;
 
+    thread = new AudioSendThread();
+
     connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     in.setupParams();
     in.createAudioDev();
