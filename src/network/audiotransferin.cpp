@@ -1,5 +1,6 @@
 #include "audiotransferin.h"
 #include "buffer.h"
+#include "../audio/audioout.h"
 #include <QMessageBox>
 
 Buffer audioinBuffer;
@@ -10,11 +11,13 @@ AudioWriteThread::AudioWriteThread(QByteArray array):audioArray_(array){
 
 void AudioWriteThread::run(){
 
-    QMutex mutex;
     char* packet;
-    QMessageBox msg;
-    msg.setText("File transfer complete");
+    audioout out;
+
+    out.createAudioDev();
     packet = (char *)malloc(PACKETSIZE);
+
+
 
     while(1){
         if(audioinBuffer.queue.size() == 0){
@@ -23,6 +26,12 @@ void AudioWriteThread::run(){
             audioinBuffer.queueMutex.unlock();
         }
         audioinBuffer.grabPacket(packet);
+        if(out.getParams(packet) == 1){
+            out.destroyAudioDev();
+            out.setupParams();
+            out.createAudioDev();
+        }
+
         //If packet type is end of transmission, end thread
         if(packet[0] == MSG_STREAMCOMPLETE){
             msg.exec();
@@ -30,8 +39,7 @@ void AudioWriteThread::run(){
             emit(endStream());
             return;
         }
-        audioArray_.append(packet+1);
-
+        out.playSound(packet+4+HDR_SIZE);;
 
     }
 }
