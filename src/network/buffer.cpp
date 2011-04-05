@@ -9,8 +9,8 @@ Buffer::~Buffer(){}
 
 void Buffer::bufferPacket(char* packet){
     char tempPacket[PACKETSIZE];
-    QByteArray tmp(tempPacket, PACKETSIZE);
     memcpy(tempPacket, packet, PACKETSIZE);
+    QByteArray tmp(tempPacket, PACKETSIZE);
     this->queueMutex.lock();
     this->queue.enqueue(tmp);
     this->bufferNotEmpty.wakeAll();
