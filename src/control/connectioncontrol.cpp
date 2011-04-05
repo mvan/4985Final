@@ -145,11 +145,11 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    audioOutThread_ = new AudioReadThread(QString(fName));
-   //Audio transfer signals and slots
    connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
+   audioOutThread_->start();
 }
 
 void ConnectionControl::requestStream(char* fileName) {
