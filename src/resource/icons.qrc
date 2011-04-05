@@ -7,5 +7,6 @@
         <file>reverse.png</file>
         <file>stop.png</file>
         <file>playHover.png</file>
+        <file>connect.png</file>
     </qresource>
 </RCC>
