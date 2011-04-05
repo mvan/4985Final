@@ -30,6 +30,8 @@ void AudioReadThread::run(){
     file.read(buf, HDR_SIZE);
 
     while((totalRead <= sizeOfFile)){
+        ZeroMemory(tempPacket, DATA_SIZE);
+        ZeroMemory(tempBuf, DATA_SIZE);
         if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){ //More than a packet left
             memcpy(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read(tempBuf + HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
@@ -44,7 +46,6 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             totalRead += bytesRead;
         } else if(sizeOfFile == totalRead) { // finished exactly
-            memset(tempBuf, 0, sizeof(tempBuf));
             mkPacket(tempPacket, MSG_STREAMCOMPLETE, 0, 0, tempBuf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.queueMutex.lock();
@@ -95,9 +96,10 @@ AudioSendThread::AudioSendThread(){}
 void AudioSendThread::run(){
 
     char packet[PACKETSIZE];
-    ZeroMemory(packet, PACKETSIZE);
 
     while(1){
+
+        ZeroMemory(packet, PACKETSIZE);
         if(audiooutBuffer.queue.empty()){
             audiooutBuffer.queueMutex.lock();
             audiooutBuffer.bufferNotEmpty.wait(&audiooutBuffer.queueMutex);
@@ -110,6 +112,7 @@ void AudioSendThread::run(){
         if(packet[0] == MSG_FTCOMPLETE){
             break;
         }
+
     }
     Sleep(10);
 }
