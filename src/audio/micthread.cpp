@@ -9,7 +9,7 @@ void MicThread::run(){
     AudioSendThread *thread;
     audioin in;
 
-    //connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
+    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
     in.setupParams();
     in.createAudioDev();
 
@@ -18,9 +18,12 @@ void MicThread::run(){
     while(micOut){
         in.readSound();
     }
-
+    thread->wait();
+    disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
+    emit(endMic());
+    return;
 }
 
-/*void MicThread::send(char*){
-
-}*/
+void MicThread::send(char* packet){
+    emit sendUDPPacket(packet);
+}

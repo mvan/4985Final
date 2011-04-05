@@ -151,6 +151,15 @@ void ConnectionControl::startStreamFromReq(char* fName) {
    audioOutThread_->start();
 }
 
+void ConnectionControl::startMicStream(){
+    micThread_ = new MicThread();
+    connect(micThread_, SIGNAL(sendUDPPacket(char*)), this,
+            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
+    connect(micThread_, SIGNAL(endMic()), this,
+            SLOT(endMic()), Qt::QueuedConnection);
+    micThread_->start();
+}
+
 void ConnectionControl::requestStream(char* fileName) {
     char packet[PACKETSIZE];
     if(TCPSocket_.getSock() == 0) {
@@ -182,6 +191,11 @@ void ConnectionControl::endStreamOut() {
 void ConnectionControl::endStreamIn() {
     Sleep(100);
     delete audioInThread_;
+}
+
+void ConnectionControl::endMic(){
+    Sleep(100);
+    delete micThread_;
 }
 
 void ConnectionControl::sendFilePacket(char* packet, char req) {
