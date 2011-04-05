@@ -19,7 +19,7 @@ void Buffer::bufferPacket(char* packet){
 void Buffer::grabPacket(char* buf){
     ZeroMemory(buf, PACKETSIZE);
     this->queueMutex.lock();
-    memcpy(buf, this->queue.dequeue().constData(), PACKETSIZE);
+    memcpy(buf, this->queue.dequeue().data(), PACKETSIZE);
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
 }

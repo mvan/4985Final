@@ -51,9 +51,7 @@ void WinsockInit() {
 -- cleans up a winsock session.
 ----------------------------------------------------------------------------------------------------------------------*/
 void WinsockCleanup() {
-
     WSACleanup();
-
 }
 
 //SERIOUSLY, THIS IS A SKETCHY FUNCTION, DON'T PASS ANY NULL PARAMETERS OR A BUFFER THAT ISN'T PACKETSIZE
@@ -63,7 +61,7 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
     buf[1] = LOBYTE(packetSize);
     buf[2] = HIBYTE(packetSize);
     buf[3] = destClient;
-    memcpy((buf+4), data, PACKETSIZE-4);
+    memcpy((buf+4), data, (PACKETSIZE-4));
 }
 
 void ProcessUDPPacket(char* packet) {

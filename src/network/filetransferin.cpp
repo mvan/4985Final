@@ -17,6 +17,7 @@ void FileWriteThread::run(){
     }
 
     while(1){
+
         ZeroMemory(packet, PACKETSIZE);
         if(fileinBuffer.queue.size() == 0){
             fileinBuffer.queueMutex.lock();
@@ -26,10 +27,10 @@ void FileWriteThread::run(){
         fileinBuffer.grabPacket(packet);
          //If packet type is end of transmission, close handle, end thread
         if(packet[0] == MSG_FTCOMPLETE){
-            file.close();
             break;
         }
         file.write(packet+4, dataLength(packet));
     }
+    file.close();
     emit(endFT());
 }
