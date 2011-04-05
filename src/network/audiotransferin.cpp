@@ -11,10 +11,8 @@ AudioWriteThread::AudioWriteThread(){
 
 void AudioWriteThread::run(){
 
-    char* packet;
+    char packet[PACKETSIZE];
     audioout out;
-
-    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
         if(audioinBuffer.queue.size() == 0){
@@ -36,7 +34,6 @@ void AudioWriteThread::run(){
 
     }
     Sleep(10);
-    free(packet);
     emit(endStream());
 }
 

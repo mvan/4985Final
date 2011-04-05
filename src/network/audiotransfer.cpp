@@ -13,7 +13,7 @@ void AudioReadThread::run(){
     int bytesRead = 0;
     int totalRead = HDR_SIZE;
     char tempPacket[PACKETSIZE], tempBuf[DATA_SIZE], endPack[PACKETSIZE];
-    char buf[44];
+    char buf[HDR_SIZE];
 
     QFile file(file_);
 
