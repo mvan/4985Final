@@ -44,10 +44,26 @@ QTabBar::tab#audio {
     background-image: url(:/files/play.png);
 }
 
+QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer {
+    background-repeat: no-repeat;
+    padding-top: 45px;
+    background-position: center top;
+}
+
 QPushButton#connect {
     background-image: url(:/files/connect.png);
-    background-repeat: no-repeat;
-    padding-top: 50px;
+}
+
+QPushButton#addFiles {
+    background-image: url(:/files/addFile.png);
+}
+
+QPushButton#stream {
+    background-image: url(:/files/connect.png);
+}
+
+QPushButton#transfer {
+    background-image: url(:/files/transferFile.png);
 }
 
 QTabWidget::pane {

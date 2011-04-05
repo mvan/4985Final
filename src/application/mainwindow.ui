@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>310</width>
-    <height>316</height>
+    <width>304</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="font">
@@ -39,7 +39,7 @@
       <x>120</x>
       <y>210</y>
       <width>48</width>
-      <height>70</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="cursor">
@@ -245,7 +245,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>310</width>
+     <width>304</width>
      <height>20</height>
     </rect>
    </property>

@@ -13,5 +13,7 @@
         <file>audio.png</file>
         <file>help.png</file>
         <file>microphone.png</file>
+        <file>addFile.png</file>
+        <file>transferFile.png</file>
     </qresource>
 </RCC>
