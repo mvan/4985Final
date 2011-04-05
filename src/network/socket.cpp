@@ -256,15 +256,8 @@ int sock::UDPSend_Multicast() {
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
     addr_.sin_port = htons(UDPPORT);
-    createOLEvent();
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
                         sizeof(addr_), &(this->ol_), sendCompRoutine);
-
-    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    CloseHandle(ol_.hEvent);
-    if(wait == WSA_WAIT_FAILED) {
-        return 0;
-    }
     return 1;
 }
 
