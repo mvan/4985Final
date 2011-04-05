@@ -1,7 +1,7 @@
 #include "micthread.h"
 #include "audioin.h"
 #include "../network/audiotransfer.h"
-bool micOut = FALSE;
+#include "../network/externs.h"
 MicThread::MicThread(){}
 
 void MicThread::run(){
@@ -17,7 +17,7 @@ void MicThread::run(){
 
     thread->start();
 
-    while(micOut){
+    while(streaming){
         in.readSound();
     }
     thread->wait();

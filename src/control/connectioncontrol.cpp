@@ -4,10 +4,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QList>
-bool transferringIn = false;
-bool transferringOut = false;
-bool streamingIn = false;
-bool streamingOut = false;
+bool transferring = false;
+bool streaming = false;
 char ClientNum = 0;
 ConnectionControl::ConnectionControl(): numConnections_(0){
 
@@ -96,7 +94,18 @@ void ConnectionControl::requestFT(char* fileName) {
         m.exec();
         return;
     }
-
+    if(transferring == true) {
+        QMessageBox m;
+        m.setText(QString("You are already transferring a file. Cannot start a new transfer."));
+        m.exec();
+        return;
+    }
+    if(fileName[0] == 0) {
+        QMessageBox m;
+        m.setText(QString("No file selected."));
+        m.exec();
+        return;
+    }
     mkPacket(packet, MSG_FTREQ, strlen(fileName), ClientNum, fileName);
 
     fname = getFileName();
@@ -115,10 +124,10 @@ void ConnectionControl::requestFT(char* fileName) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
+    transferring = true;
 }
-
 void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
-    if(transferringOut == true) {
+    if(transferring == true) {
         return;
     }
     fileOutThread_ = new FileReadThread(QString(fileName), clientNo);
@@ -127,15 +136,19 @@ void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
             SLOT(sendFilePacket(char*, char)), Qt::QueuedConnection);
     connect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()), Qt::QueuedConnection);
-    transferringOut = true;
     fileOutThread_->start();
+    transferring = true;
 }
 
 void ConnectionControl::startMicFromReq() {
+    if(streaming == true) {
+        return;
+    }
     audioInThread_ = new AudioWriteThread();
     connect(audioInThread_, SIGNAL(endStream()), this,
             SLOT(endStreamIn()), Qt::QueuedConnection);
     audioInThread_->start();
+    streaming = true;
 }
 
 void ConnectionControl::endFTOut() {
@@ -144,31 +157,45 @@ void ConnectionControl::endFTOut() {
             SLOT(sendFilePacket(char*, char)));
     disconnect(fileOutThread_, SIGNAL(endFT()), this,
             SLOT(endFTOut()));
-    transferringOut = false;
+    transferring = false;
     delete fileOutThread_;
+    transferring = false;
 }
 
 void ConnectionControl::endFTIn() {
     Sleep(100);
+    transferring = false;
     delete fileInThread_;
+    transferring = false;
 }
 
 void ConnectionControl::startStreamFromReq(char* fName) {
+    if(streaming == true) {
+        return;
+    }
    audioOutThread_ = new AudioReadThread(QString(fName));
    connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
    audioOutThread_->start();
+   streaming = true;
 }
 
 void ConnectionControl::startMicStream(){
+    if(streaming == true) {
+        QMessageBox m;
+        m.setText(QString("Audio channel already open. Cannot open mic."));
+        m.exec();
+        return;
+    }
     micThread_ = new MicThread();
     connect(micThread_, SIGNAL(sendUDPPacket(char*)), this,
             SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
     connect(micThread_, SIGNAL(endMic()), this,
             SLOT(endMic()), Qt::QueuedConnection);
     micThread_->start();
+    streaming = true;
 }
 
 void ConnectionControl::requestStream(char* fileName) {
@@ -176,6 +203,18 @@ void ConnectionControl::requestStream(char* fileName) {
     if(TCPSocket_.getSock() == 0) {
         QMessageBox m;
         m.setText(QString("You are not connected to a server."));
+        m.exec();
+        return;
+    }
+    if(fileName[0] == 0) {
+        QMessageBox m;
+        m.setText(QString("No file selected."));
+        m.exec();
+        return;
+    }
+    if(streaming == true) {
+        QMessageBox m;
+        m.setText(QString("Audio channel already open. Cannot start stream."));
         m.exec();
         return;
     }
@@ -191,22 +230,26 @@ void ConnectionControl::requestStream(char* fileName) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
+    streaming = true;
 
 }
 
 void ConnectionControl::endStreamOut() {
     Sleep(100);
     delete audioOutThread_;
+    streaming = false;
 }
 
 void ConnectionControl::endStreamIn() {
     Sleep(100);
     delete audioInThread_;
+    streaming = false;
 }
 
 void ConnectionControl::endMic(){
     Sleep(100);
     delete micThread_;
+    streaming = false;
 }
 
 void ConnectionControl::sendFilePacket(char* packet, char req) {
