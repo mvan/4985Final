@@ -302,7 +302,7 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
     if(cbTransferred == 0 || error != 0) {
         WSAError(RD_ERROR);
     } else {
-        strncpy(buf, s->packet_, PACKETSIZE);
+        memcpy(buf, s->packet_, PACKETSIZE);
         ProcessUDPPacket(buf);
     }
 

@@ -1,8 +1,9 @@
 #include "audioout.h"
+#include "../network/audiotransfer.h"
 void audioout::setupParams() {
-    format_.setFrequency(8000);
-    format_.setChannels(1);
-    format_.setSampleSize(8);
+    format_.setFrequency(frequency_);
+    format_.setChannels(channels_);
+    format_.setSampleSize(sampleSize_);
     format_.setCodec("audio/pcm");
     format_.setByteOrder(QAudioFormat::LittleEndian);
     format_.setSampleType(QAudioFormat::SignedInt);
@@ -20,8 +21,12 @@ int audioout::getParams(char* params) {
 }
 
 void audioout::createAudioDev() {
-    output_ = new QAudioOutput(format_);
-    buffer_ = output_->start();
+    if(output_ == NULL) {
+        output_ = new QAudioOutput(format_);
+        int i = output_->periodSize();
+        output_->setBufferSize(6000000);
+        buffer_ = output_->start();
+    }
 }
 
 void audioout::destroyAudioDev() {
@@ -29,5 +34,5 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound);
+    buffer_->write(sound+48, AUDIO_DATA_SIZE);
 }
