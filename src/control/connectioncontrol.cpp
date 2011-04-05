@@ -4,9 +4,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QList>
-
+bool transferringIn = false;
 bool transferringOut = false;
-bool streaming = false;
+bool streamingIn = false;
+bool streamingOut = false;
 char ClientNum = 0;
 ConnectionControl::ConnectionControl(): numConnections_(0){
 

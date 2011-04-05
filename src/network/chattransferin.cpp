@@ -5,11 +5,9 @@
 
 Buffer chatinBuffer;
 
-
 void ChatWriteThread::run(){
 
-    char* tempPacket;
-    tempPacket = (char *)malloc(PACKETSIZE);
+    char tempPacket[PACKETSIZE];
 
     while(1){
 
@@ -22,7 +20,6 @@ void ChatWriteThread::run(){
         emit(addChatToDisplay(tempPacket));
 
     }
-    free(tempPacket);
 }
 
 
