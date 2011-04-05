@@ -13,6 +13,7 @@ class sock {
         WSAOVERLAPPED ol_;
         char packet_[PACKETSIZE];
         QMutex* mut_;
+        WSABUF buffer_;
 
     private:
         SOCKET sock_;
@@ -26,6 +27,8 @@ class sock {
 
         explicit sock():sock_(0), bSend_(0), bRecv_(0){
             mut_ = new QMutex();
+            buffer_.buf = packet_;
+            buffer_.len = PACKETSIZE;
         }
         explicit sock(SOCKET socket):sock_(socket), bSend_(0), bRecv_(0) {
             mut_ = new QMutex();

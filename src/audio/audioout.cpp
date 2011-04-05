@@ -16,8 +16,8 @@ int audioout::getParams(const char* params) {
         memcpy(&byteRate_, hdr_+28, 4);
         memcpy(&channels_, hdr_+22, 2);
         memcpy(&sampleSize_, hdr_+34, 2);
-        if((byteRate_) != 0) {
-            pause_ = (1/(byteRate_));
+        if((byteRate_*8) != 0) {
+            pause_ = (1/(byteRate_*8));
         }
         return 1;
     }
@@ -37,6 +37,5 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+44, AUDIO_DATA_SIZE-4);
-    Sleep(23);
+    buffer_->write(sound+48, AUDIO_DATA_SIZE);
 }

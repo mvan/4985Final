@@ -279,12 +279,9 @@ int sock::TCPRecv() {
 
 int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
-    WSABUF buf;
 
-    buf.buf = packet_;
-    buf.len = PACKETSIZE;
     createOLEvent();
-    WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
+    WSARecv(sock_, &(this->buffer_), 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     CloseHandle(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
@@ -296,15 +293,12 @@ int sock::UDPRecv_Multicast() {
 void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
                         LPWSAOVERLAPPED lpOverlapped, DWORD dwFlags) {
     sock* s = (sock*)lpOverlapped;
-    char buf[PACKETSIZE];
 
     if(cbTransferred == 0 || error != 0) {
         WSAError(RD_ERROR);
     } else {
-        memcpy(buf, &(s->packet_[0]), PACKETSIZE);
-        ProcessUDPPacket(buf);
+        ProcessUDPPacket(&(s->packet_[0]));
     }
-
 }
 
 void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
