@@ -36,10 +36,6 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 AppWindow::~AppWindow() {
     delete ui;
 }
-void AppWindow::ftReq() {
-    QString q(this->ui->otherLibrary->currentIndex().data().toString());
-    emit(requestFT(q.toAscii().data()));
-}
 
 void AppWindow::addFiles() {
     fd->setFileMode(QFileDialog::ExistingFiles);
@@ -119,6 +115,8 @@ void AppWindow::setupGui() {
             SLOT(sendChatPacket(char*)));
 
     //connect lots of other signals
+    connect(ui->stream, SIGNAL(clicked()), this, SLOT(streamReq()));
+    connect(this, SIGNAL(requestStream(char*)), connectionControl_, SLOT(requestStream(char*)));
     connect(connectionControl_, SIGNAL(listUpdate(char*)), this,
             SLOT(updateOtherPlaylist(char*)));
     connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
@@ -279,4 +277,14 @@ void AppWindow::applyStyleSheet(QString path) {
     f.open(QIODevice::ReadOnly);
     this->setStyleSheet(QString(f.readAll()));
     f.close();
+}
+
+void AppWindow::ftReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestFT(q.toAscii().data()));
+}
+
+void AppWindow::streamReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestStream(q.toAscii().data()));
 }
