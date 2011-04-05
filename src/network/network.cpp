@@ -69,5 +69,5 @@ void ProcessUDPPacket(char* packet) {
 }
 
 unsigned short dataLength(char* buf) {
-    return MAKEWORD(buf[1], buf[2]);
+    return MAKEWORD((unsigned char)buf[1], (unsigned char)buf[2]);
 }
