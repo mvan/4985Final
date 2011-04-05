@@ -101,9 +101,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>20</y>
+      <y>30</y>
       <width>321</width>
-      <height>51</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -310,8 +310,8 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="iconSize">
      <size>
-      <width>20</width>
-      <height>20</height>
+      <width>22</width>
+      <height>22</height>
      </size>
     </property>
     <property name="flat">
