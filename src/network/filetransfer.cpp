@@ -14,14 +14,7 @@ void FileReadThread::run(){
     int bytesRead = 0;
     int totalRead = 0;
 
-    char* tempPacket, * tempBuf, *endPack;
-    tempPacket = (char *)malloc(PACKETSIZE);
-    tempBuf = (char *)malloc(DATA_SIZE);
-    endPack = (char*)malloc(PACKETSIZE);
-
-    ZeroMemory(tempPacket, PACKETSIZE);
-    ZeroMemory(tempBuf, DATA_SIZE);
-    ZeroMemory(endPack, PACKETSIZE);
+    char tempPacket[PACKETSIZE], tempBuf[DATA_SIZE], endPack[PACKETSIZE];
 
     QFile file(file_);
 
@@ -36,6 +29,8 @@ void FileReadThread::run(){
     thread->start();
 
     while(totalRead <= sizeOfFile){
+        ZeroMemory(tempPacket, PACKETSIZE);
+        ZeroMemory(tempBuf, DATA_SIZE);
         if((sizeOfFile - totalRead) >= DATA_SIZE){ //More than a packet left
             if((bytesRead = file.read(tempBuf, DATA_SIZE)) == -1){
                 //error reading file
@@ -86,9 +81,6 @@ void FileReadThread::run(){
     thread->wait();
 
     file.close();
-    free(tempPacket);
-    free(tempBuf);
-    free(endPack);
     disconnect(thread, SIGNAL(sendPacket(char*, char)), this, SLOT(send(char*, char)));
     emit(endFT());
     return;

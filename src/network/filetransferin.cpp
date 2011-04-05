@@ -8,16 +8,16 @@ FileWriteThread::FileWriteThread(QString file):file_(file){}
 
 void FileWriteThread::run(){
 
-    char* packet;
+    char packet[PACKETSIZE];
 
     QFile file(file_);
 
     if(!file.open(QIODevice::WriteOnly)){
         //error
     }
-    packet = (char *)malloc(PACKETSIZE);
 
     while(1){
+        ZeroMemory(packet, PACKETSIZE);
         if(fileinBuffer.queue.size() == 0){
             fileinBuffer.queueMutex.lock();
             fileinBuffer.bufferNotEmpty.wait(&fileinBuffer.queueMutex);
@@ -31,6 +31,5 @@ void FileWriteThread::run(){
         }
         file.write((packet+4), dataLength(packet));
     }
-    free(packet);
     emit(endFT());
 }
