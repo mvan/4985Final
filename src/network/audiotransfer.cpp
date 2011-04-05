@@ -12,16 +12,8 @@ void AudioReadThread::run(){
     int sizeOfFile = 0;
     int bytesRead = 0;
     int totalRead = HDR_SIZE;
-    char* tempPacket, * tempBuf, *endPack;
+    char tempPacket[PACKETSIZE], tempBuf[DATA_SIZE], endPack[PACKETSIZE];
     char buf[44];
-
-    tempPacket = (char *)malloc(PACKETSIZE);
-    tempBuf = (char *)malloc(DATA_SIZE);
-    endPack = (char*)malloc(PACKETSIZE);
-
-    ZeroMemory(tempPacket, PACKETSIZE);
-    ZeroMemory(tempBuf, DATA_SIZE);
-    ZeroMemory(endPack, PACKETSIZE);
 
     QFile file(file_);
 
@@ -89,9 +81,6 @@ void AudioReadThread::run(){
     thread->wait();
 
     file.close();
-    free(tempPacket);
-    free(tempBuf);
-    free(endPack);
     disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
     emit(endStream());
     return;
@@ -105,8 +94,7 @@ AudioSendThread::AudioSendThread(){}
 
 void AudioSendThread::run(){
 
-    char* packet;
-    packet = (char *)malloc(PACKETSIZE);
+    char packet[PACKETSIZE];
 
     while(1){
         if(audiooutBuffer.queue.empty()){
@@ -123,5 +111,4 @@ void AudioSendThread::run(){
         }
     }
     Sleep(10);
-    free(packet);
 }
