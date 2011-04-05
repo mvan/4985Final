@@ -17,7 +17,7 @@ class audioout: public QObject {
         short sampleSize_;
         char hdr_[HDR_SIZE];
     public:
-        explicit audioout(){}
+        explicit audioout():output_(NULL){}
         virtual ~audioout(){}
         int getParams(char* params);
         void setupParams();

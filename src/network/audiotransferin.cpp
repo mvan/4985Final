@@ -30,8 +30,7 @@ void AudioWriteThread::run(){
         if(packet[0] == MSG_STREAMCOMPLETE){
             break;
         }
-        out.playSound(packet+4+HDR_SIZE);;
-
+        out.playSound(packet);
     }
     Sleep(10);
     emit(endStream());
