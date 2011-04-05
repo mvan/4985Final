@@ -30,7 +30,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>192.168.0.7</string>
+     <string>0</string>
     </property>
    </widget>
    <widget class="QPushButton" name="connect">
@@ -234,7 +234,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>310</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="layoutDirection">
