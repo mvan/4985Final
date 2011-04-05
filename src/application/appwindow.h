@@ -32,7 +32,6 @@ public:
 public slots:
     void addFiles();
     void playPause();
-    void onOffMicOther();
     void onOffMicSelf();
     void sourceChanged(const Phonon::MediaSource &source);
     void stateChanged(Phonon::State newState, Phonon::State oldState);

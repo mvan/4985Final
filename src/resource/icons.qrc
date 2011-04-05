@@ -22,5 +22,7 @@
         <file>send.png</file>
         <file>about.png</file>
         <file>aboutUs.png</file>
+        <file>mainWindowBg.png</file>
+        <file>closeBtn.png</file>
     </qresource>
 </RCC>

@@ -81,18 +81,6 @@ void AppWindow::playPause() {
     }
 }
 
-void AppWindow::onOffMicOther() {
-    QString str = QString("Turn on");
-
-    if (QString::compare(ui->txMicroOther->text(), str) == 0) {
-        ui->txMicroOther->setText("Turn off");
-        ui->txMicroOther->setIcon(QIcon(":/files/offMicrophone.png"));
-    } else {
-        ui->txMicroOther->setText("Turn on");
-        ui->txMicroOther->setIcon(QIcon(":/files/otherMicrophone.png"));
-    }
-}
-
 void AppWindow::onOffMicSelf() {
     QString str = QString("Turn on");
 
@@ -130,8 +118,6 @@ void AppWindow::setupGui() {
     connect(ui->addFiles, SIGNAL(clicked()), this, SLOT(addFiles()));
     connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addAudioFile(QString)));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
-    connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
-    //Microphone signals
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
     connect(this, SIGNAL(startMicStream()), connectionControl_, SLOT(startMicStream()));
 
