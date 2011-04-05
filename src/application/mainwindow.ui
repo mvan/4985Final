@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Connect</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resource/icons.qrc">
+    <normaloff>:/files/audio.png</normaloff>:/files/audio.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="tcpIpValue">
     <property name="geometry">
