@@ -4,12 +4,17 @@
 #include "manwindow.h"
 #include "appwindow.h"
 #include <QString>
+#include <QBitmap>
 #include "../control/connectioncontrol.h"
 QString userName;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    setWindowFlags(Qt::FramelessWindowHint);
+    QPixmap pixmap(":/files/mainWindowBg.png");
+    this->setMask(pixmap.mask());
+
     connectionControl_ = new ConnectionControl();
     aw = new AboutWindow();
     mw = new ManWindow();
@@ -23,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->manual, SIGNAL(clicked()), this, SLOT(openManual()));
     connect(ui->about, SIGNAL(clicked()), this, SLOT(openAbout()));
     connect(ui->connect, SIGNAL(clicked()), this, SLOT(openApp()));
+    connect(ui->quit, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 void MainWindow::openAbout() {

@@ -21,13 +21,13 @@ QTreeView {
     color: white;
 }
 
-QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog {
+QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog {
     background-color: black;
     color: white;
 }
 
-QMainWindow {
-    border: none;
+QMainWindow#MainWindow {
+    background-image: url(:/files/mainWindowBg.png);
 }
 
 QTabWidget {
