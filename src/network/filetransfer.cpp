@@ -94,8 +94,7 @@ FileSendThread::FileSendThread(){}
 
 void FileSendThread::run(){
 
-    char* packet;
-    packet = (char *)malloc(PACKETSIZE);
+    char packet[PACKETSIZE];
 
     while(1){
 
@@ -113,6 +112,5 @@ void FileSendThread::run(){
         }
     }
     Sleep(10);
-    free(packet);
 }
 

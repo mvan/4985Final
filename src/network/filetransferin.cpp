@@ -29,7 +29,7 @@ void FileWriteThread::run(){
             file.close();
             break;
         }
-        file.write((packet+4), dataLength(packet));
+        file.write(packet+4, dataLength(packet));
     }
     emit(endFT());
 }
