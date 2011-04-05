@@ -16,7 +16,7 @@ QMessageBox > QPushButton, QPushButton {
     background-color: #303030;
 }
 
-QMainWindow, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo {
+QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo {
     background-color: black;
     color: white;
 }
@@ -26,9 +26,10 @@ QTabWidget {
 }
 
 QTabBar::tab {
-    border: 2px ridge #161616;
-    background-color: #303030;
-    width: 100px;
+    /*border: 2px ridge #161616;
+    background-color: #303030;*/
+    background: transparent;
+    width: 120px;
     color: white;
     padding: 4px 2px;
     margin-top: 5px;
@@ -36,7 +37,7 @@ QTabBar::tab {
 }
 
 QTabBar::tab:hover {
-    margin-top: 2px;
+    margin-left: 3px;
 }
 
 QTabBar::tab#audio {

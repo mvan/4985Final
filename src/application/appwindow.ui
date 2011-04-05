@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>667</width>
-    <height>509</height>
+    <height>541</height>
    </rect>
   </property>
   <property name="font">
@@ -15,6 +15,9 @@
     <family>Tahoma</family>
     <pointsize>10</pointsize>
    </font>
+  </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>Comm Audio</string>
@@ -31,10 +34,20 @@
   <property name="currentIndex">
    <number>0</number>
   </property>
+  <property name="iconSize">
+   <size>
+    <width>48</width>
+    <height>48</height>
+   </size>
+  </property>
   <widget class="QWidget" name="audio">
    <property name="cursor">
     <cursorShape>ArrowCursor</cursorShape>
    </property>
+   <attribute name="icon">
+    <iconset resource="../resource/icons.qrc">
+     <normaloff>:/files/audio.png</normaloff>:/files/audio.png</iconset>
+   </attribute>
    <attribute name="title">
     <string>Audio</string>
    </attribute>
@@ -534,6 +547,10 @@ p, li { white-space: pre-wrap; }
    <property name="cursor">
     <cursorShape>ArrowCursor</cursorShape>
    </property>
+   <attribute name="icon">
+    <iconset resource="../resource/icons.qrc">
+     <normaloff>:/files/microphone.png</normaloff>:/files/microphone.png</iconset>
+   </attribute>
    <attribute name="title">
     <string>Microphone</string>
    </attribute>
@@ -623,6 +640,10 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
   <widget class="QWidget" name="chat">
+   <attribute name="icon">
+    <iconset resource="../resource/icons.qrc">
+     <normaloff>:/files/chat.png</normaloff>:/files/chat.png</iconset>
+   </attribute>
    <attribute name="title">
     <string>Chat</string>
    </attribute>
@@ -677,6 +698,10 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
   <widget class="QWidget" name="connectInfo">
+   <attribute name="icon">
+    <iconset resource="../resource/icons.qrc">
+     <normaloff>:/files/connectionInfo.png</normaloff>:/files/connectionInfo.png</iconset>
+   </attribute>
    <attribute name="title">
     <string>Connection</string>
    </attribute>
