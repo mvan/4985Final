@@ -20,13 +20,8 @@ int audioout::getParams(char* params) {
 }
 
 void audioout::createAudioDev() {
-    QAudioDeviceInfo i(QAudioDeviceInfo::defaultOutputDevice());
-    if(!i.isFormatSupported(format_)) {
-        return;
-    } else {
-        output_ = new QAudioOutput(format_);
-        buffer_ = output_->start();
-    }
+    output_ = new QAudioOutput(format_);
+    buffer_ = output_->start();
 }
 
 void audioout::destroyAudioDev() {
