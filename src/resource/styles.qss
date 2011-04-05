@@ -1,34 +1,40 @@
-QMainWindow {
-    background-color: black;
-}
-
 QPushButton {
     background-color: #132b52;
     color: white;
-}
-
-QTabBar:tab {
-    color: white;
-    background-color: black;
 }
 
 QLabel {
     color: white;
 }
 
-QPushButton {
-    background-color: #303030;
-}
-
 QAbstractItemView {
-    color: white;
+    color: black;
 }
 
-QMessageBox > QPushButton {
+QMessageBox > QPushButton, QPushButton {
     color: white;
     background-color: #303030;
 }
 
-QMessageBox {
+QMainWindow, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo {
     background-color: black;
+    color: white;
+}
+
+QTabWidget {
+    border-color: black;
+}
+
+QTabBar::tab {
+    border: 2px ridge #161616;
+    background-color: #303030;
+    width: 100px;
+    color: white;
+    padding: 4px 2px;
+    margin-top: 5px;
+    margin-right: 40px;
+}
+
+QTabWidget::pane {
+    border-color: black;
 }
