@@ -30,17 +30,20 @@ void MainWindow::openAbout() {
 }
 
 void MainWindow::openApp() {
+    QMessageBox msgBox;
+    msgBox.setStyleSheet(QString("QMessageBox > QPushButton { color: white; }"));
+
     userName = ui->userValue->text();
     if(!connectionControl_->startServer(ui->serverTCPPortValue->text().toInt(),
                                         ui->serverUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to start server"),
-                    QString("This will only run as a client."),
+                    QString("<font color = #43B000 >This will only run as a client.</font>"),
                     QMessageBox::Ok);
     }
     if(!connectionControl_->connectToServer(ui->tcpIpValue->text(),
                                             ui->clientTCPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to connect to server"),
-                     QString("No server available. This will only run as a server."),
+                     QString("<font color = #43B000 >No server available. This will only run as a server.</font>"),
                      QMessageBox::Ok);
     }
     apw->show();
