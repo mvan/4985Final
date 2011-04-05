@@ -38,3 +38,11 @@ QTabBar::tab {
 QTabWidget::pane {
     border-color: black;
 }
+
+QPushButton#play:hover, QPushButton#reverse:hover, QPushButton#stop:hover, QPushButton#forward:hover {
+    margin-top: 3px;
+}
+
+QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed, QPushButton#forward:pressed {
+    background: transparent;
+}
