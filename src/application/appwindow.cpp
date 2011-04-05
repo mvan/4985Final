@@ -99,11 +99,12 @@ void AppWindow::onOffMicSelf() {
     if (QString::compare(ui->txMicroSelf->text(), str) == 0) {
         ui->txMicroSelf->setText("Turn off");
         ui->txMicroSelf->setIcon(QIcon(":/files/offMicrophone.png"));
+        emit(startMicStream());
     } else {
         ui->txMicroSelf->setText("Turn on");
         ui->txMicroSelf->setIcon(QIcon(":/files/yourMicrophone.png"));
     }
-    emit(startMicStream());
+
 }
 
 void AppWindow::setupGui() {
