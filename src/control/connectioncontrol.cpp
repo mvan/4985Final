@@ -150,6 +150,8 @@ void ConnectionControl::endFTOut() {
 
 void ConnectionControl::endFTIn() {
     Sleep(100);
+    disconnect(fileInThread_, SIGNAL(endFT()), this,
+            SLOT(endFTIn()));
     delete fileInThread_;
 }
 
@@ -196,16 +198,26 @@ void ConnectionControl::requestStream(char* fileName) {
 
 void ConnectionControl::endStreamOut() {
     Sleep(100);
+    disconnect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
+            SLOT(sendAudioPacket(char*)));
+    disconnect(audioOutThread_, SIGNAL(endStream()), this,
+            SLOT(endStreamOut()));
     delete audioOutThread_;
 }
 
 void ConnectionControl::endStreamIn() {
     Sleep(100);
+    disconnect(audioInThread_, SIGNAL(endStream()), this,
+               SLOT(endStreamIn()));
     delete audioInThread_;
 }
 
 void ConnectionControl::endMic(){
     Sleep(100);
+    disconnect(micThread_, SIGNAL(sendUDPPacket(char*)), this,
+            SLOT(sendAudioPacket(char*)));
+    disconnect(micThread_, SIGNAL(endMic()), this,
+            SLOT(endMic()));
     delete micThread_;
 }
 
