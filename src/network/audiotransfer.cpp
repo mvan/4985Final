@@ -38,7 +38,7 @@ void AudioReadThread::run(){
         if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){
 
             memcpy(tempBuf, buf, HDR_SIZE);
-            if((bytesRead = file.read(tempBuf + HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
+            if((bytesRead = file.read(tempBuf+HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
                 //error reading file
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf);

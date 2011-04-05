@@ -10,11 +10,15 @@ void audioout::setupParams() {
 }
 
 int audioout::getParams(const char* params) {
-    if(memcmp(params+4, hdr_, HDR_SIZE) != 0) {
+    if(memcmp(params, hdr_, HDR_SIZE) != 0) {
         memcpy(hdr_, params, HDR_SIZE);
-        memcpy(&frequency_, params+24, 4);
-        memcpy(&channels_, params+22, 2);
-        memcpy(&sampleSize_, params+34, 2);
+        memcpy(&frequency_, hdr_+24, 4);
+        memcpy(&byteRate_, hdr_+28, 4);
+        memcpy(&channels_, hdr_+22, 2);
+        memcpy(&sampleSize_, hdr_+34, 2);
+        if((byteRate_) != 0) {
+            pause_ = (1/(byteRate_));
+        }
         return 1;
     }
     return 0;
@@ -33,5 +37,6 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, AUDIO_DATA_SIZE);
+    buffer_->write(sound+44, AUDIO_DATA_SIZE-4);
+    Sleep(23);
 }

@@ -13,6 +13,8 @@ class audioout: public QObject {
         QIODevice* buffer_;
 
         int frequency_;
+        double byteRate_;
+        int pause_;
         short channels_;
         short sampleSize_;
         char hdr_[HDR_SIZE];
