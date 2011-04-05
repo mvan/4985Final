@@ -281,7 +281,7 @@ int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
 
     createOLEvent();
-    WSARecv(sock_, &(this->buffer_), 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
+    WSARecv(sock_, &(this->buffer_), 1, NULL, &flags, (LPWSAOVERLAPPED)this, UDPCompRoutine);
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     CloseHandle(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {

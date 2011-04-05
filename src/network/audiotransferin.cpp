@@ -23,7 +23,7 @@ void AudioWriteThread::run(){
             audioinBuffer.queueMutex.unlock();
         }
         audioinBuffer.grabPacket(packet);
-        if(out.getParams((packet)) == 1){
+        if(out.getParams((packet+4)) == 1){
             out.setupParams();
             out.createAudioDev();
         }
