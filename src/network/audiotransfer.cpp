@@ -98,7 +98,6 @@ void AudioSendThread::run(){
     char packet[PACKETSIZE];
 
     while(1){
-
         ZeroMemory(packet, PACKETSIZE);
         if(audiooutBuffer.queue.empty()){
             audiooutBuffer.queueMutex.lock();
