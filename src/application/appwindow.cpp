@@ -103,6 +103,7 @@ void AppWindow::onOffMicSelf() {
         ui->txMicroSelf->setText("Turn on");
         ui->txMicroSelf->setIcon(QIcon(":/files/yourMicrophone.png"));
     }
+    emit(startMicStream());
 }
 
 void AppWindow::setupGui() {
@@ -129,7 +130,10 @@ void AppWindow::setupGui() {
     connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addAudioFile(QString)));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroOther, SIGNAL(clicked()), this, SLOT(onOffMicOther()));
+    //Microphone signals
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
+    connect(this, SIGNAL(startMicStream()), connectionControl_, SLOT(startMicStream()));
+
     connect(this, SIGNAL(playFile()), mediaObject, SLOT(play()));
     connect(this, SIGNAL(pauseFile()), mediaObject, SLOT(pause()));
     connect(ui->stop, SIGNAL(clicked()), mediaObject, SLOT(stop()));
