@@ -20,6 +20,8 @@
 #define MSG_CONN 0x0C
 #define MSG_CONNBACK 0x0D
 #define MSG_MIC 0x0E
+#define MSG_MICOPEN 0x0F
+#define MSG_MICCLOSED 0x10
 void WinsockInit();
 void WinsockCleanup();
 void ProcessUDPPacket(char* packet);

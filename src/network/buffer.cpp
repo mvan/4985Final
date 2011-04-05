@@ -6,7 +6,6 @@ Buffer::Buffer(int size):bufferSize(size){}
 
 Buffer::~Buffer(){}
 
-
 void Buffer::bufferPacket(char* packet){
     char tempPacket[PACKETSIZE];
     memcpy(tempPacket, packet, PACKETSIZE);
