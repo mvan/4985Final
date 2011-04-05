@@ -12,7 +12,7 @@ OBJECTS_DIR = obj/
 DESTDIR = bin/
 MOC_DIR = moc/
 
-LIBS 	+= C:/Qt/2010.05/mingw/lib/libws2_32.a
+LIBS 	+= C:/Qt/mingw/lib/libws2_32.a
 
 SOURCES += src/main.cpp\
         src/application/mainwindow.cpp \
@@ -34,7 +34,7 @@ SOURCES += src/main.cpp\
         src/network/audiotransfer.cpp \
         src/audio/audioin.cpp \
         src/audio/audioout.cpp \
-    src/audio/micthread.cpp
+        src/audio/micthread.cpp
 
 
 HEADERS  += src/application/mainwindow.h \
@@ -58,7 +58,7 @@ HEADERS  += src/application/mainwindow.h \
         src/network/audiotransfer.h \
         src/audio/audioin.h \
         src/audio/audioout.h \
-    src/audio/micthread.h
+        src/audio/micthread.h
 
 
 
