@@ -252,7 +252,6 @@ int sock::UDPSend_Multicast() {
     WSABUF buf;
     DWORD wait;
 
-    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
@@ -264,10 +263,8 @@ int sock::UDPSend_Multicast() {
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
-        mut_->unlock();
         return 0;
     }
-    mut_->unlock();
     return 1;
 }
 
@@ -292,7 +289,6 @@ int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
     WSABUF buf;
 
-    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
@@ -300,10 +296,8 @@ int sock::UDPRecv_Multicast() {
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
     WSAResetEvent(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
-        mut_->unlock();
         return 0;
     }
-    mut_->unlock();
     return 1;
 }
 
