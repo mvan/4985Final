@@ -33,6 +33,9 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     //LIST SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(updateList(char*)), this,
             SLOT(updateList(char*)), Qt::QueuedConnection);
+
+    //STREAM SIGNALS AND SLOTS
+
     return true;
 }
 
@@ -98,8 +101,11 @@ void ConnectionControl::requestFT(char* fileName) {
         free(packet);
         return;
     }
-    FileWriteThread *thread = new FileWriteThread(fname);
-    thread->start();
+    fileInThread_ = new FileWriteThread(fname);
+    fileInThread_->start();
+
+    connect(fileInThread_, SIGNAL(endFT()), this,
+            SLOT(endFTIn()), Qt::QueuedConnection);
 
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
@@ -142,6 +148,31 @@ void ConnectionControl::startStreamFromReq(char* fName) {
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
+}
+
+void ConnectionControl::requestStream(char* fileName) {
+    char* packet;
+    if(TCPSocket_.getSock() == 0) {
+        QMessageBox m;
+        m.setText(QString("You are not connected to a server."));
+        m.exec();
+        return;
+    }
+
+    packet = (char*)malloc(PACKETSIZE);
+    mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
+
+    audioInThread_ = new AudioWriteThread();
+    audioInThread_->start();
+
+    connect(audioInThread_, SIGNAL(endStream()), this,
+            SLOT(endStreamIn()), Qt::QueuedConnection);
+
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
+
+    free(packet);
 }
 
 void ConnectionControl::endStreamOut() {
