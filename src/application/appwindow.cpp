@@ -87,10 +87,12 @@ void AppWindow::onOffMicSelf() {
     if (QString::compare(ui->txMicroSelf->text(), str) == 0) {
         ui->txMicroSelf->setText("Turn off");
         ui->txMicroSelf->setIcon(QIcon(":/files/offMicrophone.png"));
+        emit(startMicStream());
     } else {
         ui->txMicroSelf->setText("Turn on");
         ui->txMicroSelf->setIcon(QIcon(":/files/yourMicrophone.png"));
     }
+
 }
 
 void AppWindow::setupGui() {
@@ -117,6 +119,8 @@ void AppWindow::setupGui() {
     connect(this, SIGNAL(addAudioFile(QString)), connectionControl_, SLOT(addAudioFile(QString)));
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
+    connect(this, SIGNAL(startMicStream()), connectionControl_, SLOT(startMicStream()));
+
     connect(this, SIGNAL(playFile()), mediaObject, SLOT(play()));
     connect(this, SIGNAL(pauseFile()), mediaObject, SLOT(pause()));
     connect(ui->stop, SIGNAL(clicked()), mediaObject, SLOT(stop()));

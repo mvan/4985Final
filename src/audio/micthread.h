@@ -10,11 +10,15 @@ class MicThread : public QThread{
 public:
     MicThread();
 
+public slots:
+    void send(char*);
 protected:
     void run();
 
+
 signals:
-    //void endStream();
+    void sendUDPPacket(char*);
+    void endMic();
 
 };
 

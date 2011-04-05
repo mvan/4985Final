@@ -10,7 +10,9 @@ class AudioReadThread : public QThread{
     Q_OBJECT
 
 public:
-    AudioReadThread(QString file);
+    explicit AudioReadThread(QString file);
+    virtual ~AudioReadThread(){};
+
 
 protected:
     void run();
@@ -30,7 +32,8 @@ class AudioSendThread : public QThread{
     Q_OBJECT
 
 public:
-    AudioSendThread();
+    explicit AudioSendThread();
+    virtual ~AudioSendThread(){}
 
 signals:
     void sendPacket(char*);

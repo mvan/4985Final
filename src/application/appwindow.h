@@ -54,6 +54,7 @@ signals:
     void requestFT(char* fName);
     void requestStream(char* fName);
     void addAudioFile(QString fName);
+    void startMicStream();
 
 private:
     void setupGui();

@@ -13,6 +13,7 @@
 #include "../network/filetransferin.h"
 #include "../network/tcpserver.h"
 #include "../network/udpserver.h"
+#include "../audio/micthread.h"
 
 class ConnectionControl: public QObject {
     Q_OBJECT
@@ -42,6 +43,8 @@ public slots:
     void sendChatPacket(char* packet);
     void updateList(char* fname);
     void addAudioFile(QString filename);
+    void startMicStream();
+    void endMic();
 
 private:
     int tcpPort_;
@@ -56,6 +59,7 @@ private:
     AudioWriteThread* audioInThread_;
     FileReadThread* fileOutThread_;
     FileWriteThread* fileInThread_;
+    MicThread* micThread_;
     QList<sock> clientsSocket_;
 };
 
