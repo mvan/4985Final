@@ -115,7 +115,7 @@ int tcpserver::ProcessTCPPacket(char* packet) {
             //acknowledge a request...any request.
             break;
         case MSG_STREAMREQ:
-            //open a new incoming stream.
+            emit StreamReq(packet+4);
             break;
         case MSG_STREAMPAUSE:
         case MSG_STREAMCOMPLETE:

@@ -1,8 +1,8 @@
 #include "audioout.h"
 void audioout::setupParams() {
-    format_.setFrequency(frequency_);
-    format_.setChannels(channels_);
-    format_.setSampleSize(sampleSize_);
+    format_.setFrequency(8000);
+    format_.setChannels(1);
+    format_.setSampleSize(8);
     format_.setCodec("audio/pcm");
     format_.setByteOrder(QAudioFormat::LittleEndian);
     format_.setSampleType(QAudioFormat::SignedInt);
@@ -20,13 +20,8 @@ int audioout::getParams(char* params) {
 }
 
 void audioout::createAudioDev() {
-    QAudioDeviceInfo i(QAudioDeviceInfo::defaultOutputDevice());
-    if(!i.isFormatSupported(format_)) {
-        return;
-    } else {
-        output_ = new QAudioOutput(format_);
-        buffer_ = output_->start();
-    }
+    output_ = new QAudioOutput(format_);
+    buffer_ = output_->start();
 }
 
 void audioout::destroyAudioDev() {

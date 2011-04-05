@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     aw = new AboutWindow();
     mw = new ManWindow();
     apw = new AppWindow(connectionControl_);
-
+    this->applyStyleSheet(QString(":/files/styles.qss"));
     ui->setupUi(this);
     ui->manMenu->setEnabled(TRUE);
     ui->aboutMenu->setEnabled(TRUE);
@@ -41,11 +41,13 @@ void MainWindow::openApp() {
                     QMessageBox::Ok);
     }
     if(!connectionControl_->connectToServer(ui->tcpIpValue->text(),
-                                            ui->clientTCPPortValue->text().toInt())) {
+                                            ui->clientTCPPortValue->text().toInt(),
+                                            ui->clientUDPPortValue->text().toInt())) {
         QMessageBox::warning(this, QString("Failed to connect to server"),
                      QString("<font color = #43B000 >No server available. This will only run as a server.</font>"),
                      QMessageBox::Ok);
     }
+    apw->applyStyleSheet(":/files/styles.qss");
     apw->show();
     this->hide();
 }
@@ -60,4 +62,11 @@ MainWindow::~MainWindow() {
 
 ConnectionControl* MainWindow::getConnectionControl() {
     return connectionControl_;
+}
+
+void MainWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
 }

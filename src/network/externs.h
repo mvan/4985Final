@@ -10,7 +10,6 @@ extern Buffer audioinBuffer;
 extern Buffer audiooutBuffer;
 extern Buffer chatinBuffer;
 extern Buffer chatoutBuffer;
-extern AppWindow *externAppWindow;
 extern bool transferringOut;
 extern bool streaming;
 extern char ClientNum;

@@ -19,9 +19,6 @@
   <property name="windowTitle">
    <string>Connect</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(0, 0, 0);</string>
-  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="tcpIpValue">
     <property name="geometry">
@@ -31,9 +28,6 @@
       <width>113</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>192.168.0.7</string>
@@ -48,10 +42,6 @@
       <height>31</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(36, 36, 36);
-color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>Connect</string>
     </property>
@@ -64,9 +54,6 @@ color: rgb(67, 176, 0);</string>
       <width>111</width>
       <height>16</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>TCP Server IP:</string>
@@ -81,9 +68,6 @@ color: rgb(67, 176, 0);</string>
       <height>20</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>user</string>
     </property>
@@ -97,9 +81,6 @@ color: rgb(67, 176, 0);</string>
       <height>20</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>Username:</string>
     </property>
@@ -112,9 +93,6 @@ color: rgb(67, 176, 0);</string>
       <width>321</width>
       <height>51</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -145,9 +123,6 @@ p, li { white-space: pre-wrap; }
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>7235</string>
     </property>
@@ -161,9 +136,6 @@ p, li { white-space: pre-wrap; }
       <height>16</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>Client TCP Port:</string>
     </property>
@@ -176,9 +148,6 @@ p, li { white-space: pre-wrap; }
       <width>91</width>
       <height>21</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>Server TCP Port:</string>
@@ -196,9 +165,6 @@ p, li { white-space: pre-wrap; }
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>7235</string>
     </property>
@@ -208,12 +174,9 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>40</x>
       <y>160</y>
-      <width>81</width>
+      <width>101</width>
       <height>16</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>Client UDP Port:</string>
@@ -227,9 +190,6 @@ p, li { white-space: pre-wrap; }
       <width>91</width>
       <height>21</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
     </property>
     <property name="text">
      <string>Server UDP Port:</string>
@@ -247,9 +207,6 @@ p, li { white-space: pre-wrap; }
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>8235</string>
     </property>
@@ -266,9 +223,6 @@ p, li { white-space: pre-wrap; }
     <property name="contextMenuPolicy">
      <enum>Qt::NoContextMenu</enum>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(67, 176, 0);</string>
-    </property>
     <property name="text">
      <string>8235</string>
     </property>
@@ -280,7 +234,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>310</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="layoutDirection">

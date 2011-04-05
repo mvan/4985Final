@@ -1,0 +1,15 @@
+/*
+*{
+    background-color:black;
+    color:#e38f00;
+}
+QPushButton {
+    background-color: #132b52;
+    color:black;
+}
+QTabBar:tab {
+    color:black;
+}
+QAbstractItemView {
+    color:#e38f00;
+}*/

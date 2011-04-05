@@ -2,20 +2,18 @@
 #include "ui_appwindow.h"
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QFile>
+#include <QString>
 #include "../network/filetransfer.h"
 #include "../network/externs.h"
-
-AppWindow *externAppWindow;
 
 AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
         QTabWidget(parent),
         ui(new Ui::AppWindow) {
-    externAppWindow = this;
     audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
     mediaObject = new Phonon::MediaObject(this);
     metaInfoResolver = new Phonon::MediaObject(this);
     connectionControl_ = connectionControl;
-
     chatInThread_ = new ChatWriteThread();
     chatInThread_->start();
 
@@ -38,17 +36,13 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 AppWindow::~AppWindow() {
     delete ui;
 }
-void AppWindow::ftReq() {
-    QString q(this->ui->otherLibrary->currentIndex().data().toString());
-    emit(requestFT(q.toAscii().data()));
-}
 
 void AppWindow::addFiles() {
     fd->setFileMode(QFileDialog::ExistingFiles);
     filenames = fd->getOpenFileNames(this,tr("Select a Music File"),
                                      QDesktopServices::storageLocation
                                      (QDesktopServices::MusicLocation),
-                                     tr("Audio (*.wav *.mp3)"));
+                                     tr("Audio (*.wav)"));
 
     if (filenames.isEmpty()) {
         return;
@@ -121,6 +115,8 @@ void AppWindow::setupGui() {
             SLOT(sendChatPacket(char*)));
 
     //connect lots of other signals
+    connect(ui->stream, SIGNAL(clicked()), this, SLOT(streamReq()));
+    connect(this, SIGNAL(requestStream(char*)), connectionControl_, SLOT(requestStream(char*)));
     connect(connectionControl_, SIGNAL(listUpdate(char*)), this,
             SLOT(updateOtherPlaylist(char*)));
     connect(ui->transfer, SIGNAL(clicked()), this, SLOT(ftReq()));
@@ -274,4 +270,21 @@ void AppWindow::forwardFile() {
 
 void AppWindow::reverseFile() {
     this->seekFromCurrent(-3000);
+}
+
+void AppWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
+}
+
+void AppWindow::ftReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestFT(q.toAscii().data()));
+}
+
+void AppWindow::streamReq() {
+    QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    emit(requestStream(q.toAscii().data()));
 }

@@ -38,6 +38,7 @@ class tcpserver: public server {
 
     signals:
         void FTReq(char*, char);
+        void StreamReq(char*);
         void connectionRequest(char* hostaddr);
         void updateList(char* fname);
 

@@ -20,6 +20,7 @@ class sock {
         size_t bRecv_;
         struct sockaddr_in addr_;
         char localaddr_[16];
+        int udpPort;
 
     public:
 
@@ -40,8 +41,8 @@ class sock {
         BOOL TCPSocket_Connect(char* servAddr, int portNo);
         SOCKET TCPSocket_Accept();
 
-        void UDPSocket_Init();
-        BOOL UDPSocket_Bind_Multicast(int portNo);
+        void UDPSocket_Init(int portNo);
+        BOOL UDPSocket_Bind_Multicast();
 
         int TCPSend();
         int UDPSend_Multicast();

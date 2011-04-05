@@ -42,15 +42,18 @@ public slots:
     void addChat(char* packet);
     void sendChat();
     void ftReq();
+    void streamReq();
     void updateOtherPlaylist(char* filename);
     void forwardFile();
     void reverseFile();
+    void applyStyleSheet(QString path);
 
 signals:
     void playFile();
     void pauseFile();
     void chatSignal(char*);
     void requestFT(char* fName);
+    void requestStream(char* fName);
     void addAudioFile(QString fName);
 
 private:

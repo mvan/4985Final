@@ -166,15 +166,14 @@ SOCKET sock::TCPSocket_Accept() {
 -- NOTES:
 -- initializes a UDP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void sock::UDPSocket_Init() {
+void sock::UDPSocket_Init(int port) {
     int sizebuf = BUFSIZE;
     bool reuseaddr = true;
-
+    this->udpPort = port;
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
 
-    createOLEvent();
     if(setsockopt(sock_, SOL_SOCKET, SO_REUSEADDR, (char*)&reuseaddr, sizeof(bool)) == SOCKET_ERROR) {
         WSAError(SOCK_ERROR);
     }
@@ -205,7 +204,7 @@ void sock::UDPSocket_Init() {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
+BOOL sock::UDPSocket_Bind_Multicast() {
 
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
@@ -213,7 +212,7 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
-    addr_.sin_port = htons(portNo);
+    addr_.sin_port = htons(udpPort);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
@@ -250,24 +249,14 @@ int sock::TCPSend() {
 
 int sock::UDPSend_Multicast() {
     WSABUF buf;
-    DWORD wait;
 
-    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
-    addr_.sin_port = htons(UDPPORT);
+    addr_.sin_port = htons(udpPort);
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
                         sizeof(addr_), &(this->ol_), sendCompRoutine);
-
-    wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
-    if(wait == WSA_WAIT_FAILED) {
-        mut_->unlock();
-        return 0;
-    }
-    mut_->unlock();
     return 1;
 }
 
@@ -292,18 +281,15 @@ int sock::UDPRecv_Multicast() {
     DWORD flags = 0, wait;
     WSABUF buf;
 
-    mut_->lock();
     buf.buf = packet_;
     buf.len = PACKETSIZE;
+    createOLEvent();
     WSARecv(sock_, &buf, 1, NULL, &flags, &(this->ol_), UDPCompRoutine);
-
     wait = WSAWaitForMultipleEvents(1, &(ol_.hEvent), FALSE, INFINITE, TRUE);
-    WSAResetEvent(ol_.hEvent);
+    CloseHandle(ol_.hEvent);
     if(wait == WSA_WAIT_FAILED) {
-        mut_->unlock();
         return 0;
     }
-    mut_->unlock();
     return 1;
 }
 
@@ -318,7 +304,6 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
         ProcessUDPPacket(buf);
-        s->clrPacket();
     }
 
 }
@@ -329,5 +314,4 @@ void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
     if(cbTransferred == 0 || error != 0) {
         WSAError(WR_ERROR);
     }
-    s->clrPacket();
 }

@@ -21,7 +21,7 @@ public:
     virtual ~ConnectionControl();
 
     bool startServer(int tcpPort, int udpPort);
-    bool connectToServer(QString tcpIp, int tcpPort);
+    bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
     QString getFileName();
 
 signals:
@@ -32,6 +32,7 @@ public slots:
     void startFTFromReq(char* fileName, char clientNo);
     void endFTOut();
     void endFTIn();
+    void requestStream(char* fileName);
     void startStreamFromReq(char* fileName);
     void endStreamIn();
     void endStreamOut();

@@ -33,13 +33,18 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     //LIST SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(updateList(char*)), this,
             SLOT(updateList(char*)), Qt::QueuedConnection);
+
+    //STREAM SIGNALS AND SLOTS
+    connect(tcpServer_, SIGNAL(StreamReq(char*)), this,
+            SLOT(startStreamFromReq(char*)), Qt::QueuedConnection);
+
     return true;
 }
 
-bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
+bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort) {
     char connectionPacket[PACKETSIZE];
     tcpPort_ = tcpPort;
-    UDPSocket_.UDPSocket_Init();
+    UDPSocket_.UDPSocket_Init(udpPort);
     TCPSocket_.TCPSocket_Init();
     if(TCPSocket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort) == TRUE) {
         TCPSocket_.setLocalAddr();
@@ -98,8 +103,11 @@ void ConnectionControl::requestFT(char* fileName) {
         free(packet);
         return;
     }
-    FileWriteThread *thread = new FileWriteThread(fname);
-    thread->start();
+    fileInThread_ = new FileWriteThread(fname);
+    fileInThread_->start();
+
+    connect(fileInThread_, SIGNAL(endFT()), this,
+            SLOT(endFTIn()), Qt::QueuedConnection);
 
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
@@ -137,11 +145,36 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    audioOutThread_ = new AudioReadThread(QString(fName));
-   //Audio transfer signals and slots
    connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
+   audioOutThread_->start();
+}
+
+void ConnectionControl::requestStream(char* fileName) {
+    char* packet;
+    if(TCPSocket_.getSock() == 0) {
+        QMessageBox m;
+        m.setText(QString("You are not connected to a server."));
+        m.exec();
+        return;
+    }
+
+    packet = (char*)malloc(PACKETSIZE);
+    mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
+
+    audioInThread_ = new AudioWriteThread();
+    audioInThread_->start();
+
+    connect(audioInThread_, SIGNAL(endStream()), this,
+            SLOT(endStreamIn()), Qt::QueuedConnection);
+
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
+
+    free(packet);
 }
 
 void ConnectionControl::endStreamOut() {
