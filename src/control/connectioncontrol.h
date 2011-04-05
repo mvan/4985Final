@@ -44,6 +44,7 @@ public slots:
     void updateList(char* fname);
     void addAudioFile(QString filename);
     void startMicStream();
+    void endMic();
 
 private:
     int tcpPort_;
