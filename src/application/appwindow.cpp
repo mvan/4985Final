@@ -86,8 +86,10 @@ void AppWindow::onOffMicOther() {
 
     if (QString::compare(ui->txMicroOther->text(), str) == 0) {
         ui->txMicroOther->setText("Turn off");
+        ui->txMicroOther->setIcon(QIcon(":/files/offMicrophone.png"));
     } else {
         ui->txMicroOther->setText("Turn on");
+        ui->txMicroOther->setIcon(QIcon(":/files/otherMicrophone.png"));
     }
 }
 
@@ -96,8 +98,10 @@ void AppWindow::onOffMicSelf() {
 
     if (QString::compare(ui->txMicroSelf->text(), str) == 0) {
         ui->txMicroSelf->setText("Turn off");
+        ui->txMicroSelf->setIcon(QIcon(":/files/offMicrophone.png"));
     } else {
         ui->txMicroSelf->setText("Turn on");
+        ui->txMicroSelf->setIcon(QIcon(":/files/yourMicrophone.png"));
     }
 }
 
