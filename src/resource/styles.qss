@@ -1,15 +1,34 @@
-/*
-*{
-    background-color:black;
-    color:#e38f00;
+QMainWindow {
+    background-color: black;
 }
+
 QPushButton {
     background-color: #132b52;
-    color:black;
+    color: white;
 }
+
 QTabBar:tab {
-    color:black;
+    color: white;
+    background-color: black;
 }
+
+QLabel {
+    color: white;
+}
+
+QPushButton {
+    background-color: #303030;
+}
+
 QAbstractItemView {
-    color:#e38f00;
-}*/
+    color: white;
+}
+
+QMessageBox > QPushButton {
+    color: white;
+    background-color: #303030;
+}
+
+QMessageBox {
+    background-color: black;
+}
