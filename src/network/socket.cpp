@@ -166,10 +166,10 @@ SOCKET sock::TCPSocket_Accept() {
 -- NOTES:
 -- initializes a UDP socket.
 ----------------------------------------------------------------------------------------------------------------------*/
-void sock::UDPSocket_Init() {
+void sock::UDPSocket_Init(int port) {
     int sizebuf = BUFSIZE;
     bool reuseaddr = true;
-
+    this->udpPort = port;
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
@@ -204,7 +204,7 @@ void sock::UDPSocket_Init() {
 -- NOTES:
 -- binds a UDP ocket to a port.
 ----------------------------------------------------------------------------------------------------------------------*/
-BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
+BOOL sock::UDPSocket_Bind_Multicast() {
 
     struct ip_mreq mc_addr;
     int ttl = MULTICAST_TTL;
@@ -212,7 +212,7 @@ BOOL sock::UDPSocket_Bind_Multicast(int portNo) {
 
     ZeroMemory(&addr_, sizeof(struct sockaddr_in));
     addr_.sin_family = AF_INET;
-    addr_.sin_port = htons(portNo);
+    addr_.sin_port = htons(udpPort);
     addr_.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sock_, (struct sockaddr *)&addr_, sizeof(addr_)) == SOCKET_ERROR) {
@@ -249,13 +249,12 @@ int sock::TCPSend() {
 
 int sock::UDPSend_Multicast() {
     WSABUF buf;
-    DWORD wait;
 
     buf.buf = packet_;
     buf.len = PACKETSIZE;
     addr_.sin_family = AF_INET;
     addr_.sin_addr.s_addr = inet_addr(MULTICAST_ADDR);
-    addr_.sin_port = htons(UDPPORT);
+    addr_.sin_port = htons(udpPort);
     WSASendTo(this->sock_, &buf, 1, NULL, 0, (struct sockaddr*)&addr_,
                         sizeof(addr_), &(this->ol_), sendCompRoutine);
     return 1;

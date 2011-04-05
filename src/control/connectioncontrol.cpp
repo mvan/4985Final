@@ -41,10 +41,10 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     return true;
 }
 
-bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort) {
+bool ConnectionControl::connectToServer(QString tcpIp, int tcpPort, int udpPort) {
     char connectionPacket[PACKETSIZE];
     tcpPort_ = tcpPort;
-    UDPSocket_.UDPSocket_Init();
+    UDPSocket_.UDPSocket_Init(udpPort);
     TCPSocket_.TCPSocket_Init();
     if(TCPSocket_.TCPSocket_Connect(tcpIp.toAscii().data(), tcpPort) == TRUE) {
         TCPSocket_.setLocalAddr();

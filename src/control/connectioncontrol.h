@@ -21,7 +21,7 @@ public:
     virtual ~ConnectionControl();
 
     bool startServer(int tcpPort, int udpPort);
-    bool connectToServer(QString tcpIp, int tcpPort);
+    bool connectToServer(QString tcpIp, int tcpPort, int udpPort);
     QString getFileName();
 
 signals:
