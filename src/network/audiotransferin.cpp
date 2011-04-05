@@ -15,6 +15,7 @@ void AudioWriteThread::run(){
     audioout out;
 
     while(1){
+
         ZeroMemory(packet, PACKETSIZE);
         if(audioinBuffer.queue.size() == 0){
             audioinBuffer.queueMutex.lock();

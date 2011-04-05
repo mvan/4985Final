@@ -19,7 +19,7 @@ class audioout: public QObject {
     public:
         explicit audioout():output_(NULL){}
         virtual ~audioout(){}
-        int getParams(char* params);
+        int getParams(const char* params);
         void setupParams();
         void createAudioDev();
         void destroyAudioDev();

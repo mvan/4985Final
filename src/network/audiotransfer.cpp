@@ -102,6 +102,7 @@ void AudioSendThread::run(){
     char packet[PACKETSIZE];
 
     while(1){
+
         ZeroMemory(packet, PACKETSIZE);
         if(audiooutBuffer.queue.empty()){
             audiooutBuffer.queueMutex.lock();
@@ -110,11 +111,11 @@ void AudioSendThread::run(){
         }
 
         audiooutBuffer.grabPacket(packet);
-        if(packet[0] == MSG_FTCOMPLETE){
-            break;
-        }
         emit(sendPacket(packet));
         Sleep(1);
+        if(packet[0] == MSG_STREAMCOMPLETE){
+            break;
+        }
     }
     Sleep(10);
 }

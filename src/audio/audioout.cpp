@@ -9,8 +9,8 @@ void audioout::setupParams() {
     format_.setSampleType(QAudioFormat::SignedInt);
 }
 
-int audioout::getParams(char* params) {
-    if(memcmp(params, hdr_, HDR_SIZE) != 0) {
+int audioout::getParams(const char* params) {
+    if(memcmp(params+4, hdr_, HDR_SIZE) != 0) {
         memcpy(hdr_, params, HDR_SIZE);
         memcpy(&frequency_, params+24, 4);
         memcpy(&channels_, params+22, 2);
@@ -23,7 +23,6 @@ int audioout::getParams(char* params) {
 void audioout::createAudioDev() {
     if(output_ == NULL) {
         output_ = new QAudioOutput(format_);
-        int i = output_->periodSize();
         output_->setBufferSize(6000000);
         buffer_ = output_->start();
     }
