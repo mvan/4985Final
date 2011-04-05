@@ -14,10 +14,7 @@ void AudioWriteThread::run(){
     char* packet;
     audioout out;
 
-    out.createAudioDev();
     packet = (char *)malloc(PACKETSIZE);
-
-
 
     while(1){
         if(audioinBuffer.queue.size() == 0){
@@ -27,19 +24,18 @@ void AudioWriteThread::run(){
         }
         audioinBuffer.grabPacket(packet);
         if(out.getParams(packet) == 1){
-            out.destroyAudioDev();
             out.setupParams();
             out.createAudioDev();
         }
 
         //If packet type is end of transmission, end thread
         if(packet[0] == MSG_STREAMCOMPLETE){
-
             break;
         }
         out.playSound(packet+4+HDR_SIZE);;
 
     }
+    Sleep(10);
     free(packet);
     emit(endStream());
 }

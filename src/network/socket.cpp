@@ -304,7 +304,6 @@ void CALLBACK UDPCompRoutine(DWORD error, DWORD cbTransferred,
     } else {
         strncpy(buf, s->packet_, PACKETSIZE);
         ProcessUDPPacket(buf);
-        s->clrPacket();
     }
 
 }
@@ -315,5 +314,4 @@ void CALLBACK sendCompRoutine(DWORD error, DWORD cbTransferred,
     if(cbTransferred == 0 || error != 0) {
         WSAError(WR_ERROR);
     }
-    s->clrPacket();
 }
