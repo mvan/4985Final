@@ -131,6 +131,7 @@ void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
 }
 
 void ConnectionControl::endFTOut() {
+    Sleep(100);
     disconnect(fileOutThread_, SIGNAL(sendTCPPacket(char*, char)), this,
             SLOT(sendFilePacket(char*, char)));
     disconnect(fileOutThread_, SIGNAL(endFT()), this,
@@ -140,6 +141,7 @@ void ConnectionControl::endFTOut() {
 }
 
 void ConnectionControl::endFTIn() {
+    Sleep(100);
     delete fileInThread_;
 }
 
@@ -178,10 +180,12 @@ void ConnectionControl::requestStream(char* fileName) {
 }
 
 void ConnectionControl::endStreamOut() {
+    Sleep(100);
     delete audioOutThread_;
 }
 
 void ConnectionControl::endStreamIn() {
+    Sleep(100);
     delete audioInThread_;
 }
 
