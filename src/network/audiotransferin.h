@@ -8,7 +8,7 @@ class AudioWriteThread : public QThread{
     Q_OBJECT
 
 public:
-    AudioWriteThread(QByteArray array);
+    AudioWriteThread();
 
 protected:
     void run();
@@ -16,7 +16,5 @@ protected:
 signals:
     void endStream();
 
-private:
-    QByteArray audioArray_;
 };
 #endif // AUDIOTRANSFERIN_H

@@ -5,7 +5,7 @@
 
 Buffer audioinBuffer;
 
-AudioWriteThread::AudioWriteThread(QByteArray array):audioArray_(array){
+AudioWriteThread::AudioWriteThread(){
 
 }
 
@@ -34,13 +34,13 @@ void AudioWriteThread::run(){
 
         //If packet type is end of transmission, end thread
         if(packet[0] == MSG_STREAMCOMPLETE){
-            msg.exec();
-            free(packet);
-            emit(endStream());
-            return;
+
+            break;
         }
         out.playSound(packet+4+HDR_SIZE);;
 
     }
+    free(packet);
+    emit(endStream());
 }
 
