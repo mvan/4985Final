@@ -8,5 +8,13 @@
         <file>stop.png</file>
         <file>playHover.png</file>
         <file>connect.png</file>
+        <file>connectionInfo.png</file>
+        <file>chat.png</file>
+        <file>audio.png</file>
+        <file>help.png</file>
+        <file>microphone.png</file>
+        <file>addFile.png</file>
+        <file>transferFile.png</file>
+        <file>streamFile.png</file>
     </qresource>
 </RCC>
