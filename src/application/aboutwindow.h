@@ -2,6 +2,7 @@
 #define ABOUTWINDOW_H
 
 #include <QDialog>
+#include <QFile>
 
 namespace Ui {
     class AboutWindow;
@@ -14,6 +15,7 @@ class AboutWindow : public QDialog
 public:
     explicit AboutWindow(QWidget *parent = 0);
     ~AboutWindow();
+    void applyStyleSheet(QString path);
 
 private:
     Ui::AboutWindow *ui;

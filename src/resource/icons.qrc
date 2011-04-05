@@ -20,5 +20,7 @@
         <file>yourMicrophone.png</file>
         <file>offMicrophone.png</file>
         <file>send.png</file>
+        <file>about.png</file>
+        <file>aboutUs.png</file>
     </qresource>
 </RCC>

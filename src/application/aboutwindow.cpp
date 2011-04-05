@@ -12,3 +12,10 @@ AboutWindow::~AboutWindow()
 {
     delete ui;
 }
+
+void AboutWindow::applyStyleSheet(QString path) {
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    this->setStyleSheet(QString(f.readAll()));
+    f.close();
+}
