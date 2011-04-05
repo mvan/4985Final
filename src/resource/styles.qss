@@ -35,6 +35,28 @@ QTabBar::tab {
     margin-right: 40px;
 }
 
+QTabBar::tab:hover {
+    margin-top: 2px;
+}
+
+QTabBar::tab#audio {
+    background-image: url(:/files/play.png);
+}
+
+QPushButton#connect {
+    background-image: url(:/files/connect.png);
+    background-repeat: no-repeat;
+    padding-top: 50px;
+}
+
 QTabWidget::pane {
     border-color: black;
+}
+
+QPushButton#play:hover, QPushButton#reverse:hover, QPushButton#stop:hover, QPushButton#forward:hover, QPushButton:hover {
+    margin-top: 3px;
+}
+
+QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed, QPushButton#forward:pressed {
+    background: transparent;
 }
