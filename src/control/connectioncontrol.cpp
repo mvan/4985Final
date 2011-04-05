@@ -150,6 +150,7 @@ void ConnectionControl::startStreamFromReq(char* fName) {
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
+   audioOutThread_->start();
 }
 
 void ConnectionControl::requestStream(char* fileName) {
