@@ -43,6 +43,7 @@ public slots:
     void sendChatPacket(char* packet);
     void updateList(char* fname);
     void addAudioFile(QString filename);
+    void startMicFromReq();
     void startMicStream();
     void endMic();
 

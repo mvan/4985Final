@@ -68,4 +68,4 @@ FORMS   += src/application/mainwindow.ui \
         src/application/appwindow.ui
 
 RESOURCES += \
-    src/resource/icons.qrc
+        src/resource/icons.qrc
