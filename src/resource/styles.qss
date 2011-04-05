@@ -16,7 +16,7 @@ QMessageBox > QPushButton, QPushButton {
     background-color: #303030;
 }
 
-QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo {
+QMainWindow, QMenuBar, QMessageBox, QTabWidget,QWidget#audio, QWidget#microphone, QWidget#chat, QWidget#connectInfo, QDialog, QFrame {
     background-color: black;
     color: white;
 }
@@ -44,10 +44,19 @@ QTabBar::tab#audio {
     background-image: url(:/files/play.png);
 }
 
-QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer, QPushButton#sendButton {
+QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer, QPushButton#sendButton
+, QPushButton#about, QPushButton#manual {
     background-repeat: no-repeat;
     padding-top: 45px;
     background-position: center top;
+}
+
+QPushButton#about {
+    background-image: url(:/files/aboutUs.png);
+}
+
+QPushButton#manual {
+    background-image: url(:/files/help.png);
 }
 
 QPushButton#connect {

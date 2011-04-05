@@ -11,7 +11,10 @@ extern Buffer audiooutBuffer;
 extern Buffer chatinBuffer;
 extern Buffer chatoutBuffer;
 extern bool transferringOut;
-extern bool streaming;
+extern bool transferringIn;
+extern bool streamingOut;
+extern bool streamingIn;
+extern bool micOut;
 extern char ClientNum;
 extern QString userName;
 

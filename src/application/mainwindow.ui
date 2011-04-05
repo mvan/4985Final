@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>304</width>
-    <height>312</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="font">
@@ -36,7 +36,7 @@
    <widget class="QPushButton" name="connect">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>130</x>
       <y>210</y>
       <width>48</width>
       <height>81</height>
@@ -239,27 +239,56 @@ p, li { white-space: pre-wrap; }
      <string>8235</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>304</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::RightToLeft</enum>
-   </property>
-   <widget class="QMenu" name="helpMenu">
-    <property name="title">
-     <string>Help</string>
+   <widget class="QPushButton" name="about">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>210</y>
+      <width>48</width>
+      <height>81</height>
+     </rect>
     </property>
-    <addaction name="manMenu"/>
-    <addaction name="aboutMenu"/>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>About Us</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>48</width>
+      <height>48</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
    </widget>
-   <addaction name="helpMenu"/>
+   <widget class="QPushButton" name="manual">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>210</y>
+      <width>48</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string>Manual</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>48</width>
+      <height>48</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <action name="manMenu">
    <property name="text">
