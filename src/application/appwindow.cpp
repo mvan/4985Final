@@ -46,7 +46,7 @@ void AppWindow::addFiles() {
     filenames = fd->getOpenFileNames(this,tr("Select a Music File"),
                                      QDesktopServices::storageLocation
                                      (QDesktopServices::MusicLocation),
-                                     tr("Audio (*.wav *.mp3)"));
+                                     tr("Audio (*.wav)"));
 
     if (filenames.isEmpty()) {
         return;
