@@ -19,5 +19,6 @@
         <file>otherMicrophone.png</file>
         <file>yourMicrophone.png</file>
         <file>offMicrophone.png</file>
+        <file>send.png</file>
     </qresource>
 </RCC>

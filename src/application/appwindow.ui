@@ -703,7 +703,7 @@ p, li { white-space: pre-wrap; }
       <x>10</x>
       <y>10</y>
       <width>461</width>
-      <height>321</height>
+      <height>381</height>
      </rect>
     </property>
    </widget>
@@ -713,17 +713,17 @@ p, li { white-space: pre-wrap; }
       <x>480</x>
       <y>10</y>
       <width>171</width>
-      <height>321</height>
+      <height>381</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="sendButton">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>370</y>
+      <x>490</x>
+      <y>400</y>
       <width>111</width>
-      <height>51</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="font">
@@ -735,14 +735,17 @@ p, li { white-space: pre-wrap; }
     <property name="text">
      <string>Send</string>
     </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QTextEdit" name="message">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>350</y>
+      <y>400</y>
       <width>461</width>
-      <height>91</height>
+      <height>111</height>
      </rect>
     </property>
    </widget>

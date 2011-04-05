@@ -44,7 +44,7 @@ QTabBar::tab#audio {
     background-image: url(:/files/play.png);
 }
 
-QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer {
+QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer, QPushButton#sendButton {
     background-repeat: no-repeat;
     padding-top: 45px;
     background-position: center top;
@@ -66,6 +66,10 @@ QPushButton#transfer {
     background-image: url(:/files/transferFile.png);
 }
 
+QPushButton#sendButton {
+    background-image: url(:/files/send.png);
+}
+
 QTabWidget::pane {
     border-color: black;
 }
@@ -76,4 +80,10 @@ QPushButton#play:hover, QPushButton#reverse:hover, QPushButton#stop:hover, QPush
 
 QPushButton#play:pressed, QPushButton#reverse:pressed, QPushButton#stop:pressed, QPushButton#forward:pressed, QPushButton:pressed {
     background: transparent;
+}
+
+QTextBrowser, QTextEdit, QPlainTextEdit {
+    color: white;
+    border: 3px ridge #161616;
+    background-color: #303030;
 }
