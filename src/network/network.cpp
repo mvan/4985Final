@@ -64,12 +64,6 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
     memcpy((buf+4), data, (int)packetSize);
 }
 
-void ProcessUDPPacket(char* packet) {
-    if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
-        audioinBuffer.bufferPacket(packet);
-    }
-}
-
 unsigned short dataLength(char* buf) {
     return MAKEWORD((unsigned char)buf[1], (unsigned char)buf[2]);
 }
