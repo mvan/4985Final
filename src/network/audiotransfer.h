@@ -25,7 +25,7 @@ class AudioReadThread : public QThread{
 
 public:
     explicit AudioReadThread(QString file);
-    virtual ~AudioReadThread(){};
+    virtual ~AudioReadThread(){}
 
 
 protected:
