@@ -183,6 +183,7 @@ void ConnectionControl::startStreamFromReq(char* fName) {
                SLOT(sendAudioPacket(char*)));
         disconnect(audioOutThread_, SIGNAL(endStream()), this,
                SLOT(endStreamOut()));
+        audioOutThread_->thread_->terminate();
         audioOutThread_->terminate();
         delete audioOutThread_;
         audioOutThread_ = NULL;

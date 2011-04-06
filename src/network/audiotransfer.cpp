@@ -6,7 +6,14 @@
 #include <QFile>
 Buffer audiooutBuffer;
 
-AudioReadThread::AudioReadThread(QString file):file_(file){}
+AudioReadThread::AudioReadThread(QString file):file_(file){
+    thread_ = new AudioSendThread();
+}
+
+AudioReadThread::~AudioReadThread(){
+    thread_->terminate();
+    delete thread_;
+}
 
 void AudioReadThread::run(){
 
@@ -24,9 +31,9 @@ void AudioReadThread::run(){
 
     sizeOfFile = file.size();
 
-    AudioSendThread *thread = new AudioSendThread();
-    connect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
-    thread->start();
+
+    connect(thread_, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)), Qt::QueuedConnection);
+    thread_->start();
 
     file.read(buf, HDR_SIZE);
 
@@ -82,11 +89,11 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             break;
         }
-        thread->wait(10);
+        thread_->wait(10);
     }
-    thread->wait();
+    thread_->wait();
     file.close();
-    disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
+    disconnect(thread_, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
     emit(endStream());
 }
 
