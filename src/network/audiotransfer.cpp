@@ -42,7 +42,7 @@ void AudioReadThread::run(){
             if((bytesRead = file.read(tempBuf+HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
                 WSAError(READ_ERROR);
             }
-            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf);
+            mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0, tempBuf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
