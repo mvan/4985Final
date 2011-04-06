@@ -182,7 +182,9 @@ void ConnectionControl::startStreamFromReq(char* fName) {
         audioOutThread_->terminate();
         delete audioOutThread_;
         audioOutThread_ = NULL;
+        audiooutBuffer.queueMutex.lock();
         audiooutBuffer.queue.clear();
+        audiooutBuffer.queueMutex.unlock();
    }
    audioOutThread_ = new AudioReadThread(QString(fName));
    connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
