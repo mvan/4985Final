@@ -237,7 +237,9 @@ void ConnectionControl::requestStream(char* fileName) {
         m.exec();
         return;
     }
-
+    audioinBuffer.queueMutex.lock();
+    audioinBuffer.queue.clear();
+    audioinBuffer.queueMutex.unlock();
     mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
