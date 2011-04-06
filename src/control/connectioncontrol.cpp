@@ -71,13 +71,22 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
     msg.append(ipaddr);
     msg.append(", establishing connection to their server.");
     notification.setText(msg);
-    connections_[numConnections_].TCPSocket_Init();
-    connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
-    connections_[numConnections_].clrPacket();
-    mkPacket(buf, MSG_CONNBACK, 0, numConnections_, (char*)"");
-    connections_[numConnections_].setPacket(buf);
-    connections_[numConnections_].TCPSend();
-    numConnections_++;
+    if(TCPSocket_.getSock() != NULL) {
+        connections_[numConnections_].TCPSocket_Init();
+        connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
+        connections_[numConnections_].clrPacket();
+        mkPacket(buf, MSG_CONNBACK, 0, numConnections_, (char*)"");
+        connections_[numConnections_].setPacket(buf);
+        connections_[numConnections_].TCPSend();
+        numConnections_++;
+    } else {
+        TCPSocket_.TCPSocket_Init();
+        TCPSocket_.TCPSocket_Connect(ipaddr, tcpPort_);
+        TCPSocket_.clrPacket();
+        mkPacket(buf, MSG_CONNBACK, 0, numConnections_, (char*)"");
+        TCPSocket_.setPacket(buf);
+        TCPSocket_.TCPSend();
+    }
     notification.exec();
 }
 
