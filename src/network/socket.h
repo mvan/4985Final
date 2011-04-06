@@ -14,7 +14,6 @@ class sock {
         char packet_[PACKETSIZE];
         QMutex* mut_;
         WSABUF buffer_;
-        bool mc_;
 
     private:
         SOCKET sock_;
@@ -23,9 +22,9 @@ class sock {
         struct sockaddr_in addr_;
         char localaddr_[16];
         int udpPort;
+        bool mc_;
 
     public:
-
         explicit sock():sock_(0), bSend_(0), bRecv_(0), mc_(false){
             mut_ = new QMutex();
             buffer_.buf = packet_;
