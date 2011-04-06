@@ -28,7 +28,6 @@ SOURCES += src/main.cpp\
         src/network/filetransfer.cpp \
         src/network/filetransferin.cpp \
         src/control/connectioncontrol.cpp \
-        src/control/clientcontrol.cpp \
         src/network/chattransferin.cpp \
         src/network/audiotransferin.cpp \
         src/network/audiotransfer.cpp \
@@ -51,7 +50,6 @@ HEADERS  += src/application/mainwindow.h \
         src/network/filetransferin.h \
         src/control/connectioncontrol.h \
         src/network/externs.h \
-        src/control/clientcontrol.h \
         src/network/chattransferin.h \
         src/network/audiotransferin.h \
         src/network/audiotransfer.h \

@@ -1,3 +1,17 @@
+/**
+  * Class: AudioReadThread
+  *
+  * Description:
+  * This class prepares the buffer for streaming. It reads
+  * part of file and put it into the buffer.
+  */
+
+/**
+  * Class: AudioSendThread
+  *
+  * Description:
+  * Sends audio packet.
+  */
 #ifndef AUDIOTRANSFER_H
 #define AUDIOTRANSFER_H
 #include <QThread>
@@ -15,6 +29,12 @@ public:
 
 
 protected:
+    /**
+      * Function: run()
+      *
+      * Description:
+      * Entry point of the thread.
+      */
     void run();
 
 signals:
