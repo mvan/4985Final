@@ -43,7 +43,7 @@ void audioin::readSound(){
     while(availableData > 0) {
         if(availableData >= AUDIO_DATA_SIZE) {
             inbuf_->read(buf+HDR_SIZE, AUDIO_DATA_SIZE);
-            mkPacket(packet, MSG_MIC, (unsigned short)AUDIO_DATA_SIZE, 0, buf);
+            mkPacket(packet, MSG_MIC, (unsigned short)DATA_SIZE, 0, buf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize) {
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
@@ -53,7 +53,7 @@ void audioin::readSound(){
             availableData -= AUDIO_DATA_SIZE;
         } else {
             inbuf_->read(buf+HDR_SIZE, availableData);
-            mkPacket(packet, MSG_MIC, (unsigned short)availableData, 0, buf);
+            mkPacket(packet, MSG_MIC, (unsigned short)availableData+HDR_SIZE, 0, buf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize) {
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);

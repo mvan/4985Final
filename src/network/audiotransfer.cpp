@@ -51,7 +51,7 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             totalRead += bytesRead;
         } else if(sizeOfFile == totalRead) { // finished exactly
-            mkPacket(tempPacket, MSG_STREAMCOMPLETE, 0, 0, tempBuf);
+            mkPacket(tempPacket, MSG_STREAMCOMPLETE, 0, 0, (char*)"");
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
@@ -73,7 +73,7 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             //make EOT packet
             memset(tempBuf, 0, sizeof(tempBuf));
-            mkPacket(endPack, MSG_STREAMCOMPLETE, 0, 0,tempBuf);
+            mkPacket(endPack, MSG_STREAMCOMPLETE, 0, 0,(char*)"");
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
                 audiooutBuffer.queueMutex.lock();
                 audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);

@@ -75,7 +75,7 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
     connections_[numConnections_].TCPSocket_Init();
     connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
     connections_[numConnections_].clrPacket();
-    mkPacket(buf, MSG_CONNBACK, PACKETSIZE, numConnections_, (char*)"");
+    mkPacket(buf, MSG_CONNBACK, 0, numConnections_, (char*)"");
     connections_[numConnections_].setPacket(buf);
     connections_[numConnections_].TCPSend();
     numConnections_++;
@@ -192,7 +192,7 @@ void ConnectionControl::startMicStream(){
         m.exec();
         return;
     }
-    mkPacket(packet, MSG_MICOPEN, PACKETSIZE, 0, (char*)"");
+    mkPacket(packet, MSG_MICOPEN, 0, 0, (char*)"");
     micThread_ = new AudioSendThread();
     micReader_ = new audioin();
     micReader_->setupParams();
