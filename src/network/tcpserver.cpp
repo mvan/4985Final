@@ -41,7 +41,7 @@ void tcpserver::run() {
                 }
                 if(nRead > 0) {
                     char pack[PACKETSIZE];
-                    memcpy(pack, &(so.packet_[0]), PACKETSIZE);
+                    memmove(pack, &(so.packet_[0]), PACKETSIZE);
                     if(ProcessTCPPacket(pack) == -1) {
                         emit(connectionRequest(pack+4));
                     }

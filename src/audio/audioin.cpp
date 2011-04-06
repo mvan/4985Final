@@ -70,9 +70,9 @@ void audioin::mkVoiceHdr(char* buf) {
     short channels = 2;
     short sampleSize = 16;
 
-    memcpy(buf+24, &frequency, 4);
-    memcpy(buf+22, &channels, 2);
-    memcpy(buf+34, &sampleSize, 2);
+    memmove(buf+24, &frequency, 4);
+    memmove(buf+22, &channels, 2);
+    memmove(buf+34, &sampleSize, 2);
 }
 void audioin::writeReady(qint64 bytes) {
     numToRead_ = bytes;

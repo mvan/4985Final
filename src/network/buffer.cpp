@@ -8,7 +8,7 @@ Buffer::~Buffer(){}
 
 void Buffer::bufferPacket(char* packet){
     char tempPacket[PACKETSIZE];
-    memcpy(tempPacket, packet, PACKETSIZE);
+    memmove(tempPacket, packet, PACKETSIZE);
     QByteArray tmp(tempPacket, PACKETSIZE);
     this->queueMutex.lock();
     this->queue.enqueue(tmp);
@@ -19,7 +19,7 @@ void Buffer::bufferPacket(char* packet){
 void Buffer::grabPacket(char* buf){
     ZeroMemory(buf, PACKETSIZE);
     this->queueMutex.lock();
-    memcpy(buf, this->queue.dequeue().data(), PACKETSIZE);
+    memmove(buf, this->queue.dequeue().data(), PACKETSIZE);
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
 }

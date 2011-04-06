@@ -32,13 +32,13 @@ void AudioReadThread::run(){
 
     while((totalRead <= sizeOfFile)){
 
-        ZeroMemory(tempPacket, DATA_SIZE);
+        ZeroMemory(tempPacket, PACKETSIZE);
         ZeroMemory(tempBuf, DATA_SIZE);
 
         //More than a packet left
         if((sizeOfFile - totalRead) >= AUDIO_DATA_SIZE){
 
-            memcpy(tempBuf, buf, HDR_SIZE);
+            memmove(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read(tempBuf+HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
                 WSAError(READ_ERROR);
             }
@@ -60,7 +60,7 @@ void AudioReadThread::run(){
             audiooutBuffer.bufferPacket(tempPacket);
             break;
         } else { //less than a full packet left
-            memcpy(tempBuf, buf, HDR_SIZE);
+            memmove(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read((tempBuf+HDR_SIZE), (sizeOfFile - totalRead))) == -1){
                 WSAError(READ_ERROR);
             }
