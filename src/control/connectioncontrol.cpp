@@ -1,5 +1,6 @@
 #include "connectioncontrol.h"
 #include "../network/externs.h"
+#include "../audio/audioin.h"
 #include <winsock2.h>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -184,18 +185,24 @@ void ConnectionControl::startStreamFromReq(char* fName) {
 }
 
 void ConnectionControl::startMicStream(){
+    char packet[PACKETSIZE];
     if(streaming == true) {
         QMessageBox m;
         m.setText(QString("Audio channel already open. Cannot open mic."));
         m.exec();
         return;
     }
-    micThread_ = new MicThread();
-    connect(micThread_, SIGNAL(sendUDPPacket(char*)), this,
+    mkPacket(packet, MSG_MICOPEN, PACKETSIZE, 0, (char*)"");
+    micThread_ = new AudioSendThread();
+    micReader_ = new audioin();
+    micReader_->setupParams();
+    micReader_->createAudioDev();
+    connect(micThread_, SIGNAL(sendPacket(char*)), this,
             SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
-    connect(micThread_, SIGNAL(endMic()), this,
-            SLOT(endMic()), Qt::QueuedConnection);
     micThread_->start();
+    TCPSocket_.clrPacket();
+    TCPSocket_.setPacket(packet);
+    TCPSocket_.TCPSend();
     streaming = true;
 }
 

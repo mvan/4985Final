@@ -14,6 +14,7 @@
 #include "../network/tcpserver.h"
 #include "../network/udpserver.h"
 #include "../audio/micthread.h"
+#include "../audio/audioin.h"
 
 class ConnectionControl: public QObject {
     Q_OBJECT
@@ -60,7 +61,8 @@ private:
     AudioWriteThread* audioInThread_;
     FileReadThread* fileOutThread_;
     FileWriteThread* fileInThread_;
-    MicThread* micThread_;
+    AudioSendThread* micThread_;
+    audioin* micReader_;
     QList<sock> clientsSocket_;
 };
 

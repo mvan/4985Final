@@ -14,10 +14,11 @@ class audioin: public QObject {
         QAudioFormat format_;
         QIODevice* buffer_;
         QBuffer* inbuf_;
+        qint64 numToRead_;
 
         char hdr_[HDR_SIZE];
     public:
-        explicit audioin(){}
+        explicit audioin():numToRead_(0){}
         virtual ~audioin(){}
         void setupParams();
         void createAudioDev();
@@ -25,5 +26,6 @@ class audioin: public QObject {
         void mkVoiceHdr(char* buf);
     public slots:
         void readSound();
+        void writeReady(qint64 bytes);
 };
 #endif
