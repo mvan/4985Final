@@ -4,6 +4,7 @@
   * Description:
   * This class prepares the buffer for streaming. It reads
   * part of file and put it into the buffer.
+  * Qstring passed into the constructor indicates file to be opened.
   */
 
 /**
@@ -35,6 +36,8 @@ protected:
       *
       * Description:
       * Entry point of the thread.
+      * Spawns thread to send data to network.
+      * Reads data from file and pushes onto outgoing audio buffer.
       */
     void run();
 
@@ -43,6 +46,13 @@ signals:
     void endStream();
 
 public slots:
+    /**
+      * Function: send
+      *
+      * @param char* - Packet to be sent over the network.
+      *
+      * Emits signal to send packet over the network
+      */
     void send(char*);
 
 private:
@@ -60,6 +70,13 @@ signals:
     void sendPacket(char*);
 
 protected:
+    /**
+      * Function: run
+      *
+      * Pulls packet off the outgoing audio buffer and sends them to the
+      * network over the udp socket. Emits sendPacket. Connected to send
+      * in FileReadThread.
+      */
     void run();
 };
 #endif // AUDIOTRANSFER_H

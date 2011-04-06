@@ -3,24 +3,7 @@
 #include "network.h"
 #include "errors.h"
 #include "externs.h"
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: WinsockInit
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void WinsockInit()
---
--- RETURNS: void
---
--- NOTES:
--- Initializes a Winsock session.
-----------------------------------------------------------------------------------------------------------------------*/
+
 void WinsockInit() {
 
     WORD version;
@@ -32,24 +15,7 @@ void WinsockInit() {
     }
 
 }
-/*------------------------------------------------------------------------------------------------------------------
--- FUNCTION: WinsockCleanup
---
--- DATE: Feb 19, 2011
---
--- REVISIONS: (Date and Description)
---
--- DESIGNER: Duncan Donaldson
---
--- PROGRAMMER: Duncan Donaldson
---
--- INTERFACE: void WinsockCleanup(socket)
---
--- RETURNS: void
---
--- NOTES:
--- cleans up a winsock session.
-----------------------------------------------------------------------------------------------------------------------*/
+
 void WinsockCleanup() {
     WSACleanup();
 }

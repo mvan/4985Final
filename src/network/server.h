@@ -5,6 +5,11 @@
 #include "socket.h"
 #include <QObject>
 #include <QThread>
+/**
+  * Class: server
+  *
+  * Base class for a udp or tcp server.
+  */
 class server: public QThread {
     Q_OBJECT
     public :
