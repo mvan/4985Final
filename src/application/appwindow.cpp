@@ -22,8 +22,6 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     QPixmap pixmap(":/files/appWindowBg.png");
     this->setMask(pixmap.mask());
 
-    ui->stopStream->hide();
-
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
     connect(metaInfoResolver, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
@@ -42,6 +40,7 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     connect(ui->quit2, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->quit3, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->quit4, SIGNAL(clicked()), this, SLOT(close()));
+    ui->stopStream->hide();
 }
 
 AppWindow::~AppWindow() {
