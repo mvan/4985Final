@@ -36,6 +36,7 @@ public slots:
     void endFTIn();
     void requestStream(char* fileName);
     void startStreamFromReq(char* fileName);
+    void startRandomStream();
     void endStreamIn();
     void endStreamOut();
     void connectionSlot(char* ipaddr);

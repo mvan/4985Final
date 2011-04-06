@@ -1,4 +1,5 @@
 #include "udpserver.h"
+#include "externs.h"
 
 void udpserver::run() {
     
@@ -9,6 +10,16 @@ void udpserver::run() {
         if(rdSock_->UDPRecv_Multicast() == 0) {
             break;
         }
+        ProcessUDPPacket(&(rdSock_->packet_[0]));
         rdSock_->clrPacket();
+    }
+}
+
+void udpserver::ProcessUDPPacket(char* packet) {
+    if(streamingIn == false) {
+        emit streamIn();
+    }
+    if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
+        audioinBuffer.bufferPacket(packet);
     }
 }

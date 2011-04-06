@@ -38,6 +38,7 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     //STREAM SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(StreamReq(char*)), this,
             SLOT(startStreamFromReq(char*)), Qt::QueuedConnection);
+    connect(udpServer_, SIGNAL(streamIn()), this, SLOT(startRandomStream()));
 
     //MIC SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(MicReq()), this,
@@ -241,6 +242,20 @@ void ConnectionControl::requestStream(char* fileName) {
     TCPSocket_.TCPSend();
     streamingIn = true;
 
+}
+void ConnectionControl::startRandomStream() {
+    if(streamingIn == true) {
+        QMessageBox m;
+        m.setText(QString("Audio channel already open. Cannot start stream."));
+        m.exec();
+        return;
+    }
+    audioInThread_ = new AudioWriteThread();
+    audioInThread_->start();
+
+    connect(audioInThread_, SIGNAL(endStream()), this,
+            SLOT(endStreamIn()), Qt::QueuedConnection);
+    streamingIn = true;
 }
 
 void ConnectionControl::endStreamOut() {

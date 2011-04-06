@@ -5,10 +5,10 @@
 #include "network.h"
 #include "errors.h"
 class udpserver: public server {
+    Q_OBJECT
     private:
         sock* rdSock_;
         int portNo;
-
     public:
         explicit udpserver(int port):server(), portNo(port){
             rdSock_ = new sock();
@@ -17,7 +17,9 @@ class udpserver: public server {
             rdSock_->socket_close();
             delete rdSock_;
         }
-        
+        void ProcessUDPPacket(char* packet);
         virtual void run();
+    signals:
+        void streamIn();
 };
 #endif
