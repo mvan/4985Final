@@ -305,8 +305,6 @@ void AppWindow::ftReq() {
 
 void AppWindow::streamReq() {
     QString q(this->ui->otherLibrary->currentIndex().data().toString());
-    ui->stream->hide();
-    ui->stopStream->show();
     emit(requestStream(q.toAscii().data()));
 }
 
