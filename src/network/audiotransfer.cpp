@@ -85,12 +85,9 @@ void AudioReadThread::run(){
         thread->wait(10);
     }
     thread->wait();
-
     file.close();
     disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
-    streamingOut = false;
     emit(endStream());
-    return;
 }
 
 void AudioReadThread::send(char* packet){

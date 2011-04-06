@@ -71,7 +71,7 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
     msg.append(ipaddr);
     msg.append(", establishing connection to their server.");
     notification.setText(msg);
-    if(TCPSocket_.getSock() != NULL) {
+    if(TCPSocket_.getSock() != 0) {
         connections_[numConnections_].TCPSocket_Init();
         connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
         connections_[numConnections_].clrPacket();
@@ -129,7 +129,7 @@ void ConnectionControl::requestFT(char* fileName) {
 
     connect(fileInThread_, SIGNAL(endFT()), this,
             SLOT(endFTIn()), Qt::QueuedConnection);
-    if(TCPSocket_.getSock() != NULL) {
+    if(TCPSocket_.getSock() != 0) {
         TCPSocket_.clrPacket();
         TCPSocket_.setPacket(packet);
         TCPSocket_.TCPSend();
@@ -211,12 +211,14 @@ void ConnectionControl::startMicStream(){
 void ConnectionControl::endMicStream() {
     disconnect(micThread_, SIGNAL(sendPacket(char*)), this,
             SLOT(sendAudioPacket(char*)));
-    micThread_->terminate();
-    delete micThread_;
-    delete micReader_;
-    micThread_ = NULL;
-    micReader_ = NULL;
-    streamingOut = false;
+    if(micThread_ != NULL) {
+        micThread_->terminate();
+        delete micThread_;
+        delete micReader_;
+        micThread_ = NULL;
+        micReader_ = NULL;
+        streamingOut = false;
+    }
 }
 
 void ConnectionControl::requestStream(char* fileName) {
@@ -247,10 +249,11 @@ void ConnectionControl::endStreamOut() {
             SLOT(sendAudioPacket(char*)));
     disconnect(audioOutThread_, SIGNAL(endStream()), this,
             SLOT(endStreamOut()));
-
-    audioOutThread_->terminate();
-    delete audioOutThread_;
-    audioOutThread_ = NULL;
+    if(audioOutThread_ != NULL) {
+        audioOutThread_->terminate();
+        delete audioOutThread_;
+        audioOutThread_ = NULL;
+    }
     streamingOut = false;
 }
 
