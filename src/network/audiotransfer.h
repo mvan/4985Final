@@ -18,16 +18,17 @@
 #include <winsock2.h>
 #define HDR_SIZE 44
 #define AUDIO_DATA_SIZE (4092-HDR_SIZE)
-
+class AudioSendThread;
 
 class AudioReadThread : public QThread{
     Q_OBJECT
 
 public:
     explicit AudioReadThread(QString file);
-    virtual ~AudioReadThread(){}
+    virtual ~AudioReadThread();
 
 
+    AudioSendThread* thread_;
 protected:
     /**
       * Function: run()
