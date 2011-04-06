@@ -15,6 +15,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QShortcut>
 
 namespace Ui {
     class MainWindow;

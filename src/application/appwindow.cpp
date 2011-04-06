@@ -41,6 +41,9 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     connect(ui->quit3, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->quit4, SIGNAL(clicked()), this, SLOT(close()));
     ui->stopStream->hide();
+
+    QShortcut* sendChatShortcut = new QShortcut(QKeySequence("alt+c"), ui->message);
+    connect(sendChatShortcut, SIGNAL(activated()), this, SLOT(sendChat()));
 }
 
 AppWindow::~AppWindow() {
