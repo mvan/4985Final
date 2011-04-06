@@ -28,6 +28,7 @@ class AppWindow : public QTabWidget
 public:
     explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
     virtual ~AppWindow();
+    void addUser(QString username);
 
 public slots:
     void addFiles();
@@ -71,6 +72,7 @@ private:
     Phonon::AudioOutput *audioOutput;
     Phonon::VolumeSlider *volumeSlider;
     QList<Phonon::MediaSource> mediaSources;
+    QList<QString> currentUsers;
 
     ConnectionControl* connectionControl_;
     ChatWriteThread* chatInThread_;

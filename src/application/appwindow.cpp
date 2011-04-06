@@ -233,10 +233,18 @@ void AppWindow::fileSelection() {
     }
 }
 void AppWindow::addChat(char* packet) {
-    ui->chatLog->append(QString(packet+4));
+    QString msg(packet+4);
+    QString user(msg.split(":").at(0));
+    ui->chatLog->append(msg);
+    if(!currentUsers.contains(user)) {
+        addUser(user);
+    }
 }
 
 void AppWindow::sendChat() {
+    if(ui->message->toPlainText().length() < 1) {
+        return;
+    }
     QString tmp;
     char packet[PACKETSIZE], buf[PACKETSIZE];
 
@@ -295,4 +303,12 @@ void AppWindow::streamReq() {
     ui->stream->hide();
     ui->stopStream->show();
     emit(requestStream(q.toAscii().data()));
+}
+
+void AppWindow::addUser(QString username) {
+    currentUsers.push_back(username);
+    ui->userList->clear();
+    foreach(QString user, currentUsers) {
+        ui->userList->append(user);
+    }
 }
