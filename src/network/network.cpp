@@ -65,7 +65,7 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
 }
 
 void ProcessUDPPacket(char* packet) {
-    if(packet[0] == MSG_AUDIO) {
+    if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
         audioinBuffer.bufferPacket(packet);
     }
 }
