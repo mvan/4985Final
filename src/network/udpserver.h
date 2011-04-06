@@ -19,7 +19,5 @@ class udpserver: public server {
         }
         void ProcessUDPPacket(char* packet);
         virtual void run();
-    signals:
-        void streamIn();
 };
 #endif

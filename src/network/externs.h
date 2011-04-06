@@ -13,7 +13,6 @@ extern Buffer chatoutBuffer;
 extern QString userName;
 extern bool transferring;
 extern bool streamingOut;
-extern bool streamingIn;
 extern char ClientNum;
 
 #endif // EXTERNS_H

@@ -24,17 +24,11 @@ void AudioWriteThread::run(){
         }
         audioinBuffer.grabPacket(packet);
         if(out.getParams((packet+4)) == 1){
+            out.destroyAudioDev();
             out.setupParams();
             out.createAudioDev();
         }
-
-        //If packet type is end of transmission, end thread
-        if(packet[0] == MSG_STREAMCOMPLETE || packet[0] == MSG_MICCLOSED){
-            break;
-        }
         out.playSound(packet);
     }
-    Sleep(10);
-    emit(endStream());
 }
 

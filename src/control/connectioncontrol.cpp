@@ -23,6 +23,9 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     tcpServer_ = new tcpserver(tcpPort);
     tcpServer_->start();
 
+    audioInThread_ = new AudioWriteThread();
+    audioInThread_->start();
+
     //CONNECTION SIGNAL AND SLOT
     connect(tcpServer_, SIGNAL(connectionRequest(char*)), this,
             SLOT(connectionSlot(char*)), Qt::QueuedConnection);
@@ -39,10 +42,6 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     connect(tcpServer_, SIGNAL(StreamReq(char*)), this,
             SLOT(startStreamFromReq(char*)), Qt::QueuedConnection);
     connect(udpServer_, SIGNAL(streamIn()), this, SLOT(startRandomStream()));
-
-    //MIC SIGNALS AND SLOTS
-    connect(tcpServer_, SIGNAL(MicReq()), this,
-            SLOT(startMicFromReq()), Qt::QueuedConnection);
 
     return true;
 }
@@ -144,17 +143,6 @@ void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
     transferring = true;
 }
 
-void ConnectionControl::startMicFromReq() {
-    if(streamingIn == true) {
-        return;
-    }
-    audioInThread_ = new AudioWriteThread();
-    connect(audioInThread_, SIGNAL(endStream()), this,
-            SLOT(endStreamIn()), Qt::QueuedConnection);
-    audioInThread_->start();
-    streamingIn = true;
-}
-
 void ConnectionControl::endFTOut() {
     Sleep(100);
     disconnect(fileOutThread_, SIGNAL(sendTCPPacket(char*, char)), this,
@@ -187,14 +175,12 @@ void ConnectionControl::startStreamFromReq(char* fName) {
 }
 
 void ConnectionControl::startMicStream(){
-    char packet[PACKETSIZE];
     if(streamingOut == true) {
         QMessageBox m;
         m.setText(QString("Audio channel already open.\n Cannot open microphone."));
         m.exec();
         return;
     }
-    mkPacket(packet, MSG_MICOPEN, 0, 0, (char*)"");
     micThread_ = new AudioSendThread();
     micReader_ = new audioin();
     micReader_->setupParams();
@@ -202,9 +188,6 @@ void ConnectionControl::startMicStream(){
     connect(micThread_, SIGNAL(sendPacket(char*)), this,
             SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
     micThread_->start();
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(packet);
-    TCPSocket_.TCPSend();
     streamingOut = true;
 }
 
@@ -231,31 +214,11 @@ void ConnectionControl::requestStream(char* fileName) {
 
     mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
 
-    audioInThread_ = new AudioWriteThread();
-    audioInThread_->start();
-
-    connect(audioInThread_, SIGNAL(endStream()), this,
-            SLOT(endStreamIn()), Qt::QueuedConnection);
-
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
     streamingIn = true;
 
-}
-void ConnectionControl::startRandomStream() {
-    if(streamingIn == true) {
-        QMessageBox m;
-        m.setText(QString("Audio channel already open. Cannot start stream."));
-        m.exec();
-        return;
-    }
-    audioInThread_ = new AudioWriteThread();
-    audioInThread_->start();
-
-    connect(audioInThread_, SIGNAL(endStream()), this,
-            SLOT(endStreamIn()), Qt::QueuedConnection);
-    streamingIn = true;
 }
 
 void ConnectionControl::endStreamOut() {
@@ -266,14 +229,6 @@ void ConnectionControl::endStreamOut() {
             SLOT(endStreamOut()));
     delete audioOutThread_;
     streamingOut = false;
-}
-
-void ConnectionControl::endStreamIn() {
-    Sleep(100);
-    disconnect(audioInThread_, SIGNAL(endStream()), this,
-               SLOT(endStreamIn()));
-    delete audioInThread_;
-    streamingIn = false;
 }
 
 void ConnectionControl::endMic(){

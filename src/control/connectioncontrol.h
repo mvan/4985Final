@@ -36,8 +36,6 @@ public slots:
     void endFTIn();
     void requestStream(char* fileName);
     void startStreamFromReq(char* fileName);
-    void startRandomStream();
-    void endStreamIn();
     void endStreamOut();
     void connectionSlot(char* ipaddr);
     void sendFilePacket(char*, char);
@@ -45,7 +43,6 @@ public slots:
     void sendChatPacket(char* packet);
     void updateList(char* fname);
     void addAudioFile(QString filename);
-    void startMicFromReq();
     void startMicStream();
     void endMic();
 

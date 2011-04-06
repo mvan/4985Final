@@ -16,9 +16,6 @@ void udpserver::run() {
 }
 
 void udpserver::ProcessUDPPacket(char* packet) {
-    if(streamingIn == false) {
-        emit streamIn();
-    }
     if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
         audioinBuffer.bufferPacket(packet);
     }

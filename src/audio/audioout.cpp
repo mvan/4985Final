@@ -38,7 +38,10 @@ void audioout::createAudioDev() {
 }
 
 void audioout::destroyAudioDev() {
-    delete output_;
+    if(output_ != NULL) {
+        delete output_;
+        output_ = NULL;
+    }
 }
 
 void audioout::playSound(char* sound){
