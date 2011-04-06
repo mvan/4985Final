@@ -113,7 +113,7 @@ void AudioSendThread::run(){
 
         audiooutBuffer.grabPacket(packet);
 
-        emit(sendPacket(packet));
+        emit sendPacket(packet);
         Sleep(1);
         if(packet[0] == MSG_STREAMCOMPLETE || packet[0] == MSG_MICCLOSED){
             break;

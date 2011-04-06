@@ -23,8 +23,7 @@ class audioin: public QObject {
         void createAudioDev();
         void destroyAudioDev();
         void mkVoiceHdr(char* buf);
-        void waitForData();
     public slots:
-        void readSound(qint64 bytes);
+        void readSound();
 };
 #endif

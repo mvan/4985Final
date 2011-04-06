@@ -16,27 +16,33 @@ void audioin::createAudioDev() {
         format_ = i.nearestFormat(format_);
     } else {
         input_ = new QAudioInput(format_);
-
-        inbuf_ = (QBuffer*)input_->start();
-        buffer_ = inbuf_;
-        connect(buffer_, SIGNAL(bytesWritten(qint64)), this, SLOT(readSound(qint64)));
+        buffer_ = new QBuffer();
+        buffer_->open(QIODevice::ReadWrite);
+        input_->start(inbuf_);
     }
 }
 
 void audioin::destroyAudioDev() {
     delete input_;
+    delete buffer_;
 }
 
-void audioin::readSound(qint64 bytes){
+void audioin::readSound(){
 
     char buf[DATA_SIZE];
     char packet[PACKETSIZE];
-    if(bytes >= AUDIO_DATA_SIZE) {
+
+    if(input_->bytesReady() >= AUDIO_DATA_SIZE) {
         mkVoiceHdr(buf);
+        buffer_->seek(0);
         buffer_->read(buf+HDR_SIZE, AUDIO_DATA_SIZE);
         mkPacket(packet, MSG_MIC, DATA_SIZE, 0, buf);
+        if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize) {
+            audiooutBuffer.queueMutex.lock();
+            audiooutBuffer.bufferNotFull.wait(&audiooutBuffer.queueMutex);
+            audiooutBuffer.queueMutex.unlock();
+        }
         audiooutBuffer.bufferPacket(packet);
-        Sleep(8);
     }
 }
 
@@ -50,8 +56,4 @@ void audioin::mkVoiceHdr(char* buf) {
     memcpy(buf+28, &byteRate, 4);
     memcpy(buf+22, &channels, 2);
     memcpy(buf+34, &sampleSize, 2);
-}
-
-void audioin::waitForData() {
-    buffer_->waitForBytesWritten(-1);
 }
