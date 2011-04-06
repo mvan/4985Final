@@ -1,5 +1,6 @@
 #include "audioout.h"
 #include "../network/audiotransfer.h"
+#include "../network/network.h"
 void audioout::setupParams() {
     format_.setFrequency(frequency_);
     format_.setChannels(channels_);
@@ -41,7 +42,7 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, AUDIO_DATA_SIZE);
+    buffer_->write(sound+48, dataLength(sound) - 44);
     if(pause_ != 0) {
         Sleep(pause_*1000);
     }
