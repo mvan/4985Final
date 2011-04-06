@@ -17,6 +17,11 @@ void udpserver::run() {
 
 void udpserver::ProcessUDPPacket(char* packet) {
     if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
+        if(audioinBuffer.queue.size() == audioinBuffer.bufferSize){
+            audioinBuffer.queueMutex.lock();
+            audioinBuffer.bufferNotFull.wait(&audioinBuffer.queueMutex);
+            audioinBuffer.queueMutex.unlock();
+        }
         audioinBuffer.bufferPacket(packet);
     }
 }

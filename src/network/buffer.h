@@ -7,7 +7,7 @@
 #include <QWaitCondition>
 #include <QByteArray>
 
-#define DEFAULT_BUFFER_SIZE 10
+#define DEFAULT_BUFFER_SIZE 1000000
 #define DATA_SIZE 4092
 
 class Buffer:public QObject
