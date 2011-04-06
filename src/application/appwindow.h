@@ -29,6 +29,7 @@
 #include <phonon/volumeslider.h>
 #include <phonon/backendcapabilities.h>
 #include <QList>
+#include <QShortcut>
 #include "../control/connectioncontrol.h"
 #include "../network/chattransferin.h"
 
