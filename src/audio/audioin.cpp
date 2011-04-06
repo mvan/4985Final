@@ -16,7 +16,9 @@ void audioin::createAudioDev() {
         format_ = i.nearestFormat(format_);
     } else {
         input_ = new QAudioInput(format_);
-        buffer_ = input_->start();
+
+        inbuf_ = (QBuffer*)input_->start();
+        buffer_ = inbuf_;
         connect(buffer_, SIGNAL(bytesWritten(qint64)), this, SLOT(readSound(qint64)));
     }
 }
