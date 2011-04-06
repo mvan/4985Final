@@ -174,6 +174,7 @@ void sock::UDPSocket_Init(int port) {
     int sizebuf = BUFSIZE;
     bool reuseaddr = true;
     this->udpPort = port;
+    mc_ = true;
     if ((sock_ = WSASocket(PF_INET, SOCK_DGRAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET) {
         WSAError(SOCK_ERROR);
     }
