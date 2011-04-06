@@ -247,6 +247,7 @@ void ConnectionControl::endStreamOut() {
             SLOT(sendAudioPacket(char*)));
     disconnect(audioOutThread_, SIGNAL(endStream()), this,
             SLOT(endStreamOut()));
+
     audioOutThread_->terminate();
     delete audioOutThread_;
     audioOutThread_ = NULL;

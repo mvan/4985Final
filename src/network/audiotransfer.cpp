@@ -88,6 +88,7 @@ void AudioReadThread::run(){
 
     file.close();
     disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
+    streamingOut = false;
     emit(endStream());
     return;
 }
@@ -118,6 +119,7 @@ void AudioSendThread::run(){
         if(packet[0] == MSG_STREAMCOMPLETE || packet[0] == MSG_MICCLOSED){
             break;
         }
+
     }
     Sleep(10);
 }
