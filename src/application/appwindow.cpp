@@ -245,8 +245,8 @@ void AppWindow::sendChat() {
     tmp.append(userName);
     tmp.append(": ");
     tmp.append(ui->message->toPlainText().toAscii().constData());
-    memcpy(buf, tmp.toAscii().data(), PACKETSIZE);
-    mkPacket(packet, MSG_CHAT, PACKETSIZE, 0, buf);
+    memcpy(buf, tmp.toAscii().constData(), tmp.size());
+    mkPacket(packet, MSG_CHAT, (unsigned short)tmp.size(), 0, buf);
     emit chatSignal(packet);
     ui->chatLog->append(buf);
     ui->message->clear();
