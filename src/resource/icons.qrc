@@ -25,5 +25,6 @@
         <file>mainWindowBg.png</file>
         <file>closeBtn.png</file>
         <file>appWindowBg.png</file>
+        <file>stopStreamFile.png</file>
     </qresource>
 </RCC>

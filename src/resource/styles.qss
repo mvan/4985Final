@@ -87,6 +87,10 @@ QPushButton#stream {
     background-image: url(:/files/streamFile.png);
 }
 
+QPushButton#stopStream {
+    background-image: url(:/files/stopStreamFile.png);
+}
+
 QPushButton#transfer {
     background-image: url(:/files/transferFile.png);
 }
