@@ -129,10 +129,17 @@ void ConnectionControl::requestFT(char* fileName) {
 
     connect(fileInThread_, SIGNAL(endFT()), this,
             SLOT(endFTIn()), Qt::QueuedConnection);
-
-    TCPSocket_.clrPacket();
-    TCPSocket_.setPacket(packet);
-    TCPSocket_.TCPSend();
+    if(TCPSocket_.getSock() != NULL) {
+        TCPSocket_.clrPacket();
+        TCPSocket_.setPacket(packet);
+        TCPSocket_.TCPSend();
+    } else {
+        for(int i = 0; i < numConnections_; ++i) {
+            TCPSocket_.clrPacket();
+            TCPSocket_.setPacket(packet);
+            TCPSocket_.TCPSend();
+        }
+    }
     transferring = true;
 }
 
@@ -226,15 +233,8 @@ void ConnectionControl::requestStream(char* fileName) {
         m.exec();
         return;
     }
-    if(streamingIn == true) {
-        QMessageBox m;
-        m.setText(QString("Audio channel already open. Cannot start stream."));
-        m.exec();
-        return;
-    }
 
     mkPacket(packet, MSG_STREAMREQ, strlen(fileName), ClientNum, fileName);
-
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
