@@ -3,13 +3,14 @@
 #include <QObject>
 #include <QAudioOutput>
 #include <QAudioFormat>
+#include <QAudioInput>
 #include <QBuffer>
 #include "../network/audiotransfer.h"
 class audioin: public QObject {
     Q_OBJECT
 
     private:
-        QAudioOutput* input_;
+        QAudioInput* input_;
         QAudioFormat format_;
         QIODevice* buffer_;
         QBuffer* inbuf_;

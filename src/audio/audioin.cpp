@@ -15,7 +15,7 @@ void audioin::createAudioDev() {
     if(!i.isFormatSupported(format_)) {
         return;
     } else {
-        input_ = new QAudioOutput(format_);
+        input_ = new QAudioInput(format_);
         buffer_ = input_->start();
         inbuf_ = (QBuffer*)buffer_;
     }
@@ -30,6 +30,7 @@ void audioin::readSound(){
     char packet[PACKETSIZE];
     mkVoiceHdr(buf);
     Sleep(8);
+
     inbuf_->read(buf+HDR_SIZE, AUDIO_DATA_SIZE);
     mkPacket(packet, MSG_MIC, DATA_SIZE, 0, buf);
     audiooutBuffer.bufferPacket(packet);
