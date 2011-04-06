@@ -14,7 +14,7 @@ class sock {
         char packet_[PACKETSIZE];
         QMutex* mut_;
         WSABUF buffer_;
-        bool mc_;
+
 
     private:
         SOCKET sock_;
@@ -23,6 +23,7 @@ class sock {
         struct sockaddr_in addr_;
         char localaddr_[16];
         int udpPort;
+        bool mc_;
 
     public:
 
