@@ -98,9 +98,7 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
-            mut_->lock();
             memcpy(&(packet_[0]), packet, PACKETSIZE);
-            mut_->unlock();
         }
         void socket_close() {
             closesocket(sock_);

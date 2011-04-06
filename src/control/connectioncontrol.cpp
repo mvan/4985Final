@@ -294,7 +294,7 @@ void ConnectionControl::sendChatPacket(char* packet) {
         TCPSocket_.setPacket(packet);
         TCPSocket_.TCPSend();
     }
-    for(int i = 0; i < numConnections_; ++i) {
+    for(int i = 0; i <= numConnections_; ++i) {
         connections_[i].clrPacket();
         connections_[i].setPacket(packet);
         connections_[i].TCPSend();
@@ -316,7 +316,7 @@ void ConnectionControl::addAudioFile(QString filename) {
         TCPSocket_.setPacket(buf);
         TCPSocket_.TCPSend();
     }
-    for(int i = 0; i < numConnections_; ++i) {
+    for(int i = 0; i <= numConnections_; ++i) {
         connections_[i].clrPacket();
         connections_[i].setPacket(buf);
         connections_[i].TCPSend();

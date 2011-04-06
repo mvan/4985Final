@@ -13,13 +13,11 @@ class tcpserver: public server {
     Q_OBJECT
     private:
         sock* listenSock_;
+        SOCKET listenSocket_;
         sock socks_[FD_SETSIZE];
         SOCKET selectSocks_[FD_SETSIZE];
-        fd_set readySet_;
         fd_set allSet_;
         int numReady_;
-        int maxSock_;
-        QList<sock> currentClients_;
         int portNo;
 
     public:
@@ -34,7 +32,6 @@ class tcpserver: public server {
         SOCKET addSelectSock();
         void removeSelectSock(SOCKET s);
         virtual void run();
-        QList<sock> getAllClients();
         int ProcessTCPPacket(char* packet);
 
     signals:

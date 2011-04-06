@@ -11,14 +11,16 @@ void tcpserver::run() {
 
     while(1) {
 
-        readySet_ = allSet_;
+        struct fd_set readySet_ = allSet_;
 
-        if((numReady_ = select(maxSock_-1, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
+        if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
 
         if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
-            addSelectSock();
+            if(addSelectSock() == 0) {
+                continue;
+            }
             Sleep(100);
             if(--numReady_ <= 0) {
                 continue;
@@ -27,12 +29,13 @@ void tcpserver::run() {
 
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
-            SOCKET s;
+            SOCKET s = 0;
 
             if((s = selectSocks_[i]) == 0) {
                 continue;
             }
-            if(FD_ISSET(selectSocks_[i], &readySet_)) {
+
+            if(FD_ISSET(s, &readySet_)) {
                 sock so(s);
                 nRead = so.TCPRecv();
                 if(nRead == 0) {
@@ -59,29 +62,24 @@ void tcpserver::initSelect() {
         selectSocks_[i] = 0;
     }
 
+    listenSocket_ = listenSock_->getSock();
+
     FD_ZERO(&allSet_);
-    FD_SET(listenSock_->getSock(), &allSet_);
-    maxSock_ = listenSock_->getSock();
+    FD_SET(listenSocket_, &allSet_);
 
 }
 
 SOCKET tcpserver::addSelectSock() {
 
     int i;
-
     SOCKET s = listenSock_->TCPSocket_Accept();
-    if(s < 0) {
+    if(s <= 0) {
         WSAError(SOCK_ERROR);
     }
-
     for(i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == 0) {
             FD_SET(s, &allSet_);
             selectSocks_[i] = s;
-            if(s > maxSock_) {
-                maxSock_ = s;
-            }
-            currentClients_.push_back(sock(s));
             break;
         }
     }
@@ -94,15 +92,10 @@ void tcpserver::removeSelectSock(SOCKET s) {
         if(selectSocks_[i] == s) {
             FD_CLR(s, &allSet_);
             selectSocks_[i] = 0;
-            currentClients_.removeAt(i);
             closesocket(s);
             return;
         }
     }
-}
-
-QList<sock> tcpserver::getAllClients() {
-    return currentClients_;
 }
 
 int tcpserver::ProcessTCPPacket(char* packet) {
