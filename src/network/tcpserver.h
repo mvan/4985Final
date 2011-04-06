@@ -28,10 +28,51 @@ class tcpserver: public server {
             listenSock_->socket_close();
             delete listenSock_;
         }
+        /**
+          * initSelect()
+          *
+          *
+          * Description:
+          * This function initiazlizes the tcpserver for select.
+          */
         virtual void initSelect();
+        /**
+          * addSelectSock()
+          *
+          * @return returns the newly accepted and added socket.
+          *
+          * Description:
+          * accepts an incoming connection request and adds the socket
+          * to the select sets.
+          */
         SOCKET addSelectSock();
+        /**
+          * removeSelectSock(SOCKET s)
+          *
+          * @param the socket to be removed from the sets.
+          *
+          * Description:
+          * removes a socket from the select sets.
+          */
         void removeSelectSock(SOCKET s);
+        /**
+          * run()
+          *
+          *
+          * Description:
+          * Runs the TCP server.
+          */
         virtual void run();
+        /**
+          * ProcessTCPPacket(char* packet)
+          *
+          * @param the packet to be processed.
+          *
+          * @return -1 if the packet is a connection notification, 1 otherwise.
+          *
+          * Description:
+          * Handles a received TCP packet.
+          */
         int ProcessTCPPacket(char* packet);
 
     signals:
