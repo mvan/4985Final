@@ -29,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->about, SIGNAL(clicked()), this, SLOT(openAbout()));
     connect(ui->connect, SIGNAL(clicked()), this, SLOT(openApp()));
     connect(ui->quit, SIGNAL(clicked()), this, SLOT(close()));
+
+    QShortcut* connectShortcut = new QShortcut(QKeySequence("ALT+c"), this);
+    connect(connectShortcut, SIGNAL(activated()), this, SLOT(openApp()));
 }
 
 void MainWindow::openAbout() {

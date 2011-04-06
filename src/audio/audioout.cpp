@@ -32,7 +32,7 @@ void audioout::createAudioDev() {
     }
     if(output_ == NULL) {
         output_ = new QAudioOutput(format_);
-        output_->setBufferSize(600000000);
+        output_->setBufferSize(6000000);
         buffer_ = output_->start();
     }
 }
@@ -42,7 +42,7 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, AUDIO_DATA_SIZE);
+    buffer_->write(sound+48, dataLength(sound) - HDR_SIZE);
     if((pause_ * 1000) > 0) {
         Sleep(pause_*1000);
     }

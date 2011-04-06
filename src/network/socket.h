@@ -15,7 +15,6 @@ class sock {
         QMutex* mut_;
         WSABUF buffer_;
 
-
     private:
         SOCKET sock_;
         size_t bSend_;
@@ -26,7 +25,6 @@ class sock {
         bool mc_;
 
     public:
-
         explicit sock():sock_(0), bSend_(0), bRecv_(0), mc_(false){
             mut_ = new QMutex();
             buffer_.buf = packet_;
