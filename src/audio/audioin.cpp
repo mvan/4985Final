@@ -49,3 +49,7 @@ void audioin::mkVoiceHdr(char* buf) {
     memcpy(buf+22, &channels, 2);
     memcpy(buf+34, &sampleSize, 2);
 }
+
+void audioin::waitForData() {
+    buffer_->waitForBytesWritten(-1);
+}

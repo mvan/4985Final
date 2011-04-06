@@ -29,7 +29,7 @@ void AudioWriteThread::run(){
         }
 
         //If packet type is end of transmission, end thread
-        if(packet[0] == MSG_STREAMCOMPLETE){
+        if(packet[0] == MSG_STREAMCOMPLETE || packet[0] == MSG_MICCLOSED){
             break;
         }
         out.playSound(packet);

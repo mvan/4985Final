@@ -16,9 +16,8 @@ void MicThread::run(){
     in.createAudioDev();
 
     thread->start();
-
-    while(streaming){
-        Sleep(5000);
+    while(streaming) {
+        in.waitForData();
     }
     thread->wait();
     disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
