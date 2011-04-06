@@ -61,7 +61,7 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
     buf[1] = LOBYTE(packetSize);
     buf[2] = HIBYTE(packetSize);
     buf[3] = destClient;
-    memcpy((buf+4), data, (int)packetSize);
+    memmove((buf+4), data, (int)packetSize);
 }
 
 unsigned short dataLength(char* buf) {

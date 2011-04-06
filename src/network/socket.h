@@ -98,7 +98,7 @@ class sock {
             ol_.hEvent = WSACreateEvent();
         }
         void setPacket(char* packet) {
-            memcpy(&(packet_[0]), packet, PACKETSIZE);
+            memmove(&(packet_[0]), packet, PACKETSIZE);
         }
         void socket_close() {
             struct ip_mreq mc_addr;
