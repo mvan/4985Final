@@ -42,8 +42,8 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, dataLength(sound) - 44);
-    if(pause_ != 0) {
+    buffer_->write(sound+48, AUDIO_DATA_SIZE);
+    if((pause_ * 1000) > 0) {
         Sleep(pause_*1000);
     }
 }
