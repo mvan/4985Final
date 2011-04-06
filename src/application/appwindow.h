@@ -46,6 +46,7 @@ class AppWindow : public QTabWidget
 public:
     explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
     virtual ~AppWindow();
+    void addUser(QString username);
 
 public slots:
     /**
@@ -269,6 +270,7 @@ private:
 
     /** The list of media sources currently available. */
     QList<Phonon::MediaSource> mediaSources;
+    QList<QString> currentUsers;
 
     /** The current connection of this instance. */
     ConnectionControl* connectionControl_;

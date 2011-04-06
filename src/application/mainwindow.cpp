@@ -51,6 +51,7 @@ void MainWindow::openApp() {
                      QString("No server available. This will only run as a server."),
                      QMessageBox::Ok);
     }
+    apw->addUser(userName);
     apw->applyStyleSheet(QString(":/files/styles.qss"));
     apw->show();
     this->hide();

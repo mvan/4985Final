@@ -61,7 +61,7 @@ QTabBar::tab:hover {
 }
 
 QPushButton#connect, QPushButton#addFiles, QPushButton#stream, QPushButton#transfer, QPushButton#sendButton
-, QPushButton#about, QPushButton#manual {
+, QPushButton#about, QPushButton#manual, QPushButton#stopStream {
     background-repeat: no-repeat;
     padding-top: 45px;
     background-position: center top;
