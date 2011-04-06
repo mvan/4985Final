@@ -8,7 +8,7 @@
 bool transferring = false;
 bool streamingOut = false;
 char ClientNum = 0;
-ConnectionControl::ConnectionControl(): numConnections_(0){
+ConnectionControl::ConnectionControl(): numConnections_(0), audioOutThread_(0){
 
 }
 
@@ -179,6 +179,10 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    if(audioOutThread_ != 0) {
+        disconnect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
+               SLOT(sendAudioPacket(char*)));
+        disconnect(audioOutThread_, SIGNAL(endStream()), this,
+               SLOT(endStreamOut()));
         audioOutThread_->terminate();
         delete audioOutThread_;
         audioOutThread_ = NULL;
