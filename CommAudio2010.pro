@@ -33,8 +33,7 @@ SOURCES += src/main.cpp\
         src/network/audiotransferin.cpp \
         src/network/audiotransfer.cpp \
         src/audio/audioin.cpp \
-        src/audio/audioout.cpp \
-        src/audio/micthread.cpp
+        src/audio/audioout.cpp
 
 
 HEADERS  += src/application/mainwindow.h \
@@ -57,8 +56,7 @@ HEADERS  += src/application/mainwindow.h \
         src/network/audiotransferin.h \
         src/network/audiotransfer.h \
         src/audio/audioin.h \
-        src/audio/audioout.h \
-        src/audio/micthread.h
+        src/audio/audioout.h
 
 
 FORMS   += src/application/mainwindow.ui \

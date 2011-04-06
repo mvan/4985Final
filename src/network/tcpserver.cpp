@@ -127,9 +127,6 @@ int tcpserver::ProcessTCPPacket(char* packet) {
         case MSG_LIST: //recv a playlist item
             emit updateList(packet+4);
             break;
-        case MSG_MICOPEN:
-            emit MicReq();
-            break;
         default:
             return 0;
     }

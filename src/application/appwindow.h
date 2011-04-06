@@ -217,6 +217,7 @@ signals:
     void requestStream(char* fName);
     void addAudioFile(QString fName);
     void startMicStream();
+    void endMicStream();
 
 private:
     /**

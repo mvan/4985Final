@@ -105,6 +105,7 @@ void AppWindow::onOffMicSelf() {
     } else {
         ui->txMicroSelf->setText("Turn on");
         ui->txMicroSelf->setIcon(QIcon(":/files/yourMicrophone.png"));
+        emit(endMicStream());
     }
 
 }
@@ -134,6 +135,7 @@ void AppWindow::setupGui() {
     connect(ui->play, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(ui->txMicroSelf, SIGNAL(clicked()), this, SLOT(onOffMicSelf()));
     connect(this, SIGNAL(startMicStream()), connectionControl_, SLOT(startMicStream()));
+    connect(this, SIGNAL(endMicStream()), connectionControl_, SLOT(endMicStream()));
 
     connect(this, SIGNAL(playFile()), mediaObject, SLOT(play()));
     connect(this, SIGNAL(pauseFile()), mediaObject, SLOT(pause()));

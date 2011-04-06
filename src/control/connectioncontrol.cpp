@@ -189,6 +189,14 @@ void ConnectionControl::startMicStream(){
     streamingOut = true;
 }
 
+void ConnectionControl::endMicStream() {
+    disconnect(micThread_, SIGNAL(sendPacket(char*)), this,
+            SLOT(sendAudioPacket(char*)));
+    delete micThread_;
+    delete micReader_;
+    streamingOut = true;
+}
+
 void ConnectionControl::requestStream(char* fileName) {
     char packet[PACKETSIZE];
     if(TCPSocket_.getSock() == 0) {
@@ -226,16 +234,6 @@ void ConnectionControl::endStreamOut() {
     disconnect(audioOutThread_, SIGNAL(endStream()), this,
             SLOT(endStreamOut()));
     delete audioOutThread_;
-    streamingOut = false;
-}
-
-void ConnectionControl::endMic(){
-    Sleep(100);
-    disconnect(micThread_, SIGNAL(sendUDPPacket(char*)), this,
-            SLOT(sendAudioPacket(char*)));
-    disconnect(micThread_, SIGNAL(endMic()), this,
-            SLOT(endMic()));
-    delete micThread_;
     streamingOut = false;
 }
 

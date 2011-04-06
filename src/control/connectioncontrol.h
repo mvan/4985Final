@@ -13,7 +13,6 @@
 #include "../network/filetransferin.h"
 #include "../network/tcpserver.h"
 #include "../network/udpserver.h"
-#include "../audio/micthread.h"
 #include "../audio/audioin.h"
 
 class ConnectionControl: public QObject {
@@ -44,7 +43,7 @@ public slots:
     void updateList(char* fname);
     void addAudioFile(QString filename);
     void startMicStream();
-    void endMic();
+    void endMicStream();
 
 private:
     int tcpPort_;
