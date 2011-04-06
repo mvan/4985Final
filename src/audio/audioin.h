@@ -1,7 +1,7 @@
 #ifndef AUDIOIN_H
 #define AUDIOIN_H
 #include <QObject>
-#include <QAudioOutput>
+#include <QAudioInput>
 #include <QAudioFormat>
 #include <QAudioInput>
 #include <QBuffer>

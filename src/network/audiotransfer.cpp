@@ -1,6 +1,7 @@
 #include "audiotransfer.h"
 #include "network.h"
 #include "externs.h"
+#include "errors.h"
 #include "buffer.h"
 #include <QFile>
 Buffer audiooutBuffer;
@@ -18,7 +19,7 @@ void AudioReadThread::run(){
     QFile file(file_);
 
     if(!file.open(QIODevice::ReadOnly)){
-        //error
+        WSAError(FILE_ERROR);
     }
 
     sizeOfFile = file.size();
@@ -39,7 +40,7 @@ void AudioReadThread::run(){
 
             memcpy(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read(tempBuf+HDR_SIZE, AUDIO_DATA_SIZE)) == -1){
-                //error reading file
+                WSAError(READ_ERROR);
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0,tempBuf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){
@@ -61,7 +62,7 @@ void AudioReadThread::run(){
         } else { //less than a full packet left
             memcpy(tempBuf, buf, HDR_SIZE);
             if((bytesRead = file.read((tempBuf+HDR_SIZE), (sizeOfFile - totalRead))) == -1){
-                //error
+                WSAError(READ_ERROR);
             }
             mkPacket(tempPacket, MSG_AUDIO, (unsigned short)bytesRead, 0, tempBuf);
             if(audiooutBuffer.queue.size() == audiooutBuffer.bufferSize){

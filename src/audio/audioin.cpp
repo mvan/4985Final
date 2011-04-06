@@ -11,7 +11,7 @@ void audioin::setupParams() {
 }
 
 void audioin::createAudioDev() {
-    QAudioDeviceInfo i(QAudioDeviceInfo::defaultOutputDevice());
+    QAudioDeviceInfo i(QAudioDeviceInfo::defaultInputDevice());
     if(!i.isFormatSupported(format_)) {
         return;
     } else {
