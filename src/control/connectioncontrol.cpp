@@ -6,7 +6,8 @@
 #include <QMessageBox>
 #include <QList>
 bool transferring = false;
-bool streaming = false;
+bool streamingOut = false;
+bool streamingIn = false;
 char ClientNum = 0;
 ConnectionControl::ConnectionControl(): numConnections_(0){
 
@@ -75,7 +76,7 @@ void ConnectionControl::connectionSlot(char* ipaddr) {
     connections_[numConnections_].TCPSocket_Init();
     connections_[numConnections_].TCPSocket_Connect(ipaddr, tcpPort_);
     connections_[numConnections_].clrPacket();
-    mkPacket(buf, MSG_CONNBACK, PACKETSIZE, numConnections_, (char*)"");
+    mkPacket(buf, MSG_CONNBACK, 0, numConnections_, (char*)"");
     connections_[numConnections_].setPacket(buf);
     connections_[numConnections_].TCPSend();
     numConnections_++;
@@ -127,6 +128,7 @@ void ConnectionControl::requestFT(char* fileName) {
     TCPSocket_.TCPSend();
     transferring = true;
 }
+
 void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
     if(transferring == true) {
         return;
@@ -142,14 +144,14 @@ void ConnectionControl::startFTFromReq(char* fileName, char clientNo) {
 }
 
 void ConnectionControl::startMicFromReq() {
-    if(streaming == true) {
+    if(streamingIn == true) {
         return;
     }
     audioInThread_ = new AudioWriteThread();
     connect(audioInThread_, SIGNAL(endStream()), this,
             SLOT(endStreamIn()), Qt::QueuedConnection);
     audioInThread_->start();
-    streaming = true;
+    streamingIn = true;
 }
 
 void ConnectionControl::endFTOut() {
@@ -160,7 +162,6 @@ void ConnectionControl::endFTOut() {
             SLOT(endFTOut()));
     transferring = false;
     delete fileOutThread_;
-    transferring = false;
 }
 
 void ConnectionControl::endFTIn() {
@@ -172,7 +173,7 @@ void ConnectionControl::endFTIn() {
 }
 
 void ConnectionControl::startStreamFromReq(char* fName) {
-    if(streaming == true) {
+    if(streamingOut == true) {
         return;
     }
    audioOutThread_ = new AudioReadThread(QString(fName));
@@ -181,18 +182,18 @@ void ConnectionControl::startStreamFromReq(char* fName) {
    connect(audioOutThread_, SIGNAL(endStream()), this,
            SLOT(endStreamOut()), Qt::QueuedConnection);
    audioOutThread_->start();
-   streaming = true;
+   streamingOut = true;
 }
 
 void ConnectionControl::startMicStream(){
     char packet[PACKETSIZE];
-    if(streaming == true) {
+    if(streamingOut == true) {
         QMessageBox m;
-        m.setText(QString("Audio channel already open. Cannot open mic."));
+        m.setText(QString("Audio channel already open.\n Cannot open microphone."));
         m.exec();
         return;
     }
-    mkPacket(packet, MSG_MICOPEN, PACKETSIZE, 0, (char*)"");
+    mkPacket(packet, MSG_MICOPEN, 0, 0, (char*)"");
     micThread_ = new AudioSendThread();
     micReader_ = new audioin();
     micReader_->setupParams();
@@ -203,7 +204,7 @@ void ConnectionControl::startMicStream(){
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
-    streaming = true;
+    streamingOut = true;
 }
 
 void ConnectionControl::requestStream(char* fileName) {
@@ -220,7 +221,7 @@ void ConnectionControl::requestStream(char* fileName) {
         m.exec();
         return;
     }
-    if(streaming == true) {
+    if(streamingIn == true) {
         QMessageBox m;
         m.setText(QString("Audio channel already open. Cannot start stream."));
         m.exec();
@@ -238,7 +239,7 @@ void ConnectionControl::requestStream(char* fileName) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
-    streaming = true;
+    streamingIn = true;
 
 }
 
@@ -249,7 +250,7 @@ void ConnectionControl::endStreamOut() {
     disconnect(audioOutThread_, SIGNAL(endStream()), this,
             SLOT(endStreamOut()));
     delete audioOutThread_;
-    streaming = false;
+    streamingOut = false;
 }
 
 void ConnectionControl::endStreamIn() {
@@ -257,7 +258,7 @@ void ConnectionControl::endStreamIn() {
     disconnect(audioInThread_, SIGNAL(endStream()), this,
                SLOT(endStreamIn()));
     delete audioInThread_;
-    streaming = false;
+    streamingIn = false;
 }
 
 void ConnectionControl::endMic(){
@@ -267,7 +268,7 @@ void ConnectionControl::endMic(){
     disconnect(micThread_, SIGNAL(endMic()), this,
             SLOT(endMic()));
     delete micThread_;
-    streaming = false;
+    streamingOut = false;
 }
 
 void ConnectionControl::sendFilePacket(char* packet, char req) {

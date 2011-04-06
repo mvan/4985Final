@@ -18,6 +18,7 @@ class tcpserver: public server {
         fd_set readySet_;
         fd_set allSet_;
         int numReady_;
+        int maxSock_;
         QList<sock> currentClients_;
         int portNo;
 

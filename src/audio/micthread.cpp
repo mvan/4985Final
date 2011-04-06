@@ -16,7 +16,7 @@ void MicThread::run(){
     in.createAudioDev();
 
     thread->start();
-    while(streaming) {
+    while(streamingOut) {
         in.readSound();
     }
     thread->wait();

@@ -11,10 +11,9 @@ void tcpserver::run() {
 
     while(1) {
 
-        FD_ZERO(&readySet_);
-        this->readySet_ = this->allSet_;
+        readySet_ = allSet_;
 
-        if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
+        if((numReady_ = select(maxSock_-1, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
 
@@ -30,10 +29,10 @@ void tcpserver::run() {
             int nRead = 0;
             SOCKET s;
 
-            if((s = selectSocks_[i]) < 0) {
+            if((s = selectSocks_[i]) == 0) {
                 continue;
             }
-            if(FD_ISSET(s, &readySet_)) {
+            if(FD_ISSET(selectSocks_[i], &readySet_)) {
                 sock so(s);
                 nRead = so.TCPRecv();
                 if(nRead == 0) {
@@ -57,13 +56,12 @@ void tcpserver::run() {
 void tcpserver::initSelect() {
 
     for(int i = 0; i < FD_SETSIZE; ++i) {
-        selectSocks_[i] = -1;
+        selectSocks_[i] = 0;
     }
-
-    memset(&(selectSocks_[0]), 0, FD_SETSIZE * sizeof(SOCKET));
 
     FD_ZERO(&allSet_);
     FD_SET(listenSock_->getSock(), &allSet_);
+    maxSock_ = listenSock_->getSock();
 
 }
 
@@ -72,7 +70,7 @@ SOCKET tcpserver::addSelectSock() {
     int i;
 
     SOCKET s = listenSock_->TCPSocket_Accept();
-    if(s <= 0) {
+    if(s < 0) {
         WSAError(SOCK_ERROR);
     }
 
@@ -80,6 +78,9 @@ SOCKET tcpserver::addSelectSock() {
         if(selectSocks_[i] == 0) {
             FD_SET(s, &allSet_);
             selectSocks_[i] = s;
+            if(s > maxSock_) {
+                maxSock_ = s;
+            }
             currentClients_.push_back(sock(s));
             break;
         }

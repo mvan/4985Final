@@ -61,11 +61,11 @@ void mkPacket(char* buf, char msgtype, unsigned short packetSize, char destClien
     buf[1] = LOBYTE(packetSize);
     buf[2] = HIBYTE(packetSize);
     buf[3] = destClient;
-    memcpy((buf+4), data, (PACKETSIZE-4));
+    memcpy((buf+4), data, (int)packetSize);
 }
 
 void ProcessUDPPacket(char* packet) {
-    if(packet[0] == MSG_AUDIO) {
+    if(packet[0] == MSG_AUDIO || packet[0] == MSG_MIC) {
         audioinBuffer.bufferPacket(packet);
     }
 }
