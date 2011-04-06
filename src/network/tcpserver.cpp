@@ -3,7 +3,7 @@
 #include "externs.h"
 #include <QDebug>
 void tcpserver::run() {
-
+    fd_set readSet;
     listenSock_->TCPSocket_Init();
     listenSock_->TCPSocket_Bind(portNo);
     listenSock_->TCPSocket_Listen();
@@ -11,22 +11,21 @@ void tcpserver::run() {
 
     while(1) {
 
-        struct fd_set readySet_ = allSet_;
+        readSet = allSet_;
 
-        if((numReady_ = select(NULL, &readySet_, NULL, NULL, NULL)) == SOCKET_ERROR) {
+        if((numReady_ = select(NULL, &readSet, NULL, NULL, NULL)) == SOCKET_ERROR) {
             continue;
         }
 
-        if(FD_ISSET(listenSock_->getSock(), &readySet_)) {
+        if(FD_ISSET(listenSocket_, &readSet)) {
             if(addSelectSock() == 0) {
                 continue;
             }
             Sleep(100);
-            if(--numReady_ <= 0) {
+            if((--numReady_) <= 0) {
                 continue;
             }
         }
-
         for(int i = 0; i < FD_SETSIZE; ++i) {
             int nRead = 0;
             SOCKET s = 0;
@@ -34,8 +33,7 @@ void tcpserver::run() {
             if((s = selectSocks_[i]) == 0) {
                 continue;
             }
-
-            if(FD_ISSET(s, &readySet_)) {
+            if(FD_ISSET(s, &readSet)) {
                 sock so(s);
                 nRead = so.TCPRecv();
                 if(nRead == 0) {
@@ -48,16 +46,15 @@ void tcpserver::run() {
                         emit(connectionRequest(pack+4));
                     }
                 }
-            }
-            if(--numReady_ <= 0) {
-                break;
+                if((--numReady_) <= 0) {
+                    break;
+                }
             }
         }
     }
 }
 
 void tcpserver::initSelect() {
-
     for(int i = 0; i < FD_SETSIZE; ++i) {
         selectSocks_[i] = 0;
     }
@@ -87,7 +84,6 @@ SOCKET tcpserver::addSelectSock() {
 }
 
 void tcpserver::removeSelectSock(SOCKET s) {
-
     for(int i = 0; i < FD_SETSIZE; ++i) {
         if(selectSocks_[i] == s) {
             FD_CLR(s, &allSet_);

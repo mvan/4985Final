@@ -126,12 +126,14 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
     if ((host = gethostbyname(servAddr)) == NULL) {
         return FALSE;
     }
-
+    mut_->lock();
     memmove((char *)&addr_.sin_addr, host -> h_addr, host -> h_length);
 
     if (connect (sock_, (struct sockaddr *)&addr_, sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
+        mut_->unlock();
         return FALSE;
     }
+    mut_->unlock();
     return TRUE;
 
 }
@@ -139,10 +141,12 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 SOCKET sock::TCPSocket_Accept() {
 
     SOCKET s = 0;
-
+    mut_->lock();
     if((s = accept(sock_, NULL, NULL)) == INVALID_SOCKET) {
+        mut_->unlock();
         return 0;
     }
+    mut_->unlock();
     return s;
 
 }
@@ -267,6 +271,7 @@ int sock::TCPRecv() {
     mut_->lock();
     while(toRead > 0) {
         if((nRead = recv(sock_, packet_+total, toRead, 0)) == 0) {
+            mut_->unlock();
             return 0;
         }
         toRead -= nRead;
