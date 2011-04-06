@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Manual</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resource/icons.qrc">
+    <normaloff>:/files/audio.png</normaloff>:/files/audio.png</iconset>
+  </property>
   <widget class="QLabel" name="manHdr">
    <property name="geometry">
     <rect>
@@ -48,6 +52,8 @@ p, li { white-space: pre-wrap; }
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

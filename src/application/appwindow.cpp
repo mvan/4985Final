@@ -40,6 +40,7 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     connect(ui->quit2, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->quit3, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->quit4, SIGNAL(clicked()), this, SLOT(close()));
+    ui->stopStream->hide();
 }
 
 AppWindow::~AppWindow() {
@@ -291,5 +292,7 @@ void AppWindow::ftReq() {
 
 void AppWindow::streamReq() {
     QString q(this->ui->otherLibrary->currentIndex().data().toString());
+    ui->stream->hide();
+    ui->stopStream->show();
     emit(requestStream(q.toAscii().data()));
 }
