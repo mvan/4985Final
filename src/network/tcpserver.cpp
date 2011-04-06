@@ -138,8 +138,8 @@ int tcpserver::ProcessTCPPacket(char* packet) {
             emit updateList(packet+4);
             break;
         case MSG_MICOPEN:
+            emit MicReq();
             break;
-            emit StreamReq(packet+4);
         default:
             return 0;
     }
