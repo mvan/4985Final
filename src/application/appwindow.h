@@ -47,6 +47,15 @@ class AppWindow : public QTabWidget
 public:
     explicit AppWindow(ConnectionControl *connectionControl, QWidget *parent = 0);
     virtual ~AppWindow();
+
+    /**
+      * Function: addUser(QString username)
+      *
+      * @param username username of the user we want to add to the user list
+      *
+      * Description:
+      * This function add a new connected user to current user list.
+      */
     void addUser(QString username);
 
 public slots:
