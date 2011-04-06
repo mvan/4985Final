@@ -32,7 +32,7 @@ void audioout::createAudioDev() {
     }
     if(output_ == NULL) {
         output_ = new QAudioOutput(format_);
-        output_->setBufferSize(6000000);
+        output_->setBufferSize(600000000);
         buffer_ = output_->start();
     }
 }
