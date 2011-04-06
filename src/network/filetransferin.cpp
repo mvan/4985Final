@@ -35,5 +35,6 @@ void FileWriteThread::run(){
         }
     }
     file.close();
+    emit(displayMB(QString("File Transfer Complete!")));
     emit(endFT());
 }

@@ -1,6 +1,7 @@
 #ifndef FILETRANSFERIN_H
 #define FILETRANSFERIN_H
 #include <QThread>
+#include <QString>
 #include <winsock2.h>
 
 class FileWriteThread : public QThread{
@@ -13,6 +14,7 @@ protected:
     void run();
 signals:
     void endFT();
+    void displayMB(QString);
 private:
     QString file_;
 };

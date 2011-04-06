@@ -128,6 +128,8 @@ void ConnectionControl::requestFT(char* fileName) {
 
     connect(fileInThread_, SIGNAL(endFT()), this,
             SLOT(endFTIn()), Qt::QueuedConnection);
+    connect(fileInThread_, SIGNAL(displayMB(QString)), this,
+            SLOT(displayMB(QString)), Qt::QueuedConnection);
     if(TCPSocket_.getSock() != 0) {
         TCPSocket_.clrPacket();
         TCPSocket_.setPacket(packet);
@@ -171,6 +173,8 @@ void ConnectionControl::endFTOut() {
 void ConnectionControl::endFTIn() {
     disconnect(fileInThread_, SIGNAL(endFT()), this,
             SLOT(endFTIn()));
+    disconnect(fileInThread_, SIGNAL(displayMB(QString)), this,
+            SLOT(displayMB(QString)));
     fileInThread_->terminate();
     delete fileInThread_;
     fileInThread_ = NULL;
@@ -179,11 +183,11 @@ void ConnectionControl::endFTIn() {
 
 void ConnectionControl::startStreamFromReq(char* fName) {
    if(audioOutThread_ != 0) {
+        audioOutThread_->terminate();
         disconnect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
                SLOT(sendAudioPacket(char*)));
         disconnect(audioOutThread_, SIGNAL(endStream()), this,
                SLOT(endStreamOut()));
-        audioOutThread_->terminate();
         delete audioOutThread_;
         audioOutThread_ = NULL;
         audiooutBuffer.queueMutex.lock();
@@ -243,6 +247,7 @@ void ConnectionControl::requestStream(char* fileName) {
         m.exec();
         return;
     }
+
     audioinBuffer.queueMutex.lock();
     audioinBuffer.queue.clear();
     audioinBuffer.queueMutex.unlock();
@@ -315,4 +320,10 @@ void ConnectionControl::addAudioFile(QString filename) {
         connections_[i].setPacket(buf);
         connections_[i].TCPSend();
     }
+}
+
+void ConnectionControl::displayMB(QString msg) {
+    QMessageBox m;
+    m.setText(msg);
+    m.exec();
 }

@@ -192,6 +192,8 @@ public slots:
 
     void endMicStream();
 
+    void displayMB(QString msg);
+
 private:
     int tcpPort_;
     int udpPort_;

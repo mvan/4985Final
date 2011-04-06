@@ -19,7 +19,9 @@ void Buffer::bufferPacket(char* packet){
 void Buffer::grabPacket(char* buf){
     ZeroMemory(buf, PACKETSIZE);
     this->queueMutex.lock();
-    memmove(buf, this->queue.dequeue().data(), PACKETSIZE);
+    if(!this->queue.empty()) {
+        memmove(buf, this->queue.dequeue().data(), PACKETSIZE);
+    }
     this->bufferNotFull.wakeAll();
     this->queueMutex.unlock();
 }
