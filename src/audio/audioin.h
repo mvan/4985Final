@@ -24,6 +24,6 @@ class audioin: public QObject {
         void destroyAudioDev();
         void mkVoiceHdr(char* buf);
     public slots:
-        void readSound();
+        void readSound(qint64 bytes);
 };
 #endif

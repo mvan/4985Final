@@ -13,11 +13,11 @@ void audioin::setupParams() {
 void audioin::createAudioDev() {
     QAudioDeviceInfo i(QAudioDeviceInfo::defaultInputDevice());
     if(!i.isFormatSupported(format_)) {
-        return;
+        format_ = i.nearestFormat(format_);
     } else {
         input_ = new QAudioInput(format_);
         buffer_ = input_->start();
-        inbuf_ = (QBuffer*)buffer_;
+        connect(buffer_, SIGNAL(bytesWritten(qint64)), this, SLOT(readSound(qint64)));
     }
 }
 
@@ -25,15 +25,17 @@ void audioin::destroyAudioDev() {
     delete input_;
 }
 
-void audioin::readSound(){
+void audioin::readSound(qint64 bytes){
+
     char buf[DATA_SIZE];
     char packet[PACKETSIZE];
-    mkVoiceHdr(buf);
-    Sleep(8);
-
-    inbuf_->read(buf+HDR_SIZE, AUDIO_DATA_SIZE);
-    mkPacket(packet, MSG_MIC, DATA_SIZE, 0, buf);
-    audiooutBuffer.bufferPacket(packet);
+    if(bytes >= AUDIO_DATA_SIZE) {
+        mkVoiceHdr(buf);
+        buffer_->read(buf+HDR_SIZE, AUDIO_DATA_SIZE);
+        mkPacket(packet, MSG_MIC, DATA_SIZE, 0, buf);
+        audiooutBuffer.bufferPacket(packet);
+        Sleep(8);
+    }
 }
 
 void audioin::mkVoiceHdr(char* buf) {
@@ -46,5 +48,4 @@ void audioin::mkVoiceHdr(char* buf) {
     memcpy(buf+28, &byteRate, 4);
     memcpy(buf+22, &channels, 2);
     memcpy(buf+34, &sampleSize, 2);
-
 }

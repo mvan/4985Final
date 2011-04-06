@@ -27,7 +27,7 @@ int audioout::getParams(const char* params) {
 void audioout::createAudioDev() {
     QAudioDeviceInfo i(QAudioDeviceInfo::defaultOutputDevice());
     if(!i.isFormatSupported(format_)) {
-        return;
+        format_ = i.nearestFormat(format_);
     }
     if(output_ == NULL) {
         output_ = new QAudioOutput(format_);

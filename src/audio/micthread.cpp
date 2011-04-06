@@ -18,7 +18,7 @@ void MicThread::run(){
     thread->start();
 
     while(streaming){
-        in.readSound();
+        Sleep(5000);
     }
     thread->wait();
     disconnect(thread, SIGNAL(sendPacket(char*)), this, SLOT(send(char*)));
