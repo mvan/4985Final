@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QString>
+#include <QBitmap>
 #include "../network/filetransfer.h"
 #include "../network/externs.h"
 
@@ -16,6 +17,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
     connectionControl_ = connectionControl;
     chatInThread_ = new ChatWriteThread();
     chatInThread_->start();
+
+    setWindowFlags(Qt::FramelessWindowHint);
+    QPixmap pixmap(":/files/appWindowBg.png");
+    this->setMask(pixmap.mask());
 
     connect(mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
             this, SLOT(stateChanged(Phonon::State,Phonon::State)));
@@ -31,6 +36,10 @@ AppWindow::AppWindow(ConnectionControl *connectionControl, QWidget *parent) :
 
     setupGui();
     fd = new QFileDialog(this, Qt::Dialog);
+    connect(ui->quit, SIGNAL(clicked()), this, SLOT(close()));
+    connect(ui->quit2, SIGNAL(clicked()), this, SLOT(close()));
+    connect(ui->quit3, SIGNAL(clicked()), this, SLOT(close()));
+    connect(ui->quit4, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 AppWindow::~AppWindow() {

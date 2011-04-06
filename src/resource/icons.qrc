@@ -24,5 +24,6 @@
         <file>aboutUs.png</file>
         <file>mainWindowBg.png</file>
         <file>closeBtn.png</file>
+        <file>appWindowBg.png</file>
     </qresource>
 </RCC>
