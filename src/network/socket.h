@@ -14,6 +14,7 @@ class sock {
         char packet_[PACKETSIZE];
         QMutex* mut_;
         WSABUF buffer_;
+        bool mc_;
 
     private:
         SOCKET sock_;
@@ -25,7 +26,7 @@ class sock {
 
     public:
 
-        explicit sock():sock_(0), bSend_(0), bRecv_(0){
+        explicit sock():sock_(0), bSend_(0), bRecv_(0), mc_(false){
             mut_ = new QMutex();
             buffer_.buf = packet_;
             buffer_.len = PACKETSIZE;
@@ -101,6 +102,14 @@ class sock {
             memcpy(&(packet_[0]), packet, PACKETSIZE);
         }
         void socket_close() {
+            struct ip_mreq mc_addr;
+            if(mc_ == true) {
+                mc_addr.imr_multiaddr.s_addr = inet_addr(MULTICAST_ADDR);
+                mc_addr.imr_interface.s_addr = INADDR_ANY;
+
+                setsockopt(sock_, IPPROTO_IP, IP_DROP_MEMBERSHIP,
+                           (char *)&mc_addr, sizeof(mc_addr));
+            }
             closesocket(sock_);
         }
 };
