@@ -45,7 +45,7 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, dataLength(sound) - HDR_SIZE);
+    buffer_->write(sound+48, AUDIO_DATA_SIZE);
     if((pause_ * 1000) > 0) {
         Sleep(pause_*1000);
     }

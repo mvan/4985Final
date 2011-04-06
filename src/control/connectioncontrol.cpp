@@ -41,8 +41,6 @@ bool ConnectionControl::startServer(int tcpPort, int udpPort) {
     //STREAM SIGNALS AND SLOTS
     connect(tcpServer_, SIGNAL(StreamReq(char*)), this,
             SLOT(startStreamFromReq(char*)), Qt::QueuedConnection);
-    connect(udpServer_, SIGNAL(streamIn()), this, SLOT(startRandomStream()));
-
     return true;
 }
 
