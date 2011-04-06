@@ -138,7 +138,7 @@ BOOL sock::TCPSocket_Connect(char* servAddr, int portNo) {
 
 SOCKET sock::TCPSocket_Accept() {
 
-    SOCKET s;
+    SOCKET s = 0;
 
     if((s = accept(sock_, NULL, NULL)) == INVALID_SOCKET) {
         return 0;
