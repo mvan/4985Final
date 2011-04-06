@@ -7,7 +7,6 @@
 #include <QList>
 bool transferring = false;
 bool streamingOut = false;
-bool streamingIn = false;
 char ClientNum = 0;
 ConnectionControl::ConnectionControl(): numConnections_(0){
 
@@ -179,9 +178,12 @@ void ConnectionControl::endFTIn() {
 }
 
 void ConnectionControl::startStreamFromReq(char* fName) {
-    if(streamingOut == true) {
-        return;
-    }
+   if(audioOutThread_ != 0) {
+        audioOutThread_->terminate();
+        delete audioOutThread_;
+        audioOutThread_ = NULL;
+        audiooutBuffer.queue.clear();
+   }
    audioOutThread_ = new AudioReadThread(QString(fName));
    connect(audioOutThread_, SIGNAL(sendUDPPacket(char*)), this,
            SLOT(sendAudioPacket(char*)), Qt::QueuedConnection);
@@ -240,8 +242,6 @@ void ConnectionControl::requestStream(char* fileName) {
     TCPSocket_.clrPacket();
     TCPSocket_.setPacket(packet);
     TCPSocket_.TCPSend();
-    streamingIn = true;
-
 }
 
 void ConnectionControl::endStreamOut() {

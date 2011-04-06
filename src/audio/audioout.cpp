@@ -13,7 +13,6 @@ void audioout::setupParams() {
 int audioout::getParams(const char* params) {
     if(memcmp(params, hdr_, HDR_SIZE) != 0) {
         memmove(hdr_, params, HDR_SIZE);
-
         memmove(&frequency_, hdr_+24, 4);
         memmove(&byteRate_, hdr_+28, 4);
         memmove(&channels_, hdr_+22, 2);
@@ -47,8 +46,10 @@ void audioout::destroyAudioDev() {
 }
 
 void audioout::playSound(char* sound){
-    buffer_->write(sound+48, AUDIO_DATA_SIZE);
+
+    buffer_->write(sound+48, dataLength(sound) - HDR_SIZE);
     if((pause_ * 1000) > 0) {
         Sleep(pause_*1000);
     }
+
 }

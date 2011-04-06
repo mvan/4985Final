@@ -28,7 +28,7 @@ void AudioWriteThread::run(){
             out.setupParams();
             out.createAudioDev();
         }
-        out.playSound(packet);
+        out.playSound(&(packet[0]));
     }
 }
 
